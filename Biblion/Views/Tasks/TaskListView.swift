@@ -5,6 +5,7 @@ struct TaskListView: View {
 
     @EnvironmentObject var viewModel: TaskViewModel
     @State private var showAddTask = false
+    @State private var editingTask: TaskEntity?
 
     var body: some View {
         NavigationStack {
@@ -13,6 +14,14 @@ struct TaskListView: View {
                 List {
                     ForEach(viewModel.tasks, id: \.id) { task in
                         TaskRow(task: task, viewModel: viewModel)
+                            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                                Button {
+                                    editingTask = task
+                                } label: {
+                                    Label("common.edit", systemImage: "pencil")
+                                }
+                                .tint(.indigo)
+                            }
                     }
                     .onMove { source, destination in
                         viewModel.reorderTasks(from: source, to: destination)
@@ -47,6 +56,10 @@ struct TaskListView: View {
             }
             .sheet(isPresented: $showAddTask) {
                 AddEditTaskView()
+                    .environmentObject(viewModel)
+            }
+            .sheet(item: $editingTask) { task in
+                AddEditTaskView(task: task)
                     .environmentObject(viewModel)
             }
         }
