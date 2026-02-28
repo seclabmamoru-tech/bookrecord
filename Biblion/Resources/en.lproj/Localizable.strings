@@ -1,0 +1,101 @@
+/* =====================================================
+   Localizable.strings (English)
+   Biblion - Reading Memo & Insight App
+   ===================================================== */
+
+// MARK: - Tabs
+"tab.home" = "Home";
+"tab.library" = "Library";
+"tab.tasks" = "Tasks";
+"tab.ai" = "AI Insight";
+
+// MARK: - Home
+"home.stats.totalBooks" = "Books Read";
+"home.stats.totalTime" = "Reading Time";
+"home.stats.byGenre" = "By Genre";
+"home.stats.byMonth" = "Monthly Books";
+"home.timer.start" = "Start Timer";
+"home.timer.stop" = "Stop Timer";
+"home.timer.addMemo" = "Add Memo";
+"home.timer.selectBook" = "Select Book";
+"home.timer.noBook" = "Add a book you're currently reading";
+"home.currentlyReading" = "Currently Reading";
+"home.noReadingBooks" = "No books currently being read";
+"book.noData" = "No data available";
+
+// MARK: - Library
+"library.addBook" = "Add Book";
+"library.empty" = "No books yet";
+"library.filter.all" = "All";
+"library.filter.want" = "Want";
+"library.filter.reading" = "Reading";
+"library.filter.completed" = "Done";
+
+// MARK: - Book
+"book.title" = "Title";
+"book.author" = "Author";
+"book.genre" = "Genre";
+"book.status" = "Status";
+"book.startDate" = "Start Date";
+"book.endDate" = "End Date";
+"book.readingPeriod" = "Reading Period";
+"book.coverImage" = "Cover Image";
+"book.selectFromLibrary" = "Choose from Library";
+"book.addMemo" = "Add Memo";
+"book.memos" = "Memos";
+"book.noMemos" = "No memos yet";
+"book.sessionHistory" = "Reading Sessions";
+"book.noSessions" = "No reading sessions recorded";
+
+// MARK: - Memo
+"memo.placeholder" = "Enter a phrase or insight...";
+"memo.charCount" = "%d / 140";
+"memo.save" = "Save";
+
+// MARK: - Tasks
+"task.title" = "Task List";
+"task.add" = "Add Task";
+"task.done" = "✅ Done";
+"task.notDone" = "⬜ Not Yet";
+"task.weeklyStats" = "Weekly Stats";
+"task.thisWeek" = "This Week";
+"task.limitReached" = "Maximum 4 tasks reached";
+"task.executionRate" = "Completion Rate";
+
+// MARK: - AI
+"ai.consentTitle" = "About AI Feature";
+"ai.consentBody" = "To use the AI feature, your reading memos will be sent to Anthropic's API. The data is used solely for generating solution insights and for no other purpose. Please review our Privacy Policy for details.";
+"ai.consentCheck" = "I have read the above and agree to send my data";
+"ai.consentConfirm" = "Agree and Continue";
+"ai.consentRequired" = "To use the AI feature, you need to agree to data transmission first.";
+"ai.notConsented" = "AI feature consent required";
+"ai.comingSoon" = "Coming Soon";
+"ai.inputPlaceholder" = "Enter a challenge you want to solve...";
+"ai.disclaimer" = "This response is based on your reading notes";
+"ai.getSuggestion" = "Get Suggestions";
+
+// MARK: - Settings
+"settings.title" = "Settings";
+"settings.revokeConsent" = "Revoke AI Consent";
+"settings.revokeConsentFooter" = "Revoking will disable the AI feature.";
+"settings.revokeConsentMessage" = "Revoke your consent to the AI feature? This will stop sending your reading memos to the API.";
+"settings.privacyPolicy" = "Privacy Policy";
+"settings.terms" = "Terms of Service";
+"settings.legal" = "Legal";
+"settings.version" = "Version";
+"settings.about" = "About";
+
+// MARK: - Notifications
+"notification.body" = "Let's check your tasks 📝";
+
+// MARK: - Common
+"common.save" = "Save";
+"common.cancel" = "Cancel";
+"common.done" = "Done";
+"common.delete" = "Delete";
+"common.edit" = "Edit";
+"common.error" = "Error";
+"common.deleteConfirm" = "Confirm Delete";
+"common.hours" = "hrs";
+"common.minutes" = "min";
+"common.books" = "books";

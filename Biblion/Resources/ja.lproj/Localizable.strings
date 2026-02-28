@@ -1,0 +1,101 @@
+/* =====================================================
+   Localizable.strings (Japanese)
+   Biblion - 読書メモ＆インサイト記録アプリ
+   ===================================================== */
+
+// MARK: - タブ
+"tab.home" = "ホーム";
+"tab.library" = "ライブラリ";
+"tab.tasks" = "タスク";
+"tab.ai" = "AI相談";
+
+// MARK: - ホーム
+"home.stats.totalBooks" = "総読了冊数";
+"home.stats.totalTime" = "総読書時間";
+"home.stats.byGenre" = "ジャンル別";
+"home.stats.byMonth" = "月別読了数";
+"home.timer.start" = "タイマー開始";
+"home.timer.stop" = "タイマー停止";
+"home.timer.addMemo" = "メモを追加";
+"home.timer.selectBook" = "書籍を選択";
+"home.timer.noBook" = "読書中の書籍を追加してください";
+"home.currentlyReading" = "読書中";
+"home.noReadingBooks" = "読書中の書籍はありません";
+"book.noData" = "データがありません";
+
+// MARK: - ライブラリ
+"library.addBook" = "書籍を追加";
+"library.empty" = "書籍がありません";
+"library.filter.all" = "すべて";
+"library.filter.want" = "読みたい";
+"library.filter.reading" = "読中";
+"library.filter.completed" = "読了";
+
+// MARK: - 書籍
+"book.title" = "タイトル";
+"book.author" = "著者";
+"book.genre" = "ジャンル";
+"book.status" = "ステータス";
+"book.startDate" = "読み始め";
+"book.endDate" = "読了日";
+"book.readingPeriod" = "読書期間";
+"book.coverImage" = "表紙画像";
+"book.selectFromLibrary" = "フォトライブラリから選択";
+"book.addMemo" = "メモを追加";
+"book.memos" = "メモ";
+"book.noMemos" = "メモはありません";
+"book.sessionHistory" = "読書セッション履歴";
+"book.noSessions" = "読書セッションの記録はありません";
+
+// MARK: - メモ
+"memo.placeholder" = "心に響いたフレーズや気づきを入力...";
+"memo.charCount" = "%d / 140";
+"memo.save" = "保存";
+
+// MARK: - タスク
+"task.title" = "タスクリスト";
+"task.add" = "タスクを追加";
+"task.done" = "✅ できた";
+"task.notDone" = "⬜ まだ";
+"task.weeklyStats" = "週次統計";
+"task.thisWeek" = "今週の記録";
+"task.limitReached" = "タスクは最大4件です";
+"task.executionRate" = "実行率";
+
+// MARK: - AI
+"ai.consentTitle" = "AI機能の利用について";
+"ai.consentBody" = "AI機能を使用するために、あなたの読書メモをAnthropicのAPIに送信します。送信されるデータは課題解決の提案生成のみに使用され、それ以外の目的には利用されません。詳細はプライバシーポリシーをご確認ください。";
+"ai.consentCheck" = "上記の内容を確認し、データの送信に同意します";
+"ai.consentConfirm" = "同意して始める";
+"ai.consentRequired" = "AI機能を利用するには、まずデータ送信への同意が必要です。";
+"ai.notConsented" = "AI機能への同意が必要です";
+"ai.comingSoon" = "近日公開予定";
+"ai.inputPlaceholder" = "解決したい課題を入力...";
+"ai.disclaimer" = "この回答はあなたの読書メモに基づいています";
+"ai.getSuggestion" = "提案を見る";
+
+// MARK: - 設定
+"settings.title" = "設定";
+"settings.revokeConsent" = "AI同意を撤回する";
+"settings.revokeConsentFooter" = "撤回するとAI機能が使えなくなります。";
+"settings.revokeConsentMessage" = "AI機能への同意を撤回しますか？読書メモのAPI送信が停止されます。";
+"settings.privacyPolicy" = "プライバシーポリシー";
+"settings.terms" = "利用規約";
+"settings.legal" = "法的情報";
+"settings.version" = "バージョン";
+"settings.about" = "アプリ情報";
+
+// MARK: - 通知
+"notification.body" = "タスクを確認しましょう 📝";
+
+// MARK: - 共通
+"common.save" = "保存";
+"common.cancel" = "キャンセル";
+"common.done" = "完了";
+"common.delete" = "削除";
+"common.edit" = "編集";
+"common.error" = "エラー";
+"common.deleteConfirm" = "削除の確認";
+"common.hours" = "時間";
+"common.minutes" = "分";
+"common.books" = "冊";
