@@ -17,6 +17,8 @@ struct BookDetailView: View {
     @State private var showDeleteAlert = false
     @State private var memoToDelete: Memo?
     @State private var showDeleteMemoAlert = false
+    @State private var sessionToDelete: ReadingSession?
+    @State private var showDeleteSessionAlert = false
 
     var body: some View {
         ScrollView {
@@ -256,9 +258,24 @@ struct BookDetailView: View {
                     .padding(.vertical, 8)
             } else {
                 ForEach(sessions, id: \.id) { session in
-                    SessionRow(session: session)
+                    SessionRow(session: session) {
+                        sessionToDelete = session
+                        showDeleteSessionAlert = true
+                    }
+                    if session.id != sessions.last?.id {
+                        Divider()
+                    }
                 }
             }
+        }
+        .alert("common.deleteConfirm", isPresented: $showDeleteSessionAlert) {
+            Button("common.delete", role: .destructive) {
+                if let s = sessionToDelete {
+                    viewModel.deleteSession(s)
+                    loadData()
+                }
+            }
+            Button("common.cancel", role: .cancel) {}
         }
     }
 }
@@ -337,6 +354,7 @@ private struct MemoRow: View {
 
 private struct SessionRow: View {
     let session: ReadingSession
+    let onDelete: () -> Void
 
     var body: some View {
         HStack {
@@ -352,6 +370,11 @@ private struct SessionRow: View {
             Text(h > 0 ? "\(h)h \(m)m" : "\(m)m")
                 .font(.subheadline.bold())
                 .foregroundColor(.indigo)
+            Button(action: onDelete) {
+                Image(systemName: "trash")
+                    .foregroundColor(.red)
+                    .font(.caption)
+            }
         }
         .padding(.vertical, 4)
     }

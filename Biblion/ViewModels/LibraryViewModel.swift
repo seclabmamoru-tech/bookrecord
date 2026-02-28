@@ -107,6 +107,10 @@ final class LibraryViewModel: ObservableObject {
         coreData.fetchMemos(for: book)
     }
 
+    func deleteSession(_ session: ReadingSession) {
+        coreData.deleteReadingSession(session)
+    }
+
     func fetchSessions(for book: Book) -> [ReadingSession] {
         coreData.fetchReadingSessions(for: book)
     }

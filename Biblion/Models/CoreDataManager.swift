@@ -127,6 +127,14 @@ final class CoreDataManager {
         return session
     }
 
+    func deleteReadingSession(_ session: ReadingSession) {
+        if let book = session.book {
+            book.totalReadingMinutes -= session.durationMinutes
+        }
+        context.delete(session)
+        save()
+    }
+
     func fetchReadingSessions(for book: Book) -> [ReadingSession] {
         let request: NSFetchRequest<ReadingSession> = ReadingSession.fetchRequest()
         request.predicate = NSPredicate(format: "book == %@", book)
