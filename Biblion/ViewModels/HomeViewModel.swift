@@ -66,15 +66,12 @@ final class HomeViewModel: ObservableObject {
         Int(allBooks.reduce(0) { $0 + $1.totalReadingMinutes })
     }
 
-    /// 総読書時間のフォーマット文字列（例: "12h 30m"）
+    /// 総読書時間のフォーマット文字列（例: "1h1m1s"）
     var totalReadingTimeFormatted: String {
         let hours = totalReadingSeconds / 3600
         let minutes = (totalReadingSeconds % 3600) / 60
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else {
-            return "\(minutes)m"
-        }
+        let seconds = totalReadingSeconds % 60
+        return "\(hours)h\(minutes)m\(seconds)s"
     }
 
     /// ジャンル別冊数データ
