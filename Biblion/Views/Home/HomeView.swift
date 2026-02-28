@@ -22,9 +22,6 @@ struct HomeView: View {
                     // 読書中の書籍
                     currentlyReadingSection
 
-                    // 読書タイマー
-                    timerCard
-
                     // バナー広告
                     BannerAdView()
                         .frame(height: 50)
@@ -38,10 +35,6 @@ struct HomeView: View {
         }
         .onAppear {
             viewModel.fetchBooks()
-        }
-        .sheet(isPresented: $viewModel.showMemoSheet) {
-            TimerMemoSheetView()
-                .environmentObject(viewModel)
         }
     }
 
@@ -167,64 +160,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - 読書タイマー
-
-    private var timerCard: some View {
-        CardContainer {
-            VStack(spacing: 16) {
-                // 経過時間表示
-                Text(viewModel.elapsedTimeString)
-                    .font(.system(size: 52, weight: .thin, design: .monospaced))
-                    .foregroundColor(viewModel.isTimerRunning ? .indigo : .primary)
-
-                if viewModel.isTimerRunning {
-                    // タイマー起動中
-                    if viewModel.readingBooks.count > 1 {
-                        Picker("", selection: $viewModel.selectedBook) {
-                            ForEach(viewModel.readingBooks, id: \.id) { book in
-                                Text(book.title ?? "").tag(book as Book?)
-                            }
-                        }
-                        .pickerStyle(.menu)
-                    }
-
-                    HStack(spacing: 16) {
-                        // メモを追加ボタン（タイマー起動中のみ表示）
-                        Button {
-                            viewModel.showMemoSheet = true
-                        } label: {
-                            Label("home.timer.addMemo", systemImage: "note.text.badge.plus")
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.indigo)
-
-                        // タイマー停止ボタン
-                        Button(action: viewModel.stopTimer) {
-                            Label("home.timer.stop", systemImage: "stop.circle.fill")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.red)
-                    }
-                } else {
-                    // タイマー停止中
-                    Button(action: viewModel.startTimer) {
-                        Label("home.timer.start", systemImage: "play.circle.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.indigo)
-                    .disabled(viewModel.readingBooks.isEmpty)
-
-                    if viewModel.readingBooks.isEmpty {
-                        Text("home.timer.noBook")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-            .padding(.vertical, 8)
-        }
-    }
 }
 
 // MARK: - 統計カード

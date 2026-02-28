@@ -19,6 +19,8 @@
 "home.timer.addMemo" = "Add Memo";
 "home.timer.selectBook" = "Select Book";
 "home.timer.noBook" = "Add a book you're currently reading";
+"home.timer.otherBook" = "Timer is running for another book";
+"book.timer" = "Reading Timer";
 "home.currentlyReading" = "Currently Reading";
 "home.noReadingBooks" = "No books currently being read";
 "book.noData" = "No data available";

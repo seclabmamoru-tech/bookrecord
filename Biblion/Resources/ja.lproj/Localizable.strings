@@ -19,6 +19,8 @@
 "home.timer.addMemo" = "メモを追加";
 "home.timer.selectBook" = "書籍を選択";
 "home.timer.noBook" = "読書中の書籍を追加してください";
+"home.timer.otherBook" = "他の書籍でタイマーが起動中です";
+"book.timer" = "読書タイマー";
 "home.currentlyReading" = "読書中";
 "home.noReadingBooks" = "読書中の書籍はありません";
 "book.noData" = "データがありません";

@@ -4,6 +4,7 @@ import SwiftUI
 struct BookDetailView: View {
 
     @EnvironmentObject var viewModel: LibraryViewModel
+    @EnvironmentObject var homeViewModel: HomeViewModel
     @Environment(\.dismiss) private var dismiss
 
     let book: Book
@@ -30,6 +31,12 @@ struct BookDetailView: View {
 
                 // 読書セッション履歴
                 sessionSection
+
+                // 読書タイマー（読書中のみ）
+                if book.status == "reading" {
+                    Divider()
+                    timerSection
+                }
             }
             .padding()
         }
@@ -179,6 +186,57 @@ struct BookDetailView: View {
         }
     }
 
+    // MARK: - 読書タイマー
+
+    private var timerSection: some View {
+        let isThisBook = homeViewModel.isTimerRunning && homeViewModel.selectedBook?.id == book.id
+        let isOtherBook = homeViewModel.isTimerRunning && homeViewModel.selectedBook?.id != book.id
+        return CardContainer {
+            VStack(spacing: 16) {
+                Label("book.timer", systemImage: "timer")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                Text(isThisBook ? homeViewModel.elapsedTimeString : "00:00")
+                    .font(.system(size: 52, weight: .thin, design: .monospaced))
+                    .foregroundColor(isThisBook ? .indigo : .primary)
+
+                if isThisBook {
+                    HStack(spacing: 16) {
+                        Button {
+                            showAddMemo = true
+                        } label: {
+                            Label("home.timer.addMemo", systemImage: "note.text.badge.plus")
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.indigo)
+
+                        Button(action: homeViewModel.stopTimer) {
+                            Label("home.timer.stop", systemImage: "stop.circle.fill")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.red)
+                    }
+                } else if isOtherBook {
+                    Text("home.timer.otherBook")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                } else {
+                    Button {
+                        homeViewModel.selectedBook = book
+                        homeViewModel.startTimer()
+                    } label: {
+                        Label("home.timer.start", systemImage: "play.circle.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.indigo)
+                }
+            }
+            .padding(.vertical, 8)
+        }
+    }
+
     // MARK: - 読書セッション履歴
 
     private var sessionSection: some View {
@@ -286,5 +344,6 @@ private struct SessionRow: View {
     NavigationStack {
         BookDetailView(book: Book())
             .environmentObject(LibraryViewModel())
+            .environmentObject(HomeViewModel())
     }
 }
