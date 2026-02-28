@@ -65,7 +65,7 @@
 "task.limitReached" = "タスクは最大4件です";
 "task.executionRate" = "実行率";
 "task.hint.edit" = "← 左スワイプ：名前を編集";
-"task.hint.manage" = "右スワイプ：削除・並替 →";
+"task.hint.manage" = "右スワイプ：削除 →";
 
 // MARK: - AI
 "ai.consentTitle" = "AI機能の利用について";
