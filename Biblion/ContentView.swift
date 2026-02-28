@@ -9,28 +9,33 @@ struct ContentView: View {
     @EnvironmentObject var aiInsightViewModel: AIInsightViewModel
 
     @State private var showSettings = false
+    @State private var selectedTab = 0
+    @State private var lastValidTab = 0
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             // ホームタブ
             HomeView()
                 .tabItem {
                     Label("tab.home", systemImage: "house.fill")
                 }
+                .tag(0)
 
             // ライブラリタブ
             LibraryView()
                 .tabItem {
                     Label("tab.library", systemImage: "books.vertical.fill")
                 }
+                .tag(1)
 
             // タスクタブ
             TaskListView()
                 .tabItem {
                     Label("tab.tasks", systemImage: "checklist")
                 }
+                .tag(2)
 
-            // AI相談タブ（設定ボタン付き）
+            // AI相談タブ（Coming Soon・タップ無効）
             NavigationStack {
                 AIInsightView()
                     .toolbar {
@@ -44,10 +49,18 @@ struct ContentView: View {
                     }
             }
             .tabItem {
-                Label("tab.ai", systemImage: "brain.head.profile")
+                Label("ai.comingSoon", systemImage: "brain.head.profile")
             }
+            .tag(3)
         }
         .accentColor(.indigo)
+        .onChange(of: selectedTab) { newTab in
+            if newTab == 3 {
+                selectedTab = lastValidTab
+            } else {
+                lastValidTab = newTab
+            }
+        }
         .sheet(isPresented: $showSettings) {
             SettingsView()
                 .environmentObject(aiInsightViewModel)
