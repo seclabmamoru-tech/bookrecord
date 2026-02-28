@@ -10,7 +10,6 @@ struct BookDetailView: View {
 
     @State private var memos: [Memo] = []
     @State private var sessions: [ReadingSession] = []
-    @State private var editMode: EditMode = .inactive
     @State private var showAddMemo = false
     @State private var selectedMemo: Memo?
     @State private var showEditBook = false
@@ -38,17 +37,13 @@ struct BookDetailView: View {
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack {
-                    EditButton()
-                    Button {
-                        showEditBook = true
-                    } label: {
-                        Text("common.edit")
-                    }
+                Button {
+                    showEditBook = true
+                } label: {
+                    Text("common.edit")
                 }
             }
         }
-        .environment(\.editMode, $editMode)
         .sheet(isPresented: $showAddMemo) {
             AddEditMemoView(book: book, memo: nil)
                 .environmentObject(viewModel)
@@ -179,10 +174,6 @@ struct BookDetailView: View {
                             Label("common.delete", systemImage: "trash")
                         }
                     }
-                }
-                .onMove { indices, destination in
-                    viewModel.reorderMemos(memos, from: indices, to: destination)
-                    loadData()
                 }
             }
         }
