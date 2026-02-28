@@ -1,10 +1,7 @@
 import SwiftUI
 
-/// 設定画面（AI同意撤回・プライバシーポリシー・利用規約）
+/// 設定画面（プライバシーポリシー・利用規約）
 struct SettingsView: View {
-
-    @EnvironmentObject var viewModel: AIInsightViewModel
-    @State private var showRevokeAlert = false
 
     private let privacyPolicyURL = URL(string: "https://it-master.jp/privacy-policy")!
     private let termsURL = URL(string: "https://it-master.jp/terms")!
@@ -12,35 +9,6 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // AI機能設定セクション
-                Section {
-                    if viewModel.hasConsented {
-                        // 同意済みの場合：撤回ボタンを表示
-                        Button(role: .destructive) {
-                            showRevokeAlert = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "xmark.shield")
-                                Text("settings.revokeConsent")
-                            }
-                        }
-                    } else {
-                        Label {
-                            Text("ai.notConsented")
-                                .foregroundColor(.secondary)
-                        } icon: {
-                            Image(systemName: "xmark.shield")
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                } header: {
-                    Text("tab.ai")
-                } footer: {
-                    if viewModel.hasConsented {
-                        Text("settings.revokeConsentFooter")
-                    }
-                }
-
                 // リンクセクション
                 Section {
                     Link(destination: privacyPolicyURL) {
@@ -78,14 +46,6 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle(Text("settings.title"))
-            .alert("settings.revokeConsent", isPresented: $showRevokeAlert) {
-                Button("settings.revokeConsent", role: .destructive) {
-                    viewModel.revokeConsent()
-                }
-                Button("common.cancel", role: .cancel) {}
-            } message: {
-                Text("settings.revokeConsentMessage")
-            }
         }
     }
 
@@ -96,5 +56,4 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
-        .environmentObject(AIInsightViewModel())
 }

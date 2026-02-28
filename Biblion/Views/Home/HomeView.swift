@@ -5,7 +5,6 @@ import Charts
 struct HomeView: View {
 
     @EnvironmentObject var viewModel: HomeViewModel
-    @EnvironmentObject var aiInsightViewModel: AIInsightViewModel
     @State private var showSettings = false
 
     var body: some View {
@@ -46,7 +45,6 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
-                .environmentObject(aiInsightViewModel)
         }
         .onAppear {
             viewModel.fetchBooks()
@@ -305,5 +303,4 @@ struct CardContainer<Content: View>: View {
 #Preview {
     HomeView()
         .environmentObject(HomeViewModel())
-        .environmentObject(AIInsightViewModel())
 }
