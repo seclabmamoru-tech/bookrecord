@@ -143,9 +143,9 @@ final class HomeViewModel: ObservableObject {
         timerInstance = nil
         isTimerRunning = false
 
-        // 1分以上計測した場合のみ保存
-        let minutes = Int32(elapsedSeconds / 60)
-        if minutes > 0, let book = selectedBook {
+        // 1秒以上計測した場合は保存（秒数を分に切り上げ）
+        if elapsedSeconds > 0, let book = selectedBook {
+            let minutes = Int32((elapsedSeconds + 59) / 60)
             coreData.addReadingSession(book: book, durationMinutes: minutes, date: Date())
             fetchBooks()
         }

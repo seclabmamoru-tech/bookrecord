@@ -88,6 +88,9 @@ struct BookDetailView: View {
         }
         .onAppear { loadData() }
         .onChange(of: viewModel.books) { _ in loadData() }
+        .onChange(of: homeViewModel.isTimerRunning) { running in
+            if !running { loadData() }
+        }
     }
 
     // MARK: - データ読み込み
