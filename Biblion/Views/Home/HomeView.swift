@@ -151,7 +151,10 @@ struct HomeView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
                         ForEach(viewModel.readingBooks, id: \.id) { book in
-                            ReadingBookMiniCard(book: book)
+                            NavigationLink(destination: BookDetailView(book: book)) {
+                                ReadingBookMiniCard(book: book)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.horizontal, 4)

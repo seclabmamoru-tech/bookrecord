@@ -202,21 +202,12 @@ struct BookDetailView: View {
                     .foregroundColor(isThisBook ? .indigo : .primary)
 
                 if isThisBook {
-                    HStack(spacing: 16) {
-                        Button {
-                            showAddMemo = true
-                        } label: {
-                            Label("home.timer.addMemo", systemImage: "note.text.badge.plus")
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.indigo)
-
-                        Button(action: homeViewModel.stopTimer) {
-                            Label("home.timer.stop", systemImage: "stop.circle.fill")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.red)
+                    Button(action: homeViewModel.stopTimer) {
+                        Label("home.timer.stop", systemImage: "stop.circle.fill")
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
                 } else if isOtherBook {
                     Text("home.timer.otherBook")
                         .font(.caption)
