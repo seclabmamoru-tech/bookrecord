@@ -63,6 +63,9 @@ struct AddBookView: View {
                     Toggle(isOn: $hasEndDate) {
                         Text("book.endDate")
                     }
+                    .onChange(of: hasEndDate) { enabled in
+                        if enabled { status = "completed" }
+                    }
                     if hasEndDate {
                         DatePicker("", selection: $endDate, displayedComponents: .date)
                             .labelsHidden()
