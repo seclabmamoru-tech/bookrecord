@@ -62,9 +62,6 @@ struct TaskListView: View {
                         }
                     }
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
-                }
             }
             .sheet(isPresented: $showAddTask) {
                 AddEditTaskView()
