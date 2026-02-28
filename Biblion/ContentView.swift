@@ -8,7 +8,6 @@ struct ContentView: View {
     @EnvironmentObject var taskViewModel: TaskViewModel
     @EnvironmentObject var aiInsightViewModel: AIInsightViewModel
 
-    @State private var showSettings = false
     @State private var selectedTab = 0
     @State private var lastValidTab = 0
 
@@ -38,15 +37,6 @@ struct ContentView: View {
             // AI相談タブ（Coming Soon・タップ無効）
             NavigationStack {
                 AIInsightView()
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button {
-                                showSettings = true
-                            } label: {
-                                Image(systemName: "gearshape.fill")
-                            }
-                        }
-                    }
             }
             .tabItem {
                 Label("ai.comingSoon", systemImage: "brain.head.profile")
@@ -60,10 +50,6 @@ struct ContentView: View {
             } else {
                 lastValidTab = newTab
             }
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
-                .environmentObject(aiInsightViewModel)
         }
     }
 }

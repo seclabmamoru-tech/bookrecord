@@ -5,6 +5,8 @@ import Charts
 struct HomeView: View {
 
     @EnvironmentObject var viewModel: HomeViewModel
+    @EnvironmentObject var aiInsightViewModel: AIInsightViewModel
+    @State private var showSettings = false
 
     var body: some View {
         NavigationStack {
@@ -32,6 +34,19 @@ struct HomeView: View {
             }
             .navigationTitle(Text("tab.home"))
             .background(Color(.systemGroupedBackground))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+                .environmentObject(aiInsightViewModel)
         }
         .onAppear {
             viewModel.fetchBooks()
@@ -290,4 +305,5 @@ struct CardContainer<Content: View>: View {
 #Preview {
     HomeView()
         .environmentObject(HomeViewModel())
+        .environmentObject(AIInsightViewModel())
 }
