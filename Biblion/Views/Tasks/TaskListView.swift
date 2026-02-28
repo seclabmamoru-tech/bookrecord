@@ -10,6 +10,18 @@ struct TaskListView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                // 操作ヒント
+                HStack {
+                    Text("task.hint.edit")
+                    Spacer()
+                    Text("task.hint.manage")
+                }
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(Color(.systemGroupedBackground))
+
                 // タスクリスト
                 List {
                     ForEach(viewModel.tasks, id: \.id) { task in

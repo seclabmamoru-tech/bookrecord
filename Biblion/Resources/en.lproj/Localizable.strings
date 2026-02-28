@@ -63,6 +63,8 @@
 "task.thisWeek" = "This Week";
 "task.limitReached" = "Maximum 4 tasks reached";
 "task.executionRate" = "Completion Rate";
+"task.hint.edit" = "← Left swipe: Edit name";
+"task.hint.manage" = "Right swipe: Delete/Reorder →";
 
 // MARK: - AI
 "ai.consentTitle" = "About AI Feature";
