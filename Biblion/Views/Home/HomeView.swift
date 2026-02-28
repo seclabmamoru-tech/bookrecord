@@ -65,7 +65,7 @@ struct HomeView: View {
                 icon: "clock.fill",
                 title: Text("home.stats.totalTime"),
                 value: viewModel.totalReadingTimeFormatted,
-                unit: Text("common.hours")
+                unit: Text("")
             )
         }
     }
@@ -244,6 +244,8 @@ private struct StatCard: View {
                 HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(value)
                         .font(.title.bold())
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                     unit.font(.caption).foregroundColor(.secondary)
                 }
             }
