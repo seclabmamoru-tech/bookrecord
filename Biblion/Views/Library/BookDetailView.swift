@@ -41,6 +41,18 @@ struct BookDetailView: View {
                     Divider()
                     timerSection
                 }
+
+                // 書籍削除
+                Divider()
+                Button(role: .destructive) {
+                    showDeleteAlert = true
+                } label: {
+                    Label("book.delete", systemImage: "trash")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .tint(.red)
+                .padding(.top, 4)
             }
             .padding()
         }

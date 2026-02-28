@@ -48,6 +48,7 @@
 "book.noMemos" = "メモはありません";
 "book.sessionHistory" = "読書セッション履歴";
 "book.noSessions" = "読書セッションの記録はありません";
+"book.delete" = "この書籍を削除する";
 
 // MARK: - メモ
 "memo.placeholder" = "心に響いたフレーズや気づきを入力...";

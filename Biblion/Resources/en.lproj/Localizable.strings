@@ -48,6 +48,7 @@
 "book.noMemos" = "No memos yet";
 "book.sessionHistory" = "Reading Sessions";
 "book.noSessions" = "No reading sessions recorded";
+"book.delete" = "Delete This Book";
 
 // MARK: - Memo
 "memo.placeholder" = "Enter a phrase or insight...";

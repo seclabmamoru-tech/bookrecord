@@ -69,6 +69,8 @@ final class CoreDataManager {
     }
 
     func deleteBook(_ book: Book) {
+        fetchMemos(for: book).forEach { context.delete($0) }
+        fetchReadingSessions(for: book).forEach { context.delete($0) }
         context.delete(book)
         save()
     }
