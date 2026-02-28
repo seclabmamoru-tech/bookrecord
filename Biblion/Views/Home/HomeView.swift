@@ -80,9 +80,11 @@ struct HomeView: View {
 
     @ViewBuilder
     private var genreChart: some View {
+        let total = viewModel.genreData.reduce(0) { $0 + $1.1 }
         if #available(iOS 17.0, *) {
             Chart {
                 ForEach(viewModel.genreData, id: \.0) { item in
+                    let pct = total > 0 ? Int(round(Double(item.1) / Double(total) * 100)) : 0
                     SectorMark(
                         angle: .value("Count", item.1),
                         innerRadius: .ratio(0.4),
@@ -90,6 +92,13 @@ struct HomeView: View {
                     )
                     .foregroundStyle(by: .value("Genre", item.0))
                     .cornerRadius(4)
+                    .annotation(position: .overlay) {
+                        if pct >= 5 {
+                            Text("\(pct)%")
+                                .font(.caption2.bold())
+                                .foregroundColor(.white)
+                        }
+                    }
                 }
             }
         } else {
@@ -111,8 +120,12 @@ struct HomeView: View {
     private var monthlyChartCard: some View {
         CardContainer {
             VStack(alignment: .leading, spacing: 12) {
-                Label("home.stats.byMonth", systemImage: "chart.bar.fill")
-                    .font(.headline)
+                HStack {
+                    Label("home.stats.byMonth", systemImage: "chart.bar.fill")
+                        .font(.headline)
+                    Spacer()
+                    yearSelector
+                }
 
                 Chart {
                     ForEach(viewModel.monthlyData, id: \.0) { item in
@@ -130,6 +143,39 @@ struct HomeView: View {
                 }
             }
         }
+    }
+
+    private var yearSelector: some View {
+        HStack(spacing: 2) {
+            Button {
+                let years = viewModel.availableYears
+                if let idx = years.firstIndex(of: viewModel.selectedYear), idx > 0 {
+                    viewModel.selectedYear = years[idx - 1]
+                }
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.caption)
+                    .padding(6)
+            }
+            .disabled(viewModel.selectedYear == viewModel.availableYears.first)
+
+            Text("\(viewModel.selectedYear)")
+                .font(.subheadline.monospacedDigit())
+                .frame(minWidth: 44)
+
+            Button {
+                let years = viewModel.availableYears
+                if let idx = years.firstIndex(of: viewModel.selectedYear), idx < years.count - 1 {
+                    viewModel.selectedYear = years[idx + 1]
+                }
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .padding(6)
+            }
+            .disabled(viewModel.selectedYear == viewModel.availableYears.last)
+        }
+        .foregroundColor(.indigo)
     }
 
     // MARK: - 読書中の書籍

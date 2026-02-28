@@ -12,6 +12,7 @@ final class HomeViewModel: ObservableObject {
     @Published var elapsedSeconds: Int = 0
     @Published var selectedBook: Book?
     @Published var showMemoSheet = false
+    @Published var selectedYear: Int = Calendar.current.component(.year, from: Date())
 
     // MARK: - プライベートプロパティ
 
@@ -86,7 +87,20 @@ final class HomeViewModel: ObservableObject {
         return counts.sorted { $0.key < $1.key }.map { ($0.key, $0.value) }
     }
 
-    /// 直近6ヶ月の月別読了冊数データ
+    /// 選択可能な年の一覧（読了済み書籍の年 + 当年）
+    var availableYears: [Int] {
+        let calendar = Calendar.current
+        var years = Set<Int>()
+        years.insert(calendar.component(.year, from: Date()))
+        for book in allBooks where book.status == "completed" {
+            if let endDate = book.endDate {
+                years.insert(calendar.component(.year, from: endDate))
+            }
+        }
+        return years.sorted()
+    }
+
+    /// 選択中の年の月別読了冊数データ（1〜12月）
     var monthlyData: [(String, Int)] {
         let completedBooks = allBooks.filter { $0.status == "completed" && $0.endDate != nil }
         let calendar = Calendar.current
@@ -94,17 +108,18 @@ final class HomeViewModel: ObservableObject {
         dateFormatter.locale = Locale.current
         dateFormatter.dateFormat = "M月"
 
-        var result: [(String, Int)] = []
-        for i in (0..<6).reversed() {
-            guard let date = calendar.date(byAdding: .month, value: -i, to: Date()) else { continue }
+        return (1...12).compactMap { month in
+            var components = DateComponents()
+            components.year = selectedYear
+            components.month = month
+            guard let date = calendar.date(from: components) else { return nil }
             let label = dateFormatter.string(from: date)
             let count = completedBooks.filter { book in
                 guard let endDate = book.endDate else { return false }
                 return calendar.isDate(endDate, equalTo: date, toGranularity: .month)
             }.count
-            result.append((label, count))
+            return (label, count)
         }
-        return result
     }
 
     // MARK: - タイマー操作
