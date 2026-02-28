@@ -159,7 +159,7 @@ struct HomeView: View {
             }
             .disabled(viewModel.selectedYear == viewModel.availableYears.first)
 
-            Text("\(viewModel.selectedYear)")
+            Text(verbatim: "\(viewModel.selectedYear)")
                 .font(.subheadline.monospacedDigit())
                 .frame(minWidth: 44)
 
