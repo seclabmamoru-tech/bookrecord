@@ -156,10 +156,12 @@ struct BookDetailView: View {
                         .foregroundColor(.secondary)
                 }
 
-                // 累計読書時間
-                let hours = book.totalReadingMinutes / 60
-                let minutes = book.totalReadingMinutes % 60
-                Label(hours > 0 ? "\(hours)h \(minutes)m" : "\(minutes)m", systemImage: "clock")
+                // 累計読書時間（totalReadingMinutes フィールドに秒数を格納）
+                let totalSec = Int(book.totalReadingMinutes)
+                let hours = totalSec / 3600
+                let minutes = (totalSec % 3600) / 60
+                let totalLabel = hours > 0 ? "\(hours)h \(minutes)m" : "\(minutes)m"
+                Label(totalLabel, systemImage: "clock")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -380,9 +382,16 @@ private struct SessionRow: View {
                     .font(.subheadline)
             }
             Spacer()
-            let h = session.durationMinutes / 60
-            let m = session.durationMinutes % 60
-            Text(h > 0 ? "\(h)h \(m)m" : "\(m)m")
+            let totalSec = Int(session.durationMinutes)
+            let h = totalSec / 3600
+            let m = (totalSec % 3600) / 60
+            let s = totalSec % 60
+            let durationLabel: String = {
+                if h > 0 { return "\(h)時間\(m)分\(s)秒" }
+                if m > 0 { return "\(m)分\(s)秒" }
+                return "\(s)秒"
+            }()
+            Text(durationLabel)
                 .font(.subheadline.bold())
                 .foregroundColor(.indigo)
             Button(action: onDelete) {

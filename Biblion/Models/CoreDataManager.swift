@@ -117,14 +117,15 @@ final class CoreDataManager {
 
     // MARK: - ReadingSession CRUD
 
+    /// durationMinutes フィールドには実際の秒数を保存する（フィールド名は旧来の名称）
     @discardableResult
-    func addReadingSession(book: Book, durationMinutes: Int32, date: Date) -> ReadingSession {
+    func addReadingSession(book: Book, durationSeconds: Int32, date: Date) -> ReadingSession {
         let session = ReadingSession(context: context)
         session.id = UUID()
         session.date = date
-        session.durationMinutes = durationMinutes
+        session.durationMinutes = durationSeconds   // 秒数を格納
         session.book = book
-        book.totalReadingMinutes += durationMinutes
+        book.totalReadingMinutes += durationSeconds // 累計も秒数で管理
         save()
         return session
     }

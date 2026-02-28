@@ -61,15 +61,15 @@ final class HomeViewModel: ObservableObject {
         allBooks.filter { $0.status == "completed" }.count
     }
 
-    /// 総読書時間（分）
-    var totalReadingMinutes: Int32 {
-        allBooks.reduce(0) { $0 + $1.totalReadingMinutes }
+    /// 総読書時間（秒）※ totalReadingMinutes フィールドに秒数を格納
+    var totalReadingSeconds: Int {
+        Int(allBooks.reduce(0) { $0 + $1.totalReadingMinutes })
     }
 
     /// 総読書時間のフォーマット文字列（例: "12h 30m"）
     var totalReadingTimeFormatted: String {
-        let hours = totalReadingMinutes / 60
-        let minutes = totalReadingMinutes % 60
+        let hours = totalReadingSeconds / 3600
+        let minutes = (totalReadingSeconds % 3600) / 60
         if hours > 0 {
             return "\(hours)h \(minutes)m"
         } else {
@@ -143,10 +143,9 @@ final class HomeViewModel: ObservableObject {
         timerInstance = nil
         isTimerRunning = false
 
-        // 1秒以上計測した場合は保存（秒数を分に切り上げ）
+        // 1秒以上計測した場合は秒数をそのまま保存
         if elapsedSeconds > 0, let book = selectedBook {
-            let minutes = Int32((elapsedSeconds + 59) / 60)
-            coreData.addReadingSession(book: book, durationMinutes: minutes, date: Date())
+            coreData.addReadingSession(book: book, durationSeconds: Int32(elapsedSeconds), date: Date())
             fetchBooks()
         }
         elapsedSeconds = 0
