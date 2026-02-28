@@ -15,6 +15,8 @@ struct BookDetailView: View {
     @State private var selectedMemo: Memo?
     @State private var showEditBook = false
     @State private var showDeleteAlert = false
+    @State private var memoToDelete: Memo?
+    @State private var showDeleteMemoAlert = false
 
     var body: some View {
         ScrollView {
@@ -51,11 +53,11 @@ struct BookDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $showAddMemo) {
+        .sheet(isPresented: $showAddMemo, onDismiss: loadData) {
             AddEditMemoView(book: book, memo: nil)
                 .environmentObject(viewModel)
         }
-        .sheet(item: $selectedMemo) { memo in
+        .sheet(item: $selectedMemo, onDismiss: loadData) { memo in
             AddEditMemoView(book: book, memo: memo)
                 .environmentObject(viewModel)
         }
@@ -169,20 +171,32 @@ struct BookDetailView: View {
                     .font(.subheadline)
                     .padding(.vertical, 8)
             } else {
-                ForEach(memos, id: \.id) { memo in
-                    MemoRow(memo: memo) {
-                        selectedMemo = memo
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            viewModel.deleteMemo(memo)
-                            loadData()
-                        } label: {
-                            Label("common.delete", systemImage: "trash")
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(memos, id: \.id) { memo in
+                            MemoRow(memo: memo) {
+                                selectedMemo = memo
+                            } onDelete: {
+                                memoToDelete = memo
+                                showDeleteMemoAlert = true
+                            }
+                            if memo.id != memos.last?.id {
+                                Divider().padding(.leading, 32)
+                            }
                         }
                     }
                 }
+                .frame(maxHeight: 260)
             }
+        }
+        .alert("common.deleteConfirm", isPresented: $showDeleteMemoAlert) {
+            Button("common.delete", role: .destructive) {
+                if let m = memoToDelete {
+                    viewModel.deleteMemo(m)
+                    loadData()
+                }
+            }
+            Button("common.cancel", role: .cancel) {}
         }
     }
 
@@ -288,22 +302,34 @@ struct StatusBadge: View {
 private struct MemoRow: View {
     let memo: Memo
     let onTap: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            Image(systemName: "quote.bubble")
-                .foregroundColor(.indigo)
-                .font(.subheadline)
-                .padding(.top, 2)
+            Button(action: onTap) {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "quote.bubble")
+                        .foregroundColor(.indigo)
+                        .font(.subheadline)
+                        .padding(.top, 2)
 
-            Text(memo.content ?? "")
-                .font(.body)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(memo.content ?? "")
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary)
+                }
+            }
+            .buttonStyle(.plain)
+
+            Button(action: onDelete) {
+                Image(systemName: "trash")
+                    .foregroundColor(.red)
+                    .font(.caption)
+            }
+            .padding(.top, 2)
         }
         .padding(.vertical, 6)
-        .contentShape(Rectangle())
-        .onTapGesture { onTap() }
     }
 }
 
