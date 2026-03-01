@@ -3,7 +3,7 @@ import SwiftUI
 /// 書籍一覧グリッド用のカードビュー
 struct BookCardView: View {
 
-    let book: Book
+    @ObservedObject var book: Book
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

@@ -257,7 +257,7 @@ private struct StatCard: View {
 // MARK: - 読書中書籍ミニカード
 
 private struct ReadingBookMiniCard: View {
-    let book: Book
+    @ObservedObject var book: Book
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {

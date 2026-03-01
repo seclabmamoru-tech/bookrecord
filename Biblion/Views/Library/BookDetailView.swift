@@ -7,7 +7,7 @@ struct BookDetailView: View {
     @EnvironmentObject var homeViewModel: HomeViewModel
     @Environment(\.dismiss) private var dismiss
 
-    let book: Book
+    @ObservedObject var book: Book
 
     @State private var memos: [Memo] = []
     @State private var sessions: [ReadingSession] = []
