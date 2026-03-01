@@ -104,7 +104,7 @@ final class HomeViewModel: ObservableObject {
         let calendar = Calendar.current
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale.current
-        dateFormatter.dateFormat = "M月"
+        dateFormatter.setLocalizedDateFormatFromTemplate("MMM")
 
         return (1...12).compactMap { month in
             var components = DateComponents()
