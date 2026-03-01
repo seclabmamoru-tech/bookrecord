@@ -33,6 +33,14 @@
 "library.filter.reading" = "読中";
 "library.filter.completed" = "読了";
 
+// MARK: - ジャンル
+"genre.business" = "ビジネス";
+"genre.selfHelp" = "自己啓発";
+"genre.fiction" = "小説";
+"genre.technology" = "技術";
+"genre.history" = "歴史";
+"genre.other" = "その他";
+
 // MARK: - 書籍
 "book.title" = "タイトル";
 "book.author" = "著者";

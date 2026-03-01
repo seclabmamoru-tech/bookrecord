@@ -14,7 +14,7 @@ struct AddBookView: View {
 
     @State private var title = ""
     @State private var author = ""
-    @State private var genre = "ビジネス"
+    @State private var genre = "genre.business"
     @State private var status = "want"
     @State private var hasStartDate = false
     @State private var startDate = Date()
@@ -37,7 +37,7 @@ struct AddBookView: View {
 
                     Picker("book.genre", selection: $genre) {
                         ForEach(LibraryViewModel.genres, id: \.self) { g in
-                            Text(g).tag(g)
+                            Text(LocalizedStringKey(g)).tag(g)
                         }
                     }
 
@@ -148,7 +148,7 @@ struct AddBookView: View {
         guard let book = book else { return }
         title = book.title ?? ""
         author = book.author ?? ""
-        genre = book.genre ?? "ビジネス"
+        genre = book.genre ?? "genre.business"
         status = book.status ?? "want"
 
         if let start = book.startDate {

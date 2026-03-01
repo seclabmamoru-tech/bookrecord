@@ -78,8 +78,9 @@ final class HomeViewModel: ObservableObject {
     var genreData: [(String, Int)] {
         var counts: [String: Int] = [:]
         for book in allBooks {
-            let genre = book.genre ?? "その他"
-            counts[genre, default: 0] += 1
+            let genreKey = book.genre ?? "genre.other"
+            let localizedGenre = NSLocalizedString(genreKey, comment: "")
+            counts[localizedGenre, default: 0] += 1
         }
         return counts.sorted { $0.key < $1.key }.map { ($0.key, $0.value) }
     }

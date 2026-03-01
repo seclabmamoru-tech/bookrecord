@@ -85,7 +85,7 @@ struct LibraryView: View {
                 Picker("", selection: $viewModel.selectedGenre) {
                     Text("library.filter.all").tag("all")
                     ForEach(LibraryViewModel.genres, id: \.self) { genre in
-                        Text(genre).tag(genre)
+                        Text(LocalizedStringKey(genre)).tag(genre)
                     }
                 }
                 .pickerStyle(.menu)

@@ -20,7 +20,7 @@ final class LibraryViewModel: ObservableObject {
 
     // MARK: - 定数
 
-    static let genres = ["ビジネス", "自己啓発", "小説", "技術", "歴史", "その他"]
+    static let genres = ["genre.business", "genre.selfHelp", "genre.fiction", "genre.technology", "genre.history", "genre.other"]
     static let statuses = ["want", "reading", "completed"]
 
     // MARK: - 初期化

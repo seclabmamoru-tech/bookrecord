@@ -33,6 +33,14 @@
 "library.filter.reading" = "Reading";
 "library.filter.completed" = "Done";
 
+// MARK: - Genre
+"genre.business" = "Business";
+"genre.selfHelp" = "Self-Help";
+"genre.fiction" = "Fiction";
+"genre.technology" = "Technology";
+"genre.history" = "History";
+"genre.other" = "Other";
+
 // MARK: - Book
 "book.title" = "Title";
 "book.author" = "Author";
