@@ -373,6 +373,14 @@ private struct SessionRow: View {
     let session: ReadingSession
     let onDelete: () -> Void
 
+    private var durationLabel: String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.unitsStyle = .abbreviated
+        formatter.zeroFormattingBehavior = .dropLeading
+        return formatter.string(from: TimeInterval(session.durationMinutes)) ?? ""
+    }
+
     var body: some View {
         HStack {
             Image(systemName: "clock.fill")
@@ -382,12 +390,6 @@ private struct SessionRow: View {
                     .font(.subheadline)
             }
             Spacer()
-            let totalSec = Int(session.durationMinutes)
-            let formatter = DateComponentsFormatter()
-            formatter.allowedUnits = [.hour, .minute, .second]
-            formatter.unitsStyle = .abbreviated
-            formatter.zeroFormattingBehavior = .dropLeading
-            let durationLabel = formatter.string(from: TimeInterval(totalSec)) ?? ""
             Text(durationLabel)
                 .font(.subheadline.bold())
                 .foregroundColor(.indigo)
