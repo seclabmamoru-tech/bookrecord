@@ -48,9 +48,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>書籍の表紙画像を撮影するためにカメラへのアクセスが必要です。</string>
 
-	<!-- AdMob アプリID（テスト用） -->
+	<!-- AdMob アプリID -->
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<string>ca-app-pub-5201067107891611~7510333358</string>
 
 	<!-- SKAdNetwork（広告アトリビューション） -->
 	<key>SKAdNetworkItems</key>

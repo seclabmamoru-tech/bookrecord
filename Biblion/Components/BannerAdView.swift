@@ -4,8 +4,7 @@ import GoogleMobileAds
 /// AdMob バナー広告ビュー（UIViewRepresentable）
 struct BannerAdView: UIViewRepresentable {
 
-    /// テスト用広告ユニットID
-    private let adUnitID = "ca-app-pub-3940256099942544/2934735716"
+    private let adUnitID = "ca-app-pub-5201067107891611/8582219363"
 
     func makeUIView(context: Context) -> GADBannerView {
         let bannerView = GADBannerView(adSize: GADAdSizeBanner)
