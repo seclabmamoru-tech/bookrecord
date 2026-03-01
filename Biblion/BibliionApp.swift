@@ -14,8 +14,10 @@ struct BibliionApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
-        // AdMob SDK の初期化
-        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        // AdMob SDK の初期化（完了を待ってから広告ロードを許可）
+        GADMobileAds.sharedInstance().start { _ in
+            InterstitialAdManager.shared.notifySdkReady()
+        }
         // 通知許可の申請
         NotificationManager.shared.requestAuthorization()
     }
@@ -45,16 +47,24 @@ private final class InterstitialAdManager: NSObject {
     private let adUnitID = "ca-app-pub-5201067107891611/9633575022"
     private let lastShownDateKey = "interstitialLastShownDate"
     private var interstitialAd: GADInterstitialAd?
+    private var isLoading = false
+    private var isSdkReady = false
 
     private override init() {
         super.init()
     }
 
-    func loadAndShowIfNeeded() {
-        guard shouldShowToday() else { return }
+    func notifySdkReady() {
+        isSdkReady = true
+    }
 
+    func loadAndShowIfNeeded() {
+        guard isSdkReady, !isLoading, shouldShowToday() else { return }
+
+        isLoading = true
         GADInterstitialAd.load(withAdUnitID: adUnitID, request: GADRequest()) { [weak self] ad, error in
             guard let self else { return }
+            self.isLoading = false
             if let error {
                 print("インタースティシャル広告の読み込みに失敗: \(error.localizedDescription)")
                 return
