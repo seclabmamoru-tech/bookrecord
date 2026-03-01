@@ -36,7 +36,6 @@
 		00000000000000000002001B /* Biblion.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001001B /* Biblion.xcdatamodeld */; };
 		00000000000000000002001C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001001C /* Preview Assets.xcassets */; };
 		00000000000000000002001D /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000000080002 /* GoogleMobileAds */; };
-		000000000000000000020020 /* InterstitialAdManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010020 /* InterstitialAdManager.swift */; };
 		000000000000000000020021 /* ja in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010021 /* ja */; };
 		000000000000000000020022 /* en in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010022 /* en */; };
 /* End PBXBuildFile section */
@@ -71,7 +70,6 @@
 		00000000000000000001001B /* Biblion.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Biblion.xcdatamodeld; sourceTree = "<group>"; };
 		00000000000000000001001C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		00000000000000000001001D /* Biblion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Biblion.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		000000000000000000010020 /* InterstitialAdManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterstitialAdManager.swift; sourceTree = "<group>"; };
 		000000000000000000010021 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		000000000000000000010022 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -222,7 +220,6 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000010017 /* NotificationManager.swift */,
-				000000000000000000010020 /* InterstitialAdManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -351,7 +348,6 @@
 				000000000000000000020015 /* BookCardView.swift in Sources */,
 				000000000000000000020016 /* WeeklyBarChartView.swift in Sources */,
 				000000000000000000020017 /* NotificationManager.swift in Sources */,
-				000000000000000000020020 /* InterstitialAdManager.swift in Sources */,
 				00000000000000000002001B /* Biblion.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
