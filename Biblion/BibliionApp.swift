@@ -1,6 +1,7 @@
 import SwiftUI
 import GoogleMobileAds
 import UIKit
+import AppTrackingTransparency
 
 /// アプリのエントリーポイント
 @main
@@ -14,12 +15,9 @@ struct BibliionApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
-        // AdMob SDK の初期化（完了を待ってから広告ロードを許可）
-        GADMobileAds.sharedInstance().start { _ in
-            InterstitialAdManager.shared.notifySdkReady()
-        }
         // 通知許可の申請
         NotificationManager.shared.requestAuthorization()
+        // AdMob の初期化は ATT 許可確認後に行う（scenePhase == .active 時）
     }
 
     var body: some Scene {
@@ -31,9 +29,40 @@ struct BibliionApp: App {
                 .environmentObject(taskViewModel)
                 .onChange(of: scenePhase) { newPhase in
                     if newPhase == .active {
-                        InterstitialAdManager.shared.loadAndShowIfNeeded()
+                        // ATT 確認後に AdMob を初期化し、広告をロード・表示
+                        ATTManager.shared.requestIfNeeded {
+                            InterstitialAdManager.shared.startSdkAndLoadIfNeeded()
+                        }
                     }
                 }
+        }
+    }
+}
+
+// MARK: - ATT（App Tracking Transparency）管理
+
+private final class ATTManager {
+
+    static let shared = ATTManager()
+    private let hasRequestedKey = "attHasRequested"
+
+    private init() {}
+
+    /// ATT 未確認なら許可ダイアログを表示し、完了後に completion を呼ぶ。
+    /// 既に確認済みの場合は即座に completion を呼ぶ。
+    func requestIfNeeded(completion: @escaping () -> Void) {
+        guard !UserDefaults.standard.bool(forKey: hasRequestedKey) else {
+            completion()
+            return
+        }
+        UserDefaults.standard.set(true, forKey: hasRequestedKey)
+
+        if #available(iOS 14, *) {
+            ATTrackingManager.requestTrackingAuthorization { _ in
+                DispatchQueue.main.async { completion() }
+            }
+        } else {
+            completion()
         }
     }
 }
@@ -47,19 +76,27 @@ private final class InterstitialAdManager: NSObject {
     private let adUnitID = "ca-app-pub-5201067107891611/9633575022"
     private let lastShownDateKey = "interstitialLastShownDate"
     private var interstitialAd: GADInterstitialAd?
+    private var isSdkStarted = false
     private var isLoading = false
-    private var isSdkReady = false
 
     private override init() {
         super.init()
     }
 
-    func notifySdkReady() {
-        isSdkReady = true
+    /// AdMob SDK を初期化し、必要に応じて広告をロード・表示する（セッション内で1回のみ初期化）
+    func startSdkAndLoadIfNeeded() {
+        guard !isSdkStarted else {
+            loadAndShowIfNeeded()
+            return
+        }
+        isSdkStarted = true
+        GADMobileAds.sharedInstance().start { [weak self] _ in
+            self?.loadAndShowIfNeeded()
+        }
     }
 
     func loadAndShowIfNeeded() {
-        guard isSdkReady, !isLoading, shouldShowToday() else { return }
+        guard isSdkStarted, !isLoading, shouldShowToday() else { return }
 
         isLoading = true
         GADInterstitialAd.load(withAdUnitID: adUnitID, request: GADRequest()) { [weak self] ad, error in

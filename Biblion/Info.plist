@@ -47,6 +47,8 @@
 	<string>書籍の表紙画像を登録するためにフォトライブラリへのアクセスが必要です。</string>
 	<key>NSCameraUsageDescription</key>
 	<string>書籍の表紙画像を撮影するためにカメラへのアクセスが必要です。</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>より適切な広告を表示するために使用されます。</string>
 
 	<!-- AdMob アプリID -->
 	<key>GADApplicationIdentifier</key>
