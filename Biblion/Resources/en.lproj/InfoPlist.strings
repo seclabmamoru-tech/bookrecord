@@ -1,0 +1,2 @@
+NSPhotoLibraryUsageDescription = "Photo library access is required to register book cover images.";
+NSCameraUsageDescription = "Camera access is required to take photos of book covers.";

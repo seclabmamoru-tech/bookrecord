@@ -42,7 +42,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>ja</string>
 
-	<!-- プライバシー許可説明文 -->
+	<!-- プライバシー許可説明文（ローカライズは InfoPlist.strings で管理） -->
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>書籍の表紙画像を登録するためにフォトライブラリへのアクセスが必要です。</string>
 	<key>NSCameraUsageDescription</key>

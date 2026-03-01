@@ -1,0 +1,2 @@
+NSPhotoLibraryUsageDescription = "書籍の表紙画像を登録するためにフォトライブラリへのアクセスが必要です。";
+NSCameraUsageDescription = "書籍の表紙画像を撮影するためにカメラへのアクセスが必要です。";
