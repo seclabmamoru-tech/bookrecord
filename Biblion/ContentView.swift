@@ -6,51 +6,28 @@ struct ContentView: View {
     @EnvironmentObject var homeViewModel: HomeViewModel
     @EnvironmentObject var libraryViewModel: LibraryViewModel
     @EnvironmentObject var taskViewModel: TaskViewModel
-    @EnvironmentObject var aiInsightViewModel: AIInsightViewModel
-
-    @State private var selectedTab = 0
-    @State private var lastValidTab = 0
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView {
             // ホームタブ
             HomeView()
                 .tabItem {
                     Label("tab.home", systemImage: "house.fill")
                 }
-                .tag(0)
 
             // ライブラリタブ
             LibraryView()
                 .tabItem {
                     Label("tab.library", systemImage: "books.vertical.fill")
                 }
-                .tag(1)
 
             // タスクタブ
             TaskListView()
                 .tabItem {
                     Label("tab.tasks", systemImage: "checklist")
                 }
-                .tag(2)
-
-            // AI相談タブ（Coming Soon・タップ無効）
-            NavigationStack {
-                AIInsightView()
-            }
-            .tabItem {
-                Label("ai.comingSoon", systemImage: "brain.head.profile")
-            }
-            .tag(3)
         }
         .accentColor(.indigo)
-        .onChange(of: selectedTab) { newTab in
-            if newTab == 3 {
-                selectedTab = lastValidTab
-            } else {
-                lastValidTab = newTab
-            }
-        }
     }
 }
 
@@ -60,5 +37,4 @@ struct ContentView: View {
         .environmentObject(HomeViewModel())
         .environmentObject(LibraryViewModel())
         .environmentObject(TaskViewModel())
-        .environmentObject(AIInsightViewModel())
 }

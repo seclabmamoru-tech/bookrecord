@@ -9,7 +9,6 @@ struct BibliionApp: App {
     @StateObject private var homeViewModel = HomeViewModel()
     @StateObject private var libraryViewModel = LibraryViewModel()
     @StateObject private var taskViewModel = TaskViewModel()
-    @StateObject private var aiInsightViewModel = AIInsightViewModel()
 
     init() {
         // AdMob SDK の初期化
@@ -25,7 +24,6 @@ struct BibliionApp: App {
                 .environmentObject(homeViewModel)
                 .environmentObject(libraryViewModel)
                 .environmentObject(taskViewModel)
-                .environmentObject(aiInsightViewModel)
         }
     }
 }
