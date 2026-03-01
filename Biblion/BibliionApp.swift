@@ -27,7 +27,7 @@ struct BibliionApp: App {
                 .environmentObject(homeViewModel)
                 .environmentObject(libraryViewModel)
                 .environmentObject(taskViewModel)
-                .onChange(of: scenePhase) { _, newPhase in
+                .onChange(of: scenePhase) { newPhase in
                     if newPhase == .active {
                         InterstitialAdManager.shared.loadAndShowIfNeeded()
                     }
