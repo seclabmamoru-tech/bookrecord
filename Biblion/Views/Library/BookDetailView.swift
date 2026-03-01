@@ -383,14 +383,11 @@ private struct SessionRow: View {
             }
             Spacer()
             let totalSec = Int(session.durationMinutes)
-            let h = totalSec / 3600
-            let m = (totalSec % 3600) / 60
-            let s = totalSec % 60
-            let durationLabel: String = {
-                if h > 0 { return "\(h)時間\(m)分\(s)秒" }
-                if m > 0 { return "\(m)分\(s)秒" }
-                return "\(s)秒"
-            }()
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [.hour, .minute, .second]
+            formatter.unitsStyle = .abbreviated
+            formatter.zeroFormattingBehavior = .dropLeading
+            let durationLabel = formatter.string(from: TimeInterval(totalSec)) ?? ""
             Text(durationLabel)
                 .font(.subheadline.bold())
                 .foregroundColor(.indigo)
