@@ -284,11 +284,11 @@
 			};
 			buildConfigurationList = 000000000000000000050001 /* Build configuration list for PBXProject "Biblion" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = ja;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				ja,
 				en,
+				ja,
 				Base,
 			);
 			mainGroup = 000000000000000000000001;

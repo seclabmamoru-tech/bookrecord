@@ -45,7 +45,7 @@ final class NotificationManager {
     private func scheduleDaily(hour: Int, minute: Int, identifier: String) {
         let content = UNMutableNotificationContent()
         content.title = "Biblion"
-        content.body = NSLocalizedString("notification.body", comment: "タスク確認通知本文")
+        content.body = NSString.localizedUserNotificationString(forKey: "notification.body", arguments: nil)
         content.sound = .default
         content.badge = 1
 

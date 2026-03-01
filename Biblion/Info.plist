@@ -40,7 +40,7 @@
 		<string>en</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>ja</string>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
 
 	<!-- プライバシー許可説明文（ローカライズは InfoPlist.strings で管理） -->
 	<key>NSPhotoLibraryUsageDescription</key>
