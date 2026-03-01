@@ -3,8 +3,19 @@ import SwiftUI
 /// 設定画面（プライバシーポリシー・利用規約）
 struct SettingsView: View {
 
-    private let privacyPolicyURL = URL(string: "https://it-master.jp/privacy-policy")!
-    private let termsURL = URL(string: "https://it-master.jp/terms")!
+    private var isJapanese: Bool {
+        Locale.current.language.languageCode?.identifier == "ja"
+    }
+    private var privacyPolicyURL: URL {
+        URL(string: isJapanese
+            ? "https://it-master.jp/biblion/privacy-policy.html"
+            : "https://it-master.jp/biblion/privacy-policy-en.html")!
+    }
+    private var termsURL: URL {
+        URL(string: isJapanese
+            ? "https://it-master.jp/biblion/terms.html"
+            : "https://it-master.jp/biblion/terms-en.html")!
+    }
 
     var body: some View {
         NavigationStack {

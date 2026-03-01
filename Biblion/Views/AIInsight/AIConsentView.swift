@@ -9,7 +9,12 @@ struct AIConsentView: View {
     @State private var isChecked = false
     @State private var showPrivacyPolicy = false
 
-    private let privacyPolicyURL = URL(string: "https://it-master.jp/privacy-policy")!
+    private var privacyPolicyURL: URL {
+        let isJapanese = Locale.current.language.languageCode?.identifier == "ja"
+        return URL(string: isJapanese
+            ? "https://it-master.jp/biblion/privacy-policy.html"
+            : "https://it-master.jp/biblion/privacy-policy-en.html")!
+    }
 
     var body: some View {
         NavigationStack {
