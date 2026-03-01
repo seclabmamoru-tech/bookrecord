@@ -10,6 +10,8 @@ struct BibliionApp: App {
     @StateObject private var libraryViewModel = LibraryViewModel()
     @StateObject private var taskViewModel = TaskViewModel()
 
+    @Environment(\.scenePhase) private var scenePhase
+
     init() {
         // AdMob SDK の初期化
         GADMobileAds.sharedInstance().start(completionHandler: nil)
@@ -24,6 +26,11 @@ struct BibliionApp: App {
                 .environmentObject(homeViewModel)
                 .environmentObject(libraryViewModel)
                 .environmentObject(taskViewModel)
+                .onChange(of: scenePhase) { _, newPhase in
+                    if newPhase == .active {
+                        InterstitialAdManager.shared.loadAndShowIfNeeded()
+                    }
+                }
         }
     }
 }
