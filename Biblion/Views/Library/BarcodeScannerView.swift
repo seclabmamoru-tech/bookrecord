@@ -261,7 +261,7 @@ struct OpenBDService {
 struct GoogleBooksService {
     static func fetchBookInfo(isbn: String) async throws -> BarcodeBookInfo? {
         let cleanISBN = isbn.filter { $0.isNumber }
-        guard let url = URL(string: "https://www.googleapis.com/books/v1/volumes?q=isbn:\(cleanISBN)") else {
+        guard let url = URL(string: "https://www.googleapis.com/books/v1/volumes?q=isbn:\(cleanISBN)&key=\(APIKeys.googleBooks)") else {
             return nil
         }
 
