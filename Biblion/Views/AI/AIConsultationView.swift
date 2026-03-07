@@ -11,107 +11,113 @@ struct AIConsultationView: View {
     private let maxChars = 500
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color(.systemGroupedBackground).ignoresSafeArea()
-                VStack(spacing: 16) {
-                    // 入力エリア
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("今の悩みや解決したい課題を入力してください")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+        ZStack {
+            Color(.systemGroupedBackground).ignoresSafeArea()
+            VStack(spacing: 16) {
+                // 入力エリア
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("今の悩みや解決したい課題を入力してください")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
 
-                        ZStack(alignment: .topLeading) {
-                            if inputText.isEmpty {
-                                Text(LocalizedStringKey("ai.inputPlaceholder"))
-                                    .foregroundColor(Color(.placeholderText))
-                                    .padding(8)
-                                    .allowsHitTesting(false)
-                            }
-                            TextEditor(text: $inputText)
-                                .frame(height: 160)
-                                .padding(4)
-                                .onChange(of: inputText) { newValue in
-                                    if newValue.count > maxChars {
-                                        inputText = String(newValue.prefix(maxChars))
-                                    }
-                                }
+                    ZStack(alignment: .topLeading) {
+                        if inputText.isEmpty {
+                            Text(LocalizedStringKey("ai.inputPlaceholder"))
+                                .foregroundColor(Color(.placeholderText))
+                                .padding(8)
+                                .allowsHitTesting(false)
                         }
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color(.systemGray4), lineWidth: 1)
-                        )
-
-                        // 文字数カウンター
-                        Text("\(inputText.count) / \(maxChars)")
-                            .font(.caption)
-                            .foregroundColor(inputText.count >= maxChars ? .orange : .secondary)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                    }
-                    .padding(.horizontal)
-
-                    // 参照書籍数
-                    let count = viewModel.booksWithMemosCount
-                    if count > 0 {
-                        Text(String(format: NSLocalizedString("ai.menu.bookRefCount", comment: ""), count))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal)
-                    }
-
-                    // 実行ボタン
-                    Button {
-                        Task { await executeAI() }
-                    } label: {
-                        Text("ai.execute.consultation")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(canExecute ? Color.indigo : Color(.systemGray4))
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                    }
-                    .disabled(!canExecute)
-                    .padding(.horizontal)
-
-                    Spacer()
-                }
-                .padding(.top, 16)
-                .navigationTitle(Text("ai.menu.consultation.title"))
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationDestination(isPresented: $showResult) {
-                    if let result = viewModel.result {
-                        AIResultView(
-                            result: result,
-                            referencedBooks: viewModel.referencedBooks,
-                            menuType: .consultation,
-                            onRetry: {
-                                showResult = false
-                                showRetryAlert = true
+                        TextEditor(text: $inputText)
+                            .frame(height: 160)
+                            .padding(4)
+                            .onChange(of: inputText) { newValue in
+                                if newValue.count > maxChars {
+                                    inputText = String(newValue.prefix(maxChars))
+                                }
                             }
-                        )
                     }
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color(.systemGray4), lineWidth: 1)
+                    )
+
+                    // 文字数カウンター
+                    Text("\(inputText.count) / \(maxChars)")
+                        .font(.caption)
+                        .foregroundColor(inputText.count >= maxChars ? .orange : .secondary)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .alert("ai.result.retryAlert", isPresented: $showRetryAlert) {
-                    Button("common.cancel", role: .cancel) {}
-                    Button("ai.result.retry") {
-                        Task { await executeAI() }
-                    }
-                }
-                .alert("common.error", isPresented: .init(
-                    get: { viewModel.errorMessage != nil },
-                    set: { if !$0 { viewModel.errorMessage = nil } }
-                )) {
-                    Button("common.done", role: .cancel) {}
-                } message: {
-                    Text(viewModel.errorMessage ?? "")
+                .padding(.horizontal)
+
+                // 参照書籍数
+                let count = viewModel.booksWithMemosCount
+                if count > 0 {
+                    Text(String(format: NSLocalizedString("ai.menu.bookRefCount", comment: ""), count))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
                 }
 
-                // ローディングオーバーレイ
-                if viewModel.isLoading {
-                    loadingOverlay
+                // 実行ボタン
+                Button {
+                    Task { await executeAI() }
+                } label: {
+                    Text("ai.execute.consultation")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(canExecute ? Color.indigo : Color(.systemGray4))
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
                 }
+                .disabled(!canExecute)
+                .padding(.horizontal)
+
+                Spacer()
+            }
+            .padding(.top, 16)
+            .navigationTitle(Text("ai.menu.consultation.title"))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showResult) {
+                if let result = viewModel.result {
+                    AIResultView(
+                        result: result,
+                        referencedBooks: viewModel.referencedBooks,
+                        menuType: .consultation,
+                        onRetry: {
+                            showResult = false
+                            showRetryAlert = true
+                        }
+                    )
+                }
+            }
+            .sheet(isPresented: $viewModel.showConsentView) {
+                AIConsentMenuView(viewModel: viewModel)
+            }
+            .alert("ai.menu.noTicketTitle", isPresented: $viewModel.showPurchasePrompt) {
+                Button("common.cancel", role: .cancel) {}
+            } message: {
+                Text("ai.menu.noTicketMessage")
+            }
+            .alert("ai.result.retryAlert", isPresented: $showRetryAlert) {
+                Button("common.cancel", role: .cancel) {}
+                Button("ai.result.retry") {
+                    Task { await executeAI() }
+                }
+            }
+            .alert("common.error", isPresented: .init(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )) {
+                Button("common.done", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
+
+            // ローディングオーバーレイ
+            if viewModel.isLoading {
+                loadingOverlay
             }
         }
     }

@@ -197,7 +197,7 @@ private struct AIMenuCard: View {
 
 // MARK: - AI同意ビュー（メニュー用ラッパー）
 
-private struct AIConsentMenuView: View {
+struct AIConsentMenuView: View {
     @ObservedObject var viewModel: AIViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var isChecked = false

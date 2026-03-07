@@ -15,67 +15,73 @@ struct AISummaryView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                VStack(spacing: 0) {
-                    if booksWithMemos.isEmpty {
-                        emptyState
-                    } else {
-                        bookList
-                    }
+        ZStack {
+            VStack(spacing: 0) {
+                if booksWithMemos.isEmpty {
+                    emptyState
+                } else {
+                    bookList
+                }
 
-                    // 実行ボタン
-                    VStack {
-                        Button {
-                            Task { await executeAI() }
-                        } label: {
-                            Text("ai.execute.summary")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(canExecute ? Color.indigo : Color(.systemGray4))
-                                .foregroundColor(.white)
-                                .cornerRadius(12)
-                        }
-                        .disabled(!canExecute)
-                        .padding()
-                    }
-                    .background(Color(.systemBackground))
-                }
-                .navigationTitle(Text("ai.menu.summary.title"))
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationDestination(isPresented: $showResult) {
-                    if let result = viewModel.result {
-                        AIResultView(
-                            result: result,
-                            referencedBooks: viewModel.referencedBooks,
-                            menuType: .summary,
-                            onRetry: {
-                                showResult = false
-                                showRetryAlert = true
-                            }
-                        )
-                    }
-                }
-                .alert("ai.result.retryAlert", isPresented: $showRetryAlert) {
-                    Button("common.cancel", role: .cancel) {}
-                    Button("ai.result.retry") {
+                // 実行ボタン
+                VStack {
+                    Button {
                         Task { await executeAI() }
+                    } label: {
+                        Text("ai.execute.summary")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(canExecute ? Color.indigo : Color(.systemGray4))
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
                     }
+                    .disabled(!canExecute)
+                    .padding()
                 }
-                .alert("common.error", isPresented: .init(
-                    get: { viewModel.errorMessage != nil },
-                    set: { if !$0 { viewModel.errorMessage = nil } }
-                )) {
-                    Button("common.done", role: .cancel) {}
-                } message: {
-                    Text(viewModel.errorMessage ?? "")
+                .background(Color(.systemBackground))
+            }
+            .navigationTitle(Text("ai.menu.summary.title"))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showResult) {
+                if let result = viewModel.result {
+                    AIResultView(
+                        result: result,
+                        referencedBooks: viewModel.referencedBooks,
+                        menuType: .summary,
+                        onRetry: {
+                            showResult = false
+                            showRetryAlert = true
+                        }
+                    )
                 }
+            }
+            .sheet(isPresented: $viewModel.showConsentView) {
+                AIConsentMenuView(viewModel: viewModel)
+            }
+            .alert("ai.menu.noTicketTitle", isPresented: $viewModel.showPurchasePrompt) {
+                Button("common.cancel", role: .cancel) {}
+            } message: {
+                Text("ai.menu.noTicketMessage")
+            }
+            .alert("ai.result.retryAlert", isPresented: $showRetryAlert) {
+                Button("common.cancel", role: .cancel) {}
+                Button("ai.result.retry") {
+                    Task { await executeAI() }
+                }
+            }
+            .alert("common.error", isPresented: .init(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )) {
+                Button("common.done", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
 
-                // ローディングオーバーレイ
-                if viewModel.isLoading {
-                    loadingOverlay
-                }
+            // ローディングオーバーレイ
+            if viewModel.isLoading {
+                loadingOverlay
             }
         }
     }

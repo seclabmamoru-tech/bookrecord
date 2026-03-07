@@ -40,9 +40,8 @@ struct AISNSPostView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Form {
+        ZStack {
+            Form {
                     // 書籍選択
                     Section(header: Text("home.timer.selectBook")) {
                         if booksWithMemos.isEmpty {
@@ -183,6 +182,14 @@ struct AISNSPostView: View {
                         Task { await executeAI() }
                     }
                 }
+                .sheet(isPresented: $viewModel.showConsentView) {
+                    AIConsentMenuView(viewModel: viewModel)
+                }
+                .alert("ai.menu.noTicketTitle", isPresented: $viewModel.showPurchasePrompt) {
+                    Button("common.cancel", role: .cancel) {}
+                } message: {
+                    Text("ai.menu.noTicketMessage")
+                }
                 .alert("common.error", isPresented: .init(
                     get: { viewModel.errorMessage != nil },
                     set: { if !$0 { viewModel.errorMessage = nil } }
@@ -192,10 +199,9 @@ struct AISNSPostView: View {
                     Text(viewModel.errorMessage ?? "")
                 }
 
-                // ローディングオーバーレイ
-                if viewModel.isLoading {
-                    loadingOverlay
-                }
+            // ローディングオーバーレイ
+            if viewModel.isLoading {
+                loadingOverlay
             }
         }
     }
