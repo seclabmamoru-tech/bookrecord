@@ -73,7 +73,11 @@ private final class InterstitialAdManager: NSObject {
 
     static let shared = InterstitialAdManager()
 
-    private let adUnitID = "ca-app-pub-5201067107891611/9633575022"
+    #if DEBUG
+    private let adUnitID = "ca-app-pub-3940256099942544/4411468910" // テスト用ID
+    #else
+    private let adUnitID = "ca-app-pub-5201067107891611/9633575022" // 本番用ID
+    #endif
     private let lastShownDateKey = "interstitialLastShownDate"
     private var interstitialAd: GADInterstitialAd?
     private var isSdkStarted = false
