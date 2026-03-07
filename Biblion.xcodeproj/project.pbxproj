@@ -49,6 +49,7 @@
 		00000000000000000002002B /* AIResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002B /* AIResultView.swift */; };
 		00000000000000000002002C /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002C /* BarcodeScannerView.swift */; };
 		00000000000000000002002D /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002D /* MyPageView.swift */; };
+		00000000000000000002002E /* AIHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002E /* AIHistoryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -94,6 +95,7 @@
 		00000000000000000001002B /* AIResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIResultView.swift; sourceTree = "<group>"; };
 		00000000000000000001002C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		00000000000000000001002D /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
+		00000000000000000001002E /* AIHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIHistoryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,6 +291,7 @@
 				000000000000000000010029 /* AISummaryView.swift */,
 				00000000000000000001002A /* AISNSPostView.swift */,
 				00000000000000000001002B /* AIResultView.swift */,
+				00000000000000000001002E /* AIHistoryView.swift */,
 			);
 			path = AI;
 			sourceTree = "<group>";
@@ -417,6 +420,7 @@
 				00000000000000000002002B /* AIResultView.swift in Sources */,
 				00000000000000000002002C /* BarcodeScannerView.swift in Sources */,
 				00000000000000000002002D /* MyPageView.swift in Sources */,
+				00000000000000000002002E /* AIHistoryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
