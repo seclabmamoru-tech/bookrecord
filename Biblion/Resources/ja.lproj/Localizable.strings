@@ -144,8 +144,8 @@
 "mypage.section.plan" = "プラン変更";
 "mypage.section.privacy" = "データとプライバシー";
 "mypage.section.support" = "サポート";
-"mypage.plan.basic.price" = "$2.99/月";
-"mypage.plan.premium.price" = "$5.99/月";
+"mypage.plan.basic.price" = "¥200/月";
+"mypage.plan.premium.price" = "¥500/月";
 "mypage.plan.basic.feature1" = "バーコード登録";
 "mypage.plan.basic.feature2" = "タスク無制限";
 "mypage.plan.basic.feature3" = "起動時の広告なし";
@@ -157,9 +157,9 @@
 "mypage.plan.premium" = "Premiumプラン";
 "mypage.plan.expires" = "有効期限：%@";
 "mypage.ticket.count" = "%d枚";
-"mypage.ticket.buy" = "チケットを購入（45枚 $9.99）";
-"mypage.upgrade.basic" = "Basicにアップグレード（$2.99/月）";
-"mypage.upgrade.premium" = "Premiumにアップグレード（$5.99/月）";
+"mypage.ticket.buy" = "チケットを購入（45枚 ¥980）";
+"mypage.upgrade.basic" = "Basicにアップグレード（¥200/月）";
+"mypage.upgrade.premium" = "Premiumにアップグレード（¥500/月）";
 "mypage.restore" = "購入を復元する";
 "mypage.aiConsent" = "AI機能のデータ送信に同意する";
 "mypage.aiConsent.revokeAlert" = "同意を撤回するとAI機能が利用できなくなります。よろしいですか？";
