@@ -96,16 +96,29 @@ private final class InterstitialAdManager: NSObject {
     }
 
     func loadAndShowIfNeeded() {
-        guard isSdkStarted, !isLoading, shouldShowToday() else { return }
+        guard isSdkStarted else {
+            print("[Ad] SDK未初期化のためスキップ")
+            return
+        }
+        guard !isLoading else {
+            print("[Ad] ロード中のためスキップ")
+            return
+        }
+        guard shouldShowToday() else {
+            print("[Ad] 本日は既に表示済みのためスキップ")
+            return
+        }
 
         isLoading = true
+        print("[Ad] インタースティシャル広告をロード開始")
         GADInterstitialAd.load(withAdUnitID: adUnitID, request: GADRequest()) { [weak self] ad, error in
             guard let self else { return }
             self.isLoading = false
             if let error {
-                print("インタースティシャル広告の読み込みに失敗: \(error.localizedDescription)")
+                print("[Ad] 読み込み失敗: \(error.localizedDescription)")
                 return
             }
+            print("[Ad] 読み込み成功、表示を試みます")
             self.interstitialAd = ad
             self.interstitialAd?.fullScreenContentDelegate = self
             self.present()
@@ -121,13 +134,22 @@ private final class InterstitialAdManager: NSObject {
 
     private func present() {
         DispatchQueue.main.async { [weak self] in
-            guard let self,
-                  let ad = self.interstitialAd,
-                  let windowScene = UIApplication.shared.connectedScenes
-                      .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
-                  let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController
-            else { return }
+            guard let self else { return }
+            guard let ad = self.interstitialAd else {
+                print("[Ad] 広告オブジェクトがnil")
+                return
+            }
+            guard let windowScene = UIApplication.shared.connectedScenes
+                .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else {
+                print("[Ad] アクティブなWindowSceneが見つかりません")
+                return
+            }
+            guard let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController else {
+                print("[Ad] rootViewControllerが見つかりません")
+                return
+            }
 
+            print("[Ad] 表示します")
             ad.present(fromRootViewController: rootVC)
             UserDefaults.standard.set(Date(), forKey: self.lastShownDateKey)
         }
@@ -136,11 +158,12 @@ private final class InterstitialAdManager: NSObject {
 
 extension InterstitialAdManager: GADFullScreenContentDelegate {
     func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
-        print("インタースティシャル広告の表示に失敗: \(error.localizedDescription)")
+        print("[Ad] 表示失敗: \(error.localizedDescription)")
         interstitialAd = nil
     }
 
     func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+        print("[Ad] 広告を閉じました")
         interstitialAd = nil
     }
 }
