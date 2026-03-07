@@ -10,7 +10,7 @@
 // --------------------------------------------------------------------------
 // 設定読み込み
 // --------------------------------------------------------------------------
-$configPath = dirname(__DIR__, 3) . '/biblion_config.php';
+$configPath = dirname(__DIR__, 2) . '/biblion_config.php';
 if (!file_exists($configPath)) {
     http_response_code(500);
     echo json_encode(['error' => 'Server configuration missing.']);
