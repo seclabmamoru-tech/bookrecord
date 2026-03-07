@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// アプリのルートビュー（4タブ構成）
+/// アプリのルートビュー（5タブ構成）
 struct ContentView: View {
 
     @EnvironmentObject var homeViewModel: HomeViewModel
@@ -25,6 +25,18 @@ struct ContentView: View {
             TaskListView()
                 .tabItem {
                     Label("tab.tasks", systemImage: "checklist")
+                }
+
+            // AIタブ（Phase 2）
+            AIMenuView()
+                .tabItem {
+                    Label("tab.ai", systemImage: "sparkles")
+                }
+
+            // マイページタブ（Phase 2）
+            MyPageView()
+                .tabItem {
+                    Label("tab.mypage", systemImage: "person.fill")
                 }
         }
         .accentColor(.indigo)

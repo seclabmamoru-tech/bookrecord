@@ -228,4 +228,105 @@ final class CoreDataManager {
         )
         return (try? context.fetch(request))?.first
     }
+
+    // MARK: - UserPlan CRUD
+
+    /// UserPlanを取得、なければ作成して返す（アプリ内に1レコードのみ）
+    @discardableResult
+    func fetchOrCreateUserPlan() -> UserPlan {
+        let request: NSFetchRequest<UserPlan> = UserPlan.fetchRequest()
+        request.fetchLimit = 1
+        if let existing = (try? context.fetch(request))?.first {
+            return existing
+        }
+        // 新規作成（初回起動）
+        let plan = UserPlan(context: context)
+        plan.id = UUID()
+        plan.planType = "free"
+        plan.ticketCount = 0
+        plan.freeTicketGranted = false
+        plan.isAIConsentGiven = false
+        plan.updatedAt = Date()
+
+        // UserDefaults からの同意マイグレーション
+        if UserDefaults.standard.bool(forKey: "aiConsentGranted") {
+            plan.isAIConsentGiven = true
+            UserDefaults.standard.removeObject(forKey: "aiConsentGranted")
+        }
+        save()
+        return plan
+    }
+
+    /// 初回無料チケット付与（未付与の場合のみ3枚付与）
+    func grantFreeTicketsIfNeeded() {
+        let plan = fetchOrCreateUserPlan()
+        guard !plan.freeTicketGranted else { return }
+        plan.ticketCount = 3
+        plan.freeTicketGranted = true
+        plan.updatedAt = Date()
+        save()
+    }
+
+    /// プラン情報を更新
+    func updateUserPlan(planType: String, expiresAt: Date?) {
+        let plan = fetchOrCreateUserPlan()
+        plan.planType = planType
+        plan.expiresAt = expiresAt
+        plan.updatedAt = Date()
+        save()
+    }
+
+    /// AI同意状態を更新
+    func setAIConsent(_ granted: Bool) {
+        let plan = fetchOrCreateUserPlan()
+        plan.isAIConsentGiven = granted
+        plan.updatedAt = Date()
+        save()
+    }
+
+    /// チケットを消費（成功時のみ呼ぶ）
+    func consumeTicket() {
+        let plan = fetchOrCreateUserPlan()
+        if plan.ticketCount > 0 {
+            plan.ticketCount -= 1
+            plan.updatedAt = Date()
+            save()
+        }
+    }
+
+    /// チケットを追加
+    func addTickets(_ count: Int32) {
+        let plan = fetchOrCreateUserPlan()
+        plan.ticketCount += count
+        plan.updatedAt = Date()
+        save()
+    }
+
+    // MARK: - AIHistory CRUD
+
+    @discardableResult
+    func addAIHistory(
+        menuType: String,
+        inputText: String,
+        outputText: String,
+        ticketsUsed: Int32 = 1
+    ) -> AIHistory {
+        let history = AIHistory(context: context)
+        history.id = UUID()
+        history.menuType = menuType
+        history.inputText = inputText
+        history.outputText = outputText
+        history.ticketsUsed = ticketsUsed
+        history.createdAt = Date()
+        save()
+        return history
+    }
+
+    func fetchAIHistory() -> [AIHistory] {
+        let request: NSFetchRequest<AIHistory> = AIHistory.fetchRequest()
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \AIHistory.createdAt, ascending: false)
+        ]
+        return (try? context.fetch(request)) ?? []
+    }
 }

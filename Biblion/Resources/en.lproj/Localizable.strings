@@ -7,7 +7,8 @@
 "tab.home" = "Home";
 "tab.library" = "Library";
 "tab.tasks" = "Tasks";
-"tab.ai" = "AI Insight";
+"tab.ai" = "AI Advisor";
+"tab.mypage" = "My Page";
 
 // MARK: - Home
 "home.stats.totalBooks" = "Books Read";
@@ -101,6 +102,62 @@
 
 // MARK: - Notifications
 "notification.body" = "Let's check your tasks 📝";
+
+// MARK: - AI Menu (Phase 2)
+"ai.menu.title" = "AI Advisor";
+"ai.menu.ticketCount" = "Tickets: %d";
+"ai.menu.buy" = "Buy Tickets";
+"ai.menu.consultation.title" = "Get Advice";
+"ai.menu.consultation.desc" = "Solutions from your reading";
+"ai.menu.summary.title" = "Book Summary";
+"ai.menu.summary.desc" = "Action-focused summary";
+"ai.menu.sns.title" = "Create Post";
+"ai.menu.sns.desc" = "Generate your book review";
+"ai.menu.noTicket" = "No tickets available";
+"ai.menu.bookRefCount" = "Referencing %d books";
+
+// MARK: - AI Execution
+"ai.execute.consultation" = "Get Advice (1 ticket)";
+"ai.execute.summary" = "Summarize (1 ticket)";
+"ai.execute.sns" = "Create Post (1 ticket)";
+"ai.loading" = "Generating...";
+"ai.result.disclaimer" = "Based on your reading notes";
+"ai.result.references" = "Referenced Books";
+"ai.result.addTodo" = "Add as Todo";
+"ai.result.copy" = "Copy";
+"ai.result.share" = "Share";
+"ai.result.retry" = "Try Again";
+"ai.result.retryAlert" = "This will use 1 ticket. Continue?";
+"ai.error.noMemo" = "Please add memos first";
+"ai.error.network" = "Network error. No ticket was used.";
+"ai.sns.platform" = "Platform";
+"ai.sns.selectMemos" = "Select memos to use";
+"ai.share.appPromo" = "\n\n📚 Discuss your reading with AI on Biblion\nhttps://apps.apple.com/app/biblion/idXXXXXXXXXX";
+"ai.share.includePromo" = "Include app promotion";
+
+// MARK: - My Page
+"mypage.title" = "My Page";
+"mypage.plan.free" = "Free Plan";
+"mypage.plan.basic" = "Basic Plan";
+"mypage.plan.premium" = "Premium Plan";
+"mypage.plan.expires" = "Expires: %@";
+"mypage.ticket.count" = "%d tickets";
+"mypage.ticket.buy" = "Buy Tickets (45 for $9.99)";
+"mypage.upgrade.basic" = "Upgrade to Basic ($2.99/mo)";
+"mypage.upgrade.premium" = "Upgrade to Premium ($5.99/mo)";
+"mypage.restore" = "Restore Purchases";
+"mypage.aiConsent" = "Allow AI data processing";
+"mypage.aiConsent.revokeAlert" = "Revoking consent will disable AI features. Continue?";
+"mypage.contact" = "Contact Support";
+"mypage.review" = "Write a Review";
+"mypage.version" = "Version %@";
+
+// MARK: - Barcode
+"barcode.scan" = "Scan Barcode";
+"barcode.scanning" = "Point camera at barcode";
+"barcode.notFound" = "Book not found. Please enter manually.";
+"barcode.premiumOnly" = "Barcode scanning requires Basic or Premium plan.";
+"barcode.upgradePrompt" = "Upgrade";
 
 // MARK: - Common
 "common.save" = "Save";

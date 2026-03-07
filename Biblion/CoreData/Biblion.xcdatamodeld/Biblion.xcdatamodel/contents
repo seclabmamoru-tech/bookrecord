@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B92" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="NO" userDefinedModelVersionIdentifier="">
+    <entity name="AIHistory" representedClassName="AIHistory" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="inputText" attributeType="String" defaultValueString=""/>
+        <attribute name="menuType" attributeType="String" defaultValueString=""/>
+        <attribute name="outputText" attributeType="String" defaultValueString=""/>
+        <attribute name="ticketsUsed" attributeType="Integer 32" defaultValueString="1" usesScalarValueType="YES"/>
+    </entity>
     <entity name="Book" representedClassName="Book" syncable="YES" codeGenerationType="class">
         <attribute name="author" attributeType="String" defaultValueString=""/>
         <attribute name="coverImageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
@@ -38,6 +46,15 @@
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isDone" attributeType="Boolean" usesScalarValueType="YES"/>
-        <relationship name="task" maxCount="1" deletionRule="Nullify" destinationEntity="TaskEntity" inverseName="records" inverseEntity="TaskEntity"/>
+        <relationship name="task" maxCount="1" deletionRule="Nullify" destinationEntity="TaskEntity" inverseName="records" inverseEntity="TaskRecord"/>
+    </entity>
+    <entity name="UserPlan" representedClassName="UserPlan" syncable="YES" codeGenerationType="class">
+        <attribute name="expiresAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="freeTicketGranted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isAIConsentGiven" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="planType" attributeType="String" defaultValueString="free"/>
+        <attribute name="ticketCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
 </model>

@@ -8,6 +8,7 @@
 "tab.library" = "ライブラリ";
 "tab.tasks" = "タスク";
 "tab.ai" = "AI相談";
+"tab.mypage" = "マイページ";
 
 // MARK: - ホーム
 "home.stats.totalBooks" = "総読了冊数";
@@ -101,6 +102,62 @@
 
 // MARK: - 通知
 "notification.body" = "タスクを確認しましょう 📝";
+
+// MARK: - AIメニュー（Phase 2）
+"ai.menu.title" = "AI相談";
+"ai.menu.ticketCount" = "チケット残数：%d枚";
+"ai.menu.buy" = "購入する";
+"ai.menu.consultation.title" = "悩み相談";
+"ai.menu.consultation.desc" = "読書メモから解決策を提案";
+"ai.menu.summary.title" = "書籍の要約";
+"ai.menu.summary.desc" = "アクション重視のサマリー";
+"ai.menu.sns.title" = "SNS投稿を作成";
+"ai.menu.sns.desc" = "独自の書評を自動生成";
+"ai.menu.noTicket" = "チケットがありません";
+"ai.menu.bookRefCount" = "%d冊の読書メモを参照します";
+
+// MARK: - AI実行
+"ai.execute.consultation" = "相談する（チケット1枚使用）";
+"ai.execute.summary" = "この本を要約する（チケット1枚使用）";
+"ai.execute.sns" = "投稿文を作成する（チケット1枚使用）";
+"ai.loading" = "AI生成中...";
+"ai.result.disclaimer" = "この回答はあなたの読書メモに基づいています";
+"ai.result.references" = "参照した書籍";
+"ai.result.addTodo" = "Todoに追加";
+"ai.result.copy" = "コピー";
+"ai.result.share" = "シェア";
+"ai.result.retry" = "もう一度試す";
+"ai.result.retryAlert" = "チケットを1枚消費して再試行します。よろしいですか？";
+"ai.error.noMemo" = "まずメモを追加してください";
+"ai.error.network" = "通信エラーが発生しました。チケットは消費されていません。";
+"ai.sns.platform" = "投稿先";
+"ai.sns.selectMemos" = "活用するメモを選択（複数可）";
+"ai.share.appPromo" = "\n\n📚 Biblionで読書メモをAIに相談しよう\nhttps://apps.apple.com/jp/app/biblion/idXXXXXXXXXX";
+"ai.share.includePromo" = "アプリ紹介文を含める";
+
+// MARK: - マイページ
+"mypage.title" = "マイページ";
+"mypage.plan.free" = "Freeプラン";
+"mypage.plan.basic" = "Basicプラン";
+"mypage.plan.premium" = "Premiumプラン";
+"mypage.plan.expires" = "有効期限：%@";
+"mypage.ticket.count" = "%d枚";
+"mypage.ticket.buy" = "チケットを購入（45枚 $9.99）";
+"mypage.upgrade.basic" = "Basicにアップグレード（$2.99/月）";
+"mypage.upgrade.premium" = "Premiumにアップグレード（$5.99/月）";
+"mypage.restore" = "購入を復元する";
+"mypage.aiConsent" = "AI機能のデータ送信に同意する";
+"mypage.aiConsent.revokeAlert" = "同意を撤回するとAI機能が利用できなくなります。よろしいですか？";
+"mypage.contact" = "お問い合わせ";
+"mypage.review" = "レビューを書く";
+"mypage.version" = "バージョン %@";
+
+// MARK: - バーコード
+"barcode.scan" = "バーコードで登録";
+"barcode.scanning" = "バーコードをカメラに向けてください";
+"barcode.notFound" = "書籍情報が見つかりませんでした。手動で入力してください。";
+"barcode.premiumOnly" = "バーコード登録はBasic以上のプランでご利用いただけます。";
+"barcode.upgradePrompt" = "アップグレードする";
 
 // MARK: - 共通
 "common.save" = "保存";

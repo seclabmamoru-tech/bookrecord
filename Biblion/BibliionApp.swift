@@ -17,7 +17,9 @@ struct BibliionApp: App {
     init() {
         // 通知許可の申請
         NotificationManager.shared.requestAuthorization()
-        // AdMob の初期化は ATT 許可確認後に行う（scenePhase == .active 時）
+
+        // UserPlan 初期化（初回起動時）
+        initializeUserPlan()
     }
 
     var body: some Scene {
@@ -29,13 +31,31 @@ struct BibliionApp: App {
                 .environmentObject(taskViewModel)
                 .onChange(of: scenePhase) { newPhase in
                     if newPhase == .active {
-                        // ATT 確認後に AdMob を初期化し、広告をロード・表示
+                        // ATT 確認後に AdMob を初期化し、必要に応じて広告をロード・表示
                         ATTManager.shared.requestIfNeeded {
-                            InterstitialAdManager.shared.startSdkAndLoadIfNeeded()
+                            // Freeプランの場合のみインタースティシャルを表示
+                            let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
+                            let planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
+                            if PlanLimits.showLaunchInterstitial(for: planType) {
+                                InterstitialAdManager.shared.startSdkAndLoadIfNeeded()
+                            } else {
+                                // SDK初期化のみ（広告表示なし）
+                                InterstitialAdManager.shared.initializeSdkOnly()
+                            }
                         }
                     }
                 }
         }
+    }
+
+    // MARK: - UserPlan 初期化
+
+    private func initializeUserPlan() {
+        let cdManager = CoreDataManager.shared
+        // fetchOrCreateUserPlan() 内でマイグレーションも実施
+        cdManager.fetchOrCreateUserPlan()
+        // 初回無料3チケット付与
+        cdManager.grantFreeTicketsIfNeeded()
     }
 }
 
@@ -67,9 +87,9 @@ private final class ATTManager {
     }
 }
 
-// MARK: - インタースティシャル広告管理（1日1回）
+// MARK: - インタースティシャル広告管理（1日1回・プラン制御）
 
-private final class InterstitialAdManager: NSObject {
+final class InterstitialAdManager: NSObject {
 
     static let shared = InterstitialAdManager()
 
@@ -96,6 +116,15 @@ private final class InterstitialAdManager: NSObject {
         isSdkStarted = true
         GADMobileAds.sharedInstance().start { [weak self] _ in
             self?.loadAndShowIfNeeded()
+        }
+    }
+
+    /// SDK初期化のみ（広告表示なし）
+    func initializeSdkOnly() {
+        guard !isSdkStarted else { return }
+        isSdkStarted = true
+        GADMobileAds.sharedInstance().start { _ in
+            print("[Ad] SDK初期化完了（広告表示なし：有料プラン）")
         }
     }
 

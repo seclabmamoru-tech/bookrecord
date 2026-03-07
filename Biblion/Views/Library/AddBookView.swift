@@ -24,12 +24,45 @@ struct AddBookView: View {
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var showBarcodeScanner = false
+    @State private var showUpgradePrompt = false
 
     private var isEditing: Bool { book != nil }
+
+    private var currentPlan: PlanType {
+        let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
+        return PlanType(rawValue: plan.planType ?? "free") ?? .free
+    }
 
     var body: some View {
         NavigationStack {
             Form {
+                // バーコード登録セクション（新規追加時のみ表示）
+                if !isEditing {
+                    Section {
+                        Button {
+                            if PlanLimits.canUseBarcodeScanner(for: currentPlan) {
+                                showBarcodeScanner = true
+                            } else {
+                                showUpgradePrompt = true
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "barcode.viewfinder")
+                                    .foregroundColor(.indigo)
+                                Text("barcode.scan")
+                                    .foregroundColor(.indigo)
+                                Spacer()
+                                if !PlanLimits.canUseBarcodeScanner(for: currentPlan) {
+                                    Image(systemName: "lock.fill")
+                                        .foregroundColor(.secondary)
+                                        .font(.caption)
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // 書籍情報セクション
                 Section {
                     TextField(LocalizedStringKey("book.title"), text: $title)
@@ -137,6 +170,22 @@ struct AddBookView: View {
                 Button("common.done", role: .cancel) {}
             } message: {
                 Text(alertMessage)
+            }
+            .alert("barcode.premiumOnly", isPresented: $showUpgradePrompt) {
+                Button("common.cancel", role: .cancel) {}
+            } message: {
+                EmptyView()
+            }
+            .sheet(isPresented: $showBarcodeScanner) {
+                BarcodeScannerSheet { info in
+                    title = info.title
+                    author = info.author
+                    showBarcodeScanner = false
+                } onError: { errorMessage in
+                    alertMessage = errorMessage
+                    showAlert = true
+                    showBarcodeScanner = false
+                }
             }
         }
         .onAppear { loadBookData() }

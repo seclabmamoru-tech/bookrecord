@@ -1,11 +1,24 @@
 import SwiftUI
 
-/// タスクリスト画面（最大4件）
+/// タスクリスト画面（プランに応じた上限制御）
 struct TaskListView: View {
 
     @EnvironmentObject var viewModel: TaskViewModel
     @State private var showAddTask = false
     @State private var editingTask: TaskEntity?
+
+    private var currentPlan: PlanType {
+        let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
+        return PlanType(rawValue: plan.planType ?? "free") ?? .free
+    }
+
+    /// プランに応じたタスク追加可否（Freeは最大4件、Basic/Premiumは無制限）
+    private var canAddTaskByPlan: Bool {
+        if let limit = PlanLimits.taskLimit(for: currentPlan) {
+            return viewModel.tasks.count < limit
+        }
+        return true
+    }
 
     var body: some View {
         NavigationStack {
@@ -62,8 +75,8 @@ struct TaskListView: View {
             .navigationTitle(Text("task.title"))
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    // 4件未満の場合のみ「＋」ボタンを表示
-                    if viewModel.canAddTask {
+                    // プランに応じた上限チェック
+                    if canAddTaskByPlan {
                         Button {
                             showAddTask = true
                         } label: {

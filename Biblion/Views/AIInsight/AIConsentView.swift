@@ -1,13 +1,16 @@
 import SwiftUI
 
 /// AI機能利用同意ダイアログ
+/// Phase 2: 同意状態をCoreData（UserPlan.isAIConsentGiven）に保存
 struct AIConsentView: View {
+
+    /// 同意完了コールバック（呼び出し元に通知）
+    var onConsent: (() -> Void)?
 
     @EnvironmentObject var viewModel: AIInsightViewModel
     @Environment(\.dismiss) private var dismiss
 
     @State private var isChecked = false
-    @State private var showPrivacyPolicy = false
 
     private var privacyPolicyURL: URL {
         let isJapanese = Locale.current.language.languageCode?.identifier == "ja"
@@ -73,7 +76,7 @@ struct AIConsentView: View {
 
                     // 確認ボタン（チェックが入っている場合のみ活性化）
                     Button {
-                        viewModel.grantConsent()
+                        grantConsent()
                     } label: {
                         Text("ai.consentConfirm")
                             .font(.headline)
@@ -98,6 +101,19 @@ struct AIConsentView: View {
                 }
             }
         }
+    }
+
+    // MARK: - 同意処理
+
+    private func grantConsent() {
+        // CoreDataに保存（Phase 2）
+        CoreDataManager.shared.setAIConsent(true)
+
+        // 後方互換：既存ViewModelも更新
+        viewModel.grantConsent()
+
+        onConsent?()
+        dismiss()
     }
 }
 
