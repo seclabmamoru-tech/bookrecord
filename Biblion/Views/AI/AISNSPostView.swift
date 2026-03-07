@@ -8,10 +8,25 @@ struct AISNSPostView: View {
     @State private var selectedBook: Book?
     @State private var selectedMemoIDs: Set<NSManagedObjectID> = []
     @State private var selectedPlatform = 0  // 0=X, 1=Instagram, 2=Threads
+    @State private var selectedGenres: Set<String> = []
     @State private var showResult = false
     @State private var showRetryAlert = false
 
     private let platforms = ["X", "Instagram", "Threads"]
+
+    private struct GenreCategory {
+        let name: String
+        let genres: [String]
+    }
+
+    private let genreCategories: [GenreCategory] = [
+        GenreCategory(name: "直感", genres: ["驚き", "楽しい", "尊い", "癒し", "感動", "ショック"]),
+        GenreCategory(name: "知識", genres: ["得した", "注意喚起"]),
+        GenreCategory(name: "主張", genres: ["同調", "物申す"]),
+        GenreCategory(name: "納得", genres: ["あるある", "真理"]),
+        GenreCategory(name: "声援", genres: ["応援", "支援"]),
+        GenreCategory(name: "欲求", genres: ["したい", "報酬"])
+    ]
 
     private var booksWithMemos: [Book] {
         CoreDataManager.shared.fetchBooks().filter { book in
@@ -99,6 +114,40 @@ struct AISNSPostView: View {
                         .labelsHidden()
                     }
 
+                    // ジャンル選択
+                    Section(header: Text("ai.sns.genre")) {
+                        ForEach(genreCategories, id: \.name) { category in
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(category.name)
+                                    .font(.caption.bold())
+                                    .foregroundColor(.secondary)
+                                LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 6) {
+                                    ForEach(category.genres, id: \.self) { genre in
+                                        let isSelected = selectedGenres.contains(genre)
+                                        Button(action: {
+                                            if isSelected {
+                                                selectedGenres.remove(genre)
+                                            } else {
+                                                selectedGenres.insert(genre)
+                                            }
+                                        }) {
+                                            Text(genre)
+                                                .font(.subheadline)
+                                                .padding(.horizontal, 12)
+                                                .padding(.vertical, 6)
+                                                .frame(maxWidth: .infinity)
+                                                .background(isSelected ? Color.indigo : Color(.systemGray5))
+                                                .foregroundColor(isSelected ? .white : .primary)
+                                                .cornerRadius(16)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
+
                     // 実行ボタン
                     Section {
                         Button {
@@ -168,7 +217,7 @@ struct AISNSPostView: View {
     }
 
     private var canExecute: Bool {
-        selectedBook != nil && !selectedMemoIDs.isEmpty && !viewModel.isLoading
+        selectedBook != nil && !selectedMemoIDs.isEmpty && !selectedGenres.isEmpty && !viewModel.isLoading
     }
 
     private func executeAI() async {
@@ -179,7 +228,8 @@ struct AISNSPostView: View {
             .map { $0.content ?? "" }
             .joined(separator: "\n- ")
 
-        let prompt = "\(platform)用の書評投稿を作成してください。書籍：\(book.title ?? "")（\(book.author ?? "")）\n選択したメモ：\n- \(selectedMemos)"
+        let genreText = selectedGenres.sorted().joined(separator: "、")
+        let prompt = "\(platform)用の書評投稿を作成してください。書籍：\(book.title ?? "")（\(book.author ?? "")）\n選択したメモ：\n- \(selectedMemos)\n拡散ジャンル（読み手に与えたい感情）：\(genreText)"
         await viewModel.executeAI(menuType: .sns, userInput: prompt)
         if viewModel.result != nil {
             if viewModel.shouldShowAIAd {
