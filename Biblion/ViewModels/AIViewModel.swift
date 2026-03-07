@@ -88,26 +88,19 @@ final class AIViewModel: ObservableObject {
             }.joined(separator: "\n\n")
 
             resolvedUserInput = """
-あなたは読書家のメンターです。
-ユーザーがこれまでに読んだ書籍とメモをもとに、悩みや課題に対して具体的なアドバイスをしてください。
-
----
+あなたは1000冊以上を読んできた読書家のメンターです。押しつけがましくなく、ユーザーが自分で気づけるよう問いかけながら導くスタイルで話してください。
 
 【ユーザーの悩み・課題】
 \(userInput)
 
----
-
 【参考にする書籍とメモ】
 \(bookContext)
 
----
-
 ## 回答のルール
 - ユーザーの悩みに直接答えること
-- 参考書籍のメモや考え方を引用しながら根拠を示すこと
-- 抽象的なアドバイスではなく、明日から実践できる具体的な行動を提示すること
-- 締めは前向きな一言で終えること
+- 書籍メモを引用する際は「このメモが悩みにどう関係するか」を1文で説明してから使うこと
+- アクションは「15分以内・スマホかノートだけ・まず〇〇するだけ」の基準で提示すること
+- 締めはユーザーの悩みの言葉を1つ拾い、その人固有の状況に合わせた一言で終えること（汎用的な励ましは使わない）
 """
         } else {
             resolvedUserInput = userInput
@@ -126,7 +119,7 @@ final class AIViewModel: ObservableObject {
             shouldShowAIAd = usedFreeTicket
             cdManager.addAIHistory(
                 menuType: menuType.rawValue,
-                inputText: resolvedUserInput,
+                inputText: userInput,
                 outputText: response.result
             )
             result = response.result
