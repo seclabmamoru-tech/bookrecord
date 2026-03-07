@@ -15,4 +15,4 @@ $ANTHROPIC_API_KEY = 'sk-ant-xxxxxxxxxxxxxxxxxxxxxxxx';
 
 // iOSアプリと共有する簡易シークレット（推測されにくいランダム文字列）
 // 例: openssl rand -hex 32 で生成
-$ALLOWED_SECRET = 'your-random-secret-here';
+$ALLOWED_SECRET = '2f8a7d0f6e9f823d4dfd9c7399450a1b9879898dae529ab402620127572ceb44';

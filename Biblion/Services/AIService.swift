@@ -57,7 +57,7 @@ struct AIService {
     private static let timeoutSeconds: TimeInterval = 30
 
     /// サーバー側 biblion_config.php の $ALLOWED_SECRET と同じ値を設定する
-    private static let appSecret = "your-random-secret-here"
+    private static let appSecret = "2f8a7d0f6e9f823d4dfd9c7399450a1b9879898dae529ab402620127572ceb44"
 
     /// AI APIを呼び出す
     /// - チケット消費はこのメソッドの外（呼び出し元）で、成功後に行う
