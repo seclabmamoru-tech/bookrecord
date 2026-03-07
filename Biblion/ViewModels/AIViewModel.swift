@@ -79,20 +79,54 @@ final class AIViewModel: ObservableObject {
             }
         }()
 
-        // 5. API呼び出し
+        // 5. メニュータイプに応じてプロンプトを構築
+        let resolvedUserInput: String
+        if menuType == .consultation {
+            let bookContext = resolvedBookData.map { book in
+                let memoText = book.memos.map { "  - \($0)" }.joined(separator: "\n")
+                return "【\(book.title)】（\(book.author)）\n\(memoText)"
+            }.joined(separator: "\n\n")
+
+            resolvedUserInput = """
+あなたは読書家のメンターです。
+ユーザーがこれまでに読んだ書籍とメモをもとに、悩みや課題に対して具体的なアドバイスをしてください。
+
+---
+
+【ユーザーの悩み・課題】
+\(userInput)
+
+---
+
+【参考にする書籍とメモ】
+\(bookContext)
+
+---
+
+## 回答のルール
+- ユーザーの悩みに直接答えること
+- 参考書籍のメモや考え方を引用しながら根拠を示すこと
+- 抽象的なアドバイスではなく、明日から実践できる具体的な行動を提示すること
+- 締めは前向きな一言で終えること
+"""
+        } else {
+            resolvedUserInput = userInput
+        }
+
+        // 6. API呼び出し
         do {
             let response = try await service.execute(
                 menuType: menuType,
-                userInput: userInput,
+                userInput: resolvedUserInput,
                 bookData: resolvedBookData
             )
 
-            // 6. 成功: チケット消費 → CoreData保存 → 結果表示
+            // 7. 成功: チケット消費 → CoreData保存 → 結果表示
             let usedFreeTicket = cdManager.consumeTicket()
             shouldShowAIAd = usedFreeTicket
             cdManager.addAIHistory(
                 menuType: menuType.rawValue,
-                inputText: userInput,
+                inputText: resolvedUserInput,
                 outputText: response.result
             )
             result = response.result
