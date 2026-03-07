@@ -267,11 +267,11 @@ final class CoreDataManager {
         save()
     }
 
-    /// 初回無料チケット付与（未付与の場合のみ3枚付与）
+    /// 初回無料チケット付与（未付与の場合のみ100枚付与）
     func grantFreeTicketsIfNeeded() {
         let plan = fetchOrCreateUserPlan()
         guard !plan.freeTicketGranted else { return }
-        plan.freeTicketCount = 3
+        plan.freeTicketCount = 100
         plan.freeTicketGranted = true
         plan.updatedAt = Date()
         save()
