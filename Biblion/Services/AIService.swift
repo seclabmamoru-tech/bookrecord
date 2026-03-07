@@ -56,6 +56,9 @@ struct AIService {
     private static let endpointURL = URL(string: "https://it-master.jp/api/biblion/ai")!
     private static let timeoutSeconds: TimeInterval = 30
 
+    /// サーバー側 biblion_config.php の $ALLOWED_SECRET と同じ値を設定する
+    private static let appSecret = "your-random-secret-here"
+
     /// AI APIを呼び出す
     /// - チケット消費はこのメソッドの外（呼び出し元）で、成功後に行う
     func execute(
@@ -67,6 +70,7 @@ struct AIService {
         var request = URLRequest(url: AIService.endpointURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(AIService.appSecret, forHTTPHeaderField: "X-App-Secret")
         request.timeoutInterval = AIService.timeoutSeconds
 
         let body: [String: Any] = [
