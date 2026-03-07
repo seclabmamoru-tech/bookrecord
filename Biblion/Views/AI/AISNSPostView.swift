@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreData
 
 /// SNS投稿生成画面
 struct AISNSPostView: View {
