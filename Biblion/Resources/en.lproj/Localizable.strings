@@ -189,6 +189,14 @@
 "common.selectAll" = "Select All";
 "common.deselectAll" = "Deselect All";
 
+// MARK: - AI History
+"ai.history.title" = "AI History";
+"ai.history.detail" = "History Detail";
+"ai.history.empty" = "No History Yet";
+"ai.history.emptyDescription" = "Your AI results will appear here after using any AI menu";
+"ai.history.input" = "Input";
+"ai.history.output" = "AI Output";
+
 // MARK: - AI Action Selection
 "ai.result.addTodo.selectActions" = "Select actions to add";
 "ai.result.addTodo.noActions" = "No actions found";

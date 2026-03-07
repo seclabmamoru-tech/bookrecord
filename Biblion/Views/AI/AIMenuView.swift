@@ -32,6 +32,13 @@ struct AIMenuView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle(Text("ai.menu.title"))
             .onAppear { viewModel.refreshFromCoreData() }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: AIHistoryView()) {
+                        Image(systemName: "clock.arrow.circlepath")
+                    }
+                }
+            }
             .sheet(isPresented: $showConsent) {
                 AIConsentMenuView(viewModel: viewModel)
             }

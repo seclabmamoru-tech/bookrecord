@@ -190,6 +190,14 @@
 "common.selectAll" = "すべて選択";
 "common.deselectAll" = "すべて解除";
 
+// MARK: - AI 履歴
+"ai.history.title" = "AI履歴";
+"ai.history.detail" = "履歴の詳細";
+"ai.history.empty" = "履歴がありません";
+"ai.history.emptyDescription" = "AIメニューを使うと、ここに履歴が残ります";
+"ai.history.input" = "入力内容";
+"ai.history.output" = "AI出力結果";
+
 // MARK: - AI アクション選択
 "ai.result.addTodo.selectActions" = "追加するアクションを選択";
 "ai.result.addTodo.noActions" = "アクションが見つかりませんでした";
