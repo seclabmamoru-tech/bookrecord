@@ -50,10 +50,13 @@
     </entity>
     <entity name="UserPlan" representedClassName="UserPlan" syncable="YES" codeGenerationType="class">
         <attribute name="expiresAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="freeTicketCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="freeTicketGranted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isAIConsentGiven" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="planTicketCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="planType" attributeType="String" defaultValueString="free"/>
+        <attribute name="purchasedTicketCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="ticketCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
     </entity>

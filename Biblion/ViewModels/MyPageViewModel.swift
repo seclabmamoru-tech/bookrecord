@@ -26,7 +26,7 @@ final class MyPageViewModel: ObservableObject {
     func refresh() {
         let plan = cdManager.fetchOrCreateUserPlan()
         planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
-        ticketCount = plan.ticketCount
+        ticketCount = cdManager.totalTicketCount
         expiresAt = plan.expiresAt
         isAIConsentGiven = plan.isAIConsentGiven
     }

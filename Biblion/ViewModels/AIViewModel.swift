@@ -17,6 +17,7 @@ final class AIViewModel: ObservableObject {
     @Published var ticketCount: Int32 = 0
     @Published var currentPlan: PlanType = .free
     @Published var lastMenuType: AIMenuType?
+    @Published var shouldShowAIAd = false
 
     private let service = AIService()
     private let cdManager = CoreDataManager.shared
@@ -31,7 +32,7 @@ final class AIViewModel: ObservableObject {
 
     func refreshFromCoreData() {
         let plan = cdManager.fetchOrCreateUserPlan()
-        ticketCount = plan.ticketCount
+        ticketCount = cdManager.totalTicketCount
         currentPlan = PlanType(rawValue: plan.planType ?? "free") ?? .free
     }
 
@@ -51,8 +52,7 @@ final class AIViewModel: ObservableObject {
         }
 
         // 2. チケット確認
-        let plan = cdManager.fetchOrCreateUserPlan()
-        guard plan.ticketCount > 0 else {
+        guard cdManager.totalTicketCount > 0 else {
             showPurchasePrompt = true
             return
         }
@@ -62,6 +62,7 @@ final class AIViewModel: ObservableObject {
         result = nil
         referencedBooks = []
         errorMessage = nil
+        shouldShowAIAd = false
         lastMenuType = menuType
 
         // 4. 送信用書籍データを構築
@@ -85,7 +86,8 @@ final class AIViewModel: ObservableObject {
             )
 
             // 6. 成功: チケット消費 → CoreData保存 → 結果表示
-            cdManager.consumeTicket()
+            let usedFreeTicket = cdManager.consumeTicket()
+            shouldShowAIAd = usedFreeTicket
             cdManager.addAIHistory(
                 menuType: menuType.rawValue,
                 inputText: userInput,

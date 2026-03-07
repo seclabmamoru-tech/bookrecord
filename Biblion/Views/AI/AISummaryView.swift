@@ -156,7 +156,11 @@ struct AISummaryView: View {
         let prompt = "\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。"
         await viewModel.executeAI(menuType: .summary, userInput: prompt)
         if viewModel.result != nil {
-            showResult = true
+            if viewModel.shouldShowAIAd {
+                InterstitialAdManager.shared.showAIAd { showResult = true }
+            } else {
+                showResult = true
+            }
         }
     }
 }

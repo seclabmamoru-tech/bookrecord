@@ -138,7 +138,11 @@ struct AIConsultationView: View {
     private func executeAI() async {
         await viewModel.executeAI(menuType: .consultation, userInput: inputText)
         if viewModel.result != nil {
-            showResult = true
+            if viewModel.shouldShowAIAd {
+                InterstitialAdManager.shared.showAIAd { showResult = true }
+            } else {
+                showResult = true
+            }
         }
     }
 }

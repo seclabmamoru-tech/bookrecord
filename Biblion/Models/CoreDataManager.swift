@@ -237,6 +237,7 @@ final class CoreDataManager {
         let request: NSFetchRequest<UserPlan> = UserPlan.fetchRequest()
         request.fetchLimit = 1
         if let existing = (try? context.fetch(request))?.first {
+            migrateTicketCountIfNeeded(existing)
             return existing
         }
         // 新規作成（初回起動）
@@ -257,11 +258,20 @@ final class CoreDataManager {
         return plan
     }
 
+    /// 旧 ticketCount → freeTicketCount マイグレーション（既存インストール向け）
+    private func migrateTicketCountIfNeeded(_ plan: UserPlan) {
+        guard plan.freeTicketCount == 0 && plan.planTicketCount == 0 && plan.purchasedTicketCount == 0,
+              plan.ticketCount > 0 else { return }
+        plan.freeTicketCount = plan.ticketCount
+        plan.ticketCount = 0
+        save()
+    }
+
     /// 初回無料チケット付与（未付与の場合のみ3枚付与）
     func grantFreeTicketsIfNeeded() {
         let plan = fetchOrCreateUserPlan()
         guard !plan.freeTicketGranted else { return }
-        plan.ticketCount = 3
+        plan.freeTicketCount = 3
         plan.freeTicketGranted = true
         plan.updatedAt = Date()
         save()
@@ -284,20 +294,46 @@ final class CoreDataManager {
         save()
     }
 
-    /// チケットを消費（成功時のみ呼ぶ）
-    func consumeTicket() {
+    /// 全チケット合計数
+    var totalTicketCount: Int32 {
         let plan = fetchOrCreateUserPlan()
-        if plan.ticketCount > 0 {
-            plan.ticketCount -= 1
-            plan.updatedAt = Date()
-            save()
-        }
+        return plan.freeTicketCount + plan.planTicketCount + plan.purchasedTicketCount
     }
 
-    /// チケットを追加
-    func addTickets(_ count: Int32) {
+    /// チケットを消費（成功時のみ呼ぶ）
+    /// - Returns: true if a free ticket was consumed (→ show AI ad), false otherwise
+    @discardableResult
+    func consumeTicket() -> Bool {
         let plan = fetchOrCreateUserPlan()
-        plan.ticketCount += count
+        plan.updatedAt = Date()
+        if plan.freeTicketCount > 0 {
+            plan.freeTicketCount -= 1
+            save()
+            return true
+        } else if plan.planTicketCount > 0 {
+            plan.planTicketCount -= 1
+            save()
+            return false
+        } else if plan.purchasedTicketCount > 0 {
+            plan.purchasedTicketCount -= 1
+            save()
+            return false
+        }
+        return false
+    }
+
+    /// プランチケットを追加（月次付与）
+    func addPlanTickets(_ count: Int32) {
+        let plan = fetchOrCreateUserPlan()
+        plan.planTicketCount += count
+        plan.updatedAt = Date()
+        save()
+    }
+
+    /// 購入チケットを追加
+    func addPurchasedTickets(_ count: Int32) {
+        let plan = fetchOrCreateUserPlan()
+        plan.purchasedTicketCount += count
         plan.updatedAt = Date()
         save()
     }

@@ -182,7 +182,11 @@ struct AISNSPostView: View {
         let prompt = "\(platform)用の書評投稿を作成してください。書籍：\(book.title ?? "")（\(book.author ?? "")）\n選択したメモ：\n- \(selectedMemos)"
         await viewModel.executeAI(menuType: .sns, userInput: prompt)
         if viewModel.result != nil {
-            showResult = true
+            if viewModel.shouldShowAIAd {
+                InterstitialAdManager.shared.showAIAd { showResult = true }
+            } else {
+                showResult = true
+            }
         }
     }
 }

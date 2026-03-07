@@ -102,6 +102,7 @@ final class InterstitialAdManager: NSObject {
     private var interstitialAd: GADInterstitialAd?
     private var isSdkStarted = false
     private var isLoading = false
+    private var aiAdCompletion: (() -> Void)?
 
     private override init() {
         super.init()
@@ -125,6 +126,29 @@ final class InterstitialAdManager: NSObject {
         isSdkStarted = true
         GADMobileAds.sharedInstance().start { _ in
             print("[Ad] SDK初期化完了（広告表示なし：有料プラン）")
+        }
+    }
+
+    /// AI実行後に広告を表示し、閉じたら completion を呼ぶ（日次制限なし）
+    func showAIAd(completion: @escaping () -> Void) {
+        guard isSdkStarted else {
+            DispatchQueue.main.async { completion() }
+            return
+        }
+        aiAdCompletion = completion
+        GADInterstitialAd.load(withAdUnitID: adUnitID, request: GADRequest()) { [weak self] ad, error in
+            guard let self else { completion(); return }
+            if let error {
+                print("[Ad] AI広告 読み込み失敗: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.aiAdCompletion?()
+                    self.aiAdCompletion = nil
+                }
+                return
+            }
+            self.interstitialAd = ad
+            self.interstitialAd?.fullScreenContentDelegate = self
+            self.presentAd()
         }
     }
 
@@ -166,25 +190,38 @@ final class InterstitialAdManager: NSObject {
     }
 
     private func present() {
+        presentAd()
+        UserDefaults.standard.set(Date(), forKey: lastShownDateKey)
+    }
+
+    private func presentAd() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             guard let ad = self.interstitialAd else {
                 print("[Ad] 広告オブジェクトがnil")
+                let completion = self.aiAdCompletion
+                self.aiAdCompletion = nil
+                completion?()
                 return
             }
             guard let windowScene = UIApplication.shared.connectedScenes
                 .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else {
                 print("[Ad] アクティブなWindowSceneが見つかりません")
+                let completion = self.aiAdCompletion
+                self.aiAdCompletion = nil
+                completion?()
                 return
             }
             guard let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController else {
                 print("[Ad] rootViewControllerが見つかりません")
+                let completion = self.aiAdCompletion
+                self.aiAdCompletion = nil
+                completion?()
                 return
             }
 
             print("[Ad] 表示します")
             ad.present(fromRootViewController: rootVC)
-            UserDefaults.standard.set(Date(), forKey: self.lastShownDateKey)
         }
     }
 }
@@ -193,10 +230,16 @@ extension InterstitialAdManager: GADFullScreenContentDelegate {
     func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
         print("[Ad] 表示失敗: \(error.localizedDescription)")
         interstitialAd = nil
+        let completion = aiAdCompletion
+        aiAdCompletion = nil
+        DispatchQueue.main.async { completion?() }
     }
 
     func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
         print("[Ad] 広告を閉じました")
         interstitialAd = nil
+        let completion = aiAdCompletion
+        aiAdCompletion = nil
+        DispatchQueue.main.async { completion?() }
     }
 }
