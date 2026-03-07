@@ -29,7 +29,7 @@ struct AISNSPostView: View {
             ZStack {
                 Form {
                     // 書籍選択
-                    Section(header: Text("書籍を選択")) {
+                    Section(header: Text("home.timer.selectBook")) {
                         if booksWithMemos.isEmpty {
                             Text("ai.error.noMemo")
                                 .foregroundColor(.secondary)

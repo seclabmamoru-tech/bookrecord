@@ -92,7 +92,7 @@ struct AISummaryView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                     let memoCount = CoreDataManager.shared.fetchMemos(for: book).count
-                    Text("メモ \(memoCount)件")
+                    Text(String(format: NSLocalizedString("book.memoCount", comment: ""), memoCount))
                         .font(.caption2)
                         .foregroundColor(.indigo)
                 }
