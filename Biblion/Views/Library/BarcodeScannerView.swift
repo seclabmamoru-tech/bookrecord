@@ -44,18 +44,17 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
 
         func didFind(isbn: String) {
             Task { @MainActor in
-                do {
-                    // まず OpenBD（日本書籍）、次に Google Books（海外書籍）でフォールバック
-                    if let info = try await OpenBDService.fetchBookInfo(isbn: isbn) {
-                        onFound(info)
-                    } else if let info = try await GoogleBooksService.fetchBookInfo(isbn: isbn) {
-                        onFound(info)
-                    } else {
-                        onError(NSLocalizedString("barcode.notFound", comment: ""))
-                    }
-                } catch {
-                    onError(NSLocalizedString("barcode.notFound", comment: ""))
+                // OpenBD（日本書籍）を試す。失敗・未収録でも Google Books へ進む
+                if let info = try? await OpenBDService.fetchBookInfo(isbn: isbn) {
+                    onFound(info)
+                    return
                 }
+                // Google Books（海外書籍フォールバック）
+                if let info = try? await GoogleBooksService.fetchBookInfo(isbn: isbn) {
+                    onFound(info)
+                    return
+                }
+                onError(NSLocalizedString("barcode.notFound", comment: ""))
             }
         }
     }
