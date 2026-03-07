@@ -165,7 +165,7 @@ struct AIResultView: View {
             ShareSheet(activityItems: [shareText])
         }
         .sheet(isPresented: $showAddTaskSheet) {
-            AddTaskFromAIView(suggestedTitle: String(result.prefix(50)))
+            AddTaskFromAIView(result: result)
         }
     }
 }
@@ -185,21 +185,87 @@ struct ShareSheet: UIViewControllerRepresentable {
 // MARK: - AI結果からタスク追加
 
 private struct AddTaskFromAIView: View {
-    let suggestedTitle: String
-    @State private var taskTitle: String
+    let result: String
+    @State private var actions: [String]
+    @State private var selections: [Bool]
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var taskViewModel: TaskViewModel
 
-    init(suggestedTitle: String) {
-        self.suggestedTitle = suggestedTitle
-        _taskTitle = State(initialValue: suggestedTitle)
+    init(result: String) {
+        self.result = result
+        let parsed = Self.parseActions(from: result)
+        _actions = State(initialValue: parsed)
+        _selections = State(initialValue: Array(repeating: false, count: parsed.count))
     }
+
+    /// AIの出力テキストから箇条書き・番号付きのアクション行を抽出する
+    static func parseActions(from text: String) -> [String] {
+        let bulletPrefixes = ["- ", "・", "• ", "● ", "◆ ", "▶ ", "✅ ", "→ "]
+        return text.components(separatedBy: "\n").compactMap { line in
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            for prefix in bulletPrefixes {
+                if trimmed.hasPrefix(prefix) {
+                    let content = String(trimmed.dropFirst(prefix.count)).trimmingCharacters(in: .whitespaces)
+                    return content.isEmpty ? nil : content
+                }
+            }
+            // 「1. 」「1） 」「① 」形式
+            if trimmed.range(of: #"^\d+[\.）\)]\s+"#, options: .regularExpression) != nil ||
+               trimmed.range(of: #"^[①-⑳]\s*"#, options: .regularExpression) != nil {
+                let content = trimmed.replacingOccurrences(of: #"^\d+[\.）\)]\s+"#, with: "", options: .regularExpression)
+                    .replacingOccurrences(of: #"^[①-⑳]\s*"#, with: "", options: .regularExpression)
+                    .trimmingCharacters(in: .whitespaces)
+                return content.isEmpty ? nil : content
+            }
+            return nil
+        }
+    }
+
+    private var allSelected: Bool { selections.allSatisfy { $0 } }
+    private var anySelected: Bool { selections.contains(true) }
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section(header: Text("task.add")) {
-                    TextField("task.add", text: $taskTitle)
+            Group {
+                if actions.isEmpty {
+                    // アクション抽出できなかった場合のフォールバック
+                    ContentUnavailableView(
+                        "ai.result.addTodo.noActions",
+                        systemImage: "text.badge.xmark",
+                        description: Text("ai.result.addTodo.noActionsDescription")
+                    )
+                } else {
+                    List {
+                        Section {
+                            ForEach(actions.indices, id: \.self) { i in
+                                Button {
+                                    selections[i].toggle()
+                                } label: {
+                                    HStack(alignment: .top, spacing: 12) {
+                                        Image(systemName: selections[i] ? "checkmark.circle.fill" : "circle")
+                                            .foregroundColor(selections[i] ? .indigo : Color(.systemGray3))
+                                            .font(.title3)
+                                        Text(actions[i])
+                                            .foregroundColor(.primary)
+                                            .multilineTextAlignment(.leading)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .padding(.vertical, 2)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        } header: {
+                            HStack {
+                                Text("ai.result.addTodo.selectActions")
+                                Spacer()
+                                Button(allSelected ? "common.deselectAll" : "common.selectAll") {
+                                    let next = !allSelected
+                                    selections = selections.map { _ in next }
+                                }
+                                .font(.caption)
+                            }
+                        }
+                    }
                 }
             }
             .navigationTitle(Text("ai.result.addTodo"))
@@ -209,15 +275,15 @@ private struct AddTaskFromAIView: View {
                     Button("common.cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("memo.save") {
-                        if !taskTitle.trimmingCharacters(in: .whitespaces).isEmpty {
-                            let tasks = CoreDataManager.shared.fetchTasks()
-                            taskViewModel.addTask(title: taskTitle.trimmingCharacters(in: .whitespaces))
-                        }
+                    Button("common.add") {
+                        zip(actions, selections)
+                            .filter(\.1)
+                            .map(\.0)
+                            .forEach { taskViewModel.addTask(title: $0) }
                         dismiss()
                     }
                     .bold()
-                    .disabled(taskTitle.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(!anySelected)
                 }
             }
         }

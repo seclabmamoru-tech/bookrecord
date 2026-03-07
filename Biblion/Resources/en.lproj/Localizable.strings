@@ -185,3 +185,11 @@
 "common.hours" = "hrs";
 "common.minutes" = "min";
 "common.books" = "books";
+"common.add" = "Add";
+"common.selectAll" = "Select All";
+"common.deselectAll" = "Deselect All";
+
+// MARK: - AI Action Selection
+"ai.result.addTodo.selectActions" = "Select actions to add";
+"ai.result.addTodo.noActions" = "No actions found";
+"ai.result.addTodo.noActionsDescription" = "No bullet-point action items were found in the AI response";

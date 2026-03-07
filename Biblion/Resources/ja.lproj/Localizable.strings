@@ -186,3 +186,11 @@
 "common.hours" = "時間";
 "common.minutes" = "分";
 "common.books" = "冊";
+"common.add" = "追加";
+"common.selectAll" = "すべて選択";
+"common.deselectAll" = "すべて解除";
+
+// MARK: - AI アクション選択
+"ai.result.addTodo.selectActions" = "追加するアクションを選択";
+"ai.result.addTodo.noActions" = "アクションが見つかりませんでした";
+"ai.result.addTodo.noActionsDescription" = "AIの回答に箇条書きのアクション項目がありませんでした";
