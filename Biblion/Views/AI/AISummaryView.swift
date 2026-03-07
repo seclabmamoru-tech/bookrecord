@@ -152,8 +152,11 @@ struct AISummaryView: View {
 
     private func executeAI() async {
         guard let book = selectedBook else { return }
-        let memos = CoreDataManager.shared.fetchMemos(for: book).map { $0.content ?? "" }
-        let prompt = "\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。"
+        let memos = CoreDataManager.shared.fetchMemos(for: book)
+            .map { $0.content ?? "" }
+            .filter { !$0.isEmpty }
+        let memoText = memos.isEmpty ? "" : "\n\n【読書メモ】\n" + memos.map { "  - \($0)" }.joined(separator: "\n")
+        let prompt = "\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。\(memoText)"
         await viewModel.executeAI(menuType: .summary, userInput: prompt)
         if viewModel.result != nil {
             if viewModel.shouldShowAIAd {
