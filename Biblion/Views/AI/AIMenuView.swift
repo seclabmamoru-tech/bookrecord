@@ -34,10 +34,10 @@ struct AIMenuView: View {
             .sheet(isPresented: $showConsent) {
                 AIConsentMenuView(viewModel: viewModel)
             }
-            .alert("チケット不足", isPresented: $showPurchasePrompt) {
+            .alert("ai.menu.noTicketTitle", isPresented: $showPurchasePrompt) {
                 Button("common.cancel", role: .cancel) {}
             } message: {
-                Text("チケットがありません。マイページから購入してください。")
+                Text("ai.menu.noTicketMessage")
             }
         }
     }

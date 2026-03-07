@@ -115,6 +115,8 @@
 "ai.menu.sns.title" = "Create Post";
 "ai.menu.sns.desc" = "Generate your book review";
 "ai.menu.noTicket" = "No tickets available";
+"ai.menu.noTicketTitle" = "No Tickets";
+"ai.menu.noTicketMessage" = "You have no tickets. Please purchase them from My Page.";
 "ai.menu.bookRefCount" = "Referencing %d books";
 
 // MARK: - AI Execution
@@ -138,6 +140,18 @@
 
 // MARK: - My Page
 "mypage.title" = "My Page";
+"mypage.section.ticket" = "Tickets";
+"mypage.section.plan" = "Change Plan";
+"mypage.section.privacy" = "Data & Privacy";
+"mypage.section.support" = "Support";
+"mypage.plan.basic.price" = "$2.99/mo";
+"mypage.plan.premium.price" = "$5.99/mo";
+"mypage.plan.basic.feature1" = "Barcode Scanning";
+"mypage.plan.basic.feature2" = "Unlimited Tasks";
+"mypage.plan.basic.feature3" = "No Ads";
+"mypage.plan.premium.feature1" = "All Basic features";
+"mypage.plan.premium.feature2" = "10 tickets/month";
+"mypage.plan.premium.feature3" = "No AI ads";
 "mypage.plan.free" = "Free Plan";
 "mypage.plan.basic" = "Basic Plan";
 "mypage.plan.premium" = "Premium Plan";

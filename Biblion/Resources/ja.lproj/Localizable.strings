@@ -115,6 +115,8 @@
 "ai.menu.sns.title" = "SNS投稿を作成";
 "ai.menu.sns.desc" = "独自の書評を自動生成";
 "ai.menu.noTicket" = "チケットがありません";
+"ai.menu.noTicketTitle" = "チケット不足";
+"ai.menu.noTicketMessage" = "チケットがありません。マイページから購入してください。";
 "ai.menu.bookRefCount" = "%d冊の読書メモを参照します";
 
 // MARK: - AI実行
@@ -138,6 +140,18 @@
 
 // MARK: - マイページ
 "mypage.title" = "マイページ";
+"mypage.section.ticket" = "チケット";
+"mypage.section.plan" = "プラン変更";
+"mypage.section.privacy" = "データとプライバシー";
+"mypage.section.support" = "サポート";
+"mypage.plan.basic.price" = "$2.99/月";
+"mypage.plan.premium.price" = "$5.99/月";
+"mypage.plan.basic.feature1" = "バーコード登録";
+"mypage.plan.basic.feature2" = "タスク無制限";
+"mypage.plan.basic.feature3" = "広告なし";
+"mypage.plan.premium.feature1" = "Basicの全機能";
+"mypage.plan.premium.feature2" = "月10チケット付与";
+"mypage.plan.premium.feature3" = "AI広告なし";
 "mypage.plan.free" = "Freeプラン";
 "mypage.plan.basic" = "Basicプラン";
 "mypage.plan.premium" = "Premiumプラン";

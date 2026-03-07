@@ -32,18 +32,13 @@ struct MyPageView: View {
                     if let expires = viewModel.expiresAt {
                         let formatter = DateFormatter()
                         let _ = { formatter.dateStyle = .medium }()
-                        HStack {
-                            Text("mypage.plan.expires")
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Text(String(format: NSLocalizedString("mypage.plan.expires", comment: ""), formatter.string(from: expires)))
-                                .foregroundColor(.secondary)
-                        }
+                        Text(String(format: NSLocalizedString("mypage.plan.expires", comment: ""), formatter.string(from: expires)))
+                            .foregroundColor(.secondary)
                     }
                 }
 
                 // MARK: - チケット
-                Section(header: Text("チケット")) {
+                Section(header: Text("mypage.section.ticket")) {
                     VStack(spacing: 8) {
                         Text("\(viewModel.ticketCount)")
                             .font(.largeTitle.bold())
@@ -68,18 +63,28 @@ struct MyPageView: View {
                 }
 
                 // MARK: - プラン変更
-                Section(header: Text("プラン変更")) {
+                Section(header: Text("mypage.section.plan")) {
                     if viewModel.planType == .free {
                         planCard(
-                            title: "Basicプラン",
-                            price: "$2.99/月",
-                            features: ["バーコード登録", "タスク無制限", "広告なし"],
+                            title: NSLocalizedString("mypage.plan.basic", comment: ""),
+                            price: NSLocalizedString("mypage.plan.basic.price", comment: ""),
+                            features: [
+                                NSLocalizedString("mypage.plan.basic.feature1", comment: ""),
+                                NSLocalizedString("mypage.plan.basic.feature2", comment: ""),
+                                NSLocalizedString("mypage.plan.basic.feature3", comment: "")
+                            ],
+                            upgradeKey: "mypage.upgrade.basic",
                             color: .blue
                         )
                         planCard(
-                            title: "Premiumプラン",
-                            price: "$5.99/月",
-                            features: ["Basicの全機能", "月10チケット付与", "AI広告なし"],
+                            title: NSLocalizedString("mypage.plan.premium", comment: ""),
+                            price: NSLocalizedString("mypage.plan.premium.price", comment: ""),
+                            features: [
+                                NSLocalizedString("mypage.plan.premium.feature1", comment: ""),
+                                NSLocalizedString("mypage.plan.premium.feature2", comment: ""),
+                                NSLocalizedString("mypage.plan.premium.feature3", comment: "")
+                            ],
+                            upgradeKey: "mypage.upgrade.premium",
                             color: Color(hex: "C9A84C")
                         )
                     } else {
@@ -98,7 +103,7 @@ struct MyPageView: View {
                 }
 
                 // MARK: - データとプライバシー
-                Section(header: Text("データとプライバシー")) {
+                Section(header: Text("mypage.section.privacy")) {
                     // AI同意トグル
                     Toggle(isOn: Binding(
                         get: { viewModel.isAIConsentGiven },
@@ -138,7 +143,7 @@ struct MyPageView: View {
                 }
 
                 // MARK: - サポート
-                Section(header: Text("サポート")) {
+                Section(header: Text("mypage.section.support")) {
                     Link(destination: URL(string: "mailto:support@it-master.jp")!) {
                         HStack {
                             Text("mypage.contact")
@@ -189,7 +194,7 @@ struct MyPageView: View {
 
     // MARK: - プランカード
 
-    private func planCard(title: String, price: String, features: [String], color: Color) -> some View {
+    private func planCard(title: String, price: String, features: [String], upgradeKey: String, color: Color) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(title)
@@ -215,9 +220,7 @@ struct MyPageView: View {
             Button {
                 // Phase 3: 購入処理
             } label: {
-                Text(title == "Basicプラン"
-                     ? "mypage.upgrade.basic"
-                     : "mypage.upgrade.premium")
+                Text(LocalizedStringKey(upgradeKey))
                     .font(.subheadline.bold())
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
