@@ -38,6 +38,17 @@
 		00000000000000000002001D /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000000080002 /* GoogleMobileAds */; };
 		000000000000000000020021 /* ja in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010021 /* ja */; };
 		000000000000000000020022 /* en in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010022 /* en */; };
+		000000000000000000020023 /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010023 /* StoreManager.swift */; };
+		000000000000000000020024 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010024 /* AIService.swift */; };
+		000000000000000000020025 /* AIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010025 /* AIViewModel.swift */; };
+		000000000000000000020026 /* MyPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010026 /* MyPageViewModel.swift */; };
+		000000000000000000020027 /* AIMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010027 /* AIMenuView.swift */; };
+		000000000000000000020028 /* AIConsultationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010028 /* AIConsultationView.swift */; };
+		000000000000000000020029 /* AISummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010029 /* AISummaryView.swift */; };
+		00000000000000000002002A /* AISNSPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002A /* AISNSPostView.swift */; };
+		00000000000000000002002B /* AIResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002B /* AIResultView.swift */; };
+		00000000000000000002002C /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002C /* BarcodeScannerView.swift */; };
+		00000000000000000002002D /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002D /* MyPageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +83,17 @@
 		00000000000000000001001D /* Biblion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Biblion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000000000000000000010021 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		000000000000000000010022 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		000000000000000000010023 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
+		000000000000000000010024 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
+		000000000000000000010025 /* AIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIViewModel.swift; sourceTree = "<group>"; };
+		000000000000000000010026 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
+		000000000000000000010027 /* AIMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIMenuView.swift; sourceTree = "<group>"; };
+		000000000000000000010028 /* AIConsultationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConsultationView.swift; sourceTree = "<group>"; };
+		000000000000000000010029 /* AISummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummaryView.swift; sourceTree = "<group>"; };
+		00000000000000000001002A /* AISNSPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISNSPostView.swift; sourceTree = "<group>"; };
+		00000000000000000001002B /* AIResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIResultView.swift; sourceTree = "<group>"; };
+		00000000000000000001002C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		00000000000000000001002D /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +129,7 @@
 				00000000000000000000000E /* Utilities */,
 				00000000000000000000000F /* Resources */,
 				000000000000000000010018 /* Assets.xcassets */,
+				000000000000000000000011 /* Services */,
 				000000000000000000000010 /* Preview Content */,
 			);
 			path = Biblion;
@@ -132,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000010003 /* CoreDataManager.swift */,
+				000000000000000000010023 /* StoreManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -144,6 +168,8 @@
 				000000000000000000000009 /* Tasks */,
 				00000000000000000000000A /* AIInsight */,
 				00000000000000000000000B /* Settings */,
+				000000000000000000000012 /* AI */,
+				000000000000000000000013 /* MyPage */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -164,6 +190,7 @@
 				000000000000000000010007 /* AddBookView.swift */,
 				000000000000000000010008 /* BookDetailView.swift */,
 				000000000000000000010009 /* AddEditMemoView.swift */,
+				00000000000000000001002C /* BarcodeScannerView.swift */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -202,6 +229,8 @@
 				000000000000000000010011 /* LibraryViewModel.swift */,
 				000000000000000000010012 /* TaskViewModel.swift */,
 				000000000000000000010013 /* AIInsightViewModel.swift */,
+				000000000000000000010025 /* AIViewModel.swift */,
+				000000000000000000010026 /* MyPageViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -242,6 +271,34 @@
 			);
 			name = "Preview Content";
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		000000000000000000000011 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000010024 /* AIService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		000000000000000000000012 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000010027 /* AIMenuView.swift */,
+				000000000000000000010028 /* AIConsultationView.swift */,
+				000000000000000000010029 /* AISummaryView.swift */,
+				00000000000000000001002A /* AISNSPostView.swift */,
+				00000000000000000001002B /* AIResultView.swift */,
+			);
+			path = AI;
+			sourceTree = "<group>";
+		};
+		000000000000000000000013 /* MyPage */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000001002D /* MyPageView.swift */,
+			);
+			path = MyPage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -349,6 +406,17 @@
 				000000000000000000020016 /* WeeklyBarChartView.swift in Sources */,
 				000000000000000000020017 /* NotificationManager.swift in Sources */,
 				00000000000000000002001B /* Biblion.xcdatamodeld in Sources */,
+				000000000000000000020023 /* StoreManager.swift in Sources */,
+				000000000000000000020024 /* AIService.swift in Sources */,
+				000000000000000000020025 /* AIViewModel.swift in Sources */,
+				000000000000000000020026 /* MyPageViewModel.swift in Sources */,
+				000000000000000000020027 /* AIMenuView.swift in Sources */,
+				000000000000000000020028 /* AIConsultationView.swift in Sources */,
+				000000000000000000020029 /* AISummaryView.swift in Sources */,
+				00000000000000000002002A /* AISNSPostView.swift in Sources */,
+				00000000000000000002002B /* AIResultView.swift in Sources */,
+				00000000000000000002002C /* BarcodeScannerView.swift in Sources */,
+				00000000000000000002002D /* MyPageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
