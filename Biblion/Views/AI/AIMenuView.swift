@@ -92,6 +92,7 @@ struct AIMenuView: View {
                         isEnabled: hasTickets
                     )
                 }
+                .buttonStyle(.plain)
                 .disabled(!hasTickets)
                 .onTapGesture {
                     if !viewModel.isAIConsentGiven { showConsent = true }
@@ -108,6 +109,7 @@ struct AIMenuView: View {
                         isEnabled: hasTickets
                     )
                 }
+                .buttonStyle(.plain)
                 .disabled(!hasTickets)
 
                 Divider().padding(.leading, 68)
@@ -121,6 +123,7 @@ struct AIMenuView: View {
                         isEnabled: hasTickets
                     )
                 }
+                .buttonStyle(.plain)
                 .disabled(!hasTickets)
             }
             .background(
