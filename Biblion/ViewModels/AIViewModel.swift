@@ -44,7 +44,7 @@ final class AIViewModel: ObservableObject {
 
     // MARK: - AI実行
 
-    func executeAI(menuType: AIMenuType, userInput: String) async {
+    func executeAI(menuType: AIMenuType, userInput: String, bookData: [AIBookData]? = nil) async {
         // 1. 同意確認
         guard isAIConsentGiven else {
             showConsentView = true
@@ -65,24 +65,26 @@ final class AIViewModel: ObservableObject {
         shouldShowAIAd = false
         lastMenuType = menuType
 
-        // 4. 送信用書籍データを構築
-        let books = cdManager.fetchBooks()
-        let bookData: [AIBookData] = books.compactMap { book in
-            let memos = cdManager.fetchMemos(for: book).map { $0.content ?? "" }.filter { !$0.isEmpty }
-            guard !memos.isEmpty else { return nil }
-            return AIBookData(
-                title: book.title ?? "",
-                author: book.author ?? "",
-                memos: memos
-            )
-        }
+        // 4. 送信用書籍データを構築（指定がなければ全書籍）
+        let resolvedBookData: [AIBookData] = bookData ?? {
+            let books = cdManager.fetchBooks()
+            return books.compactMap { book in
+                let memos = cdManager.fetchMemos(for: book).map { $0.content ?? "" }.filter { !$0.isEmpty }
+                guard !memos.isEmpty else { return nil }
+                return AIBookData(
+                    title: book.title ?? "",
+                    author: book.author ?? "",
+                    memos: memos
+                )
+            }
+        }()
 
         // 5. API呼び出し
         do {
             let response = try await service.execute(
                 menuType: menuType,
                 userInput: userInput,
-                bookData: bookData
+                bookData: resolvedBookData
             )
 
             // 6. 成功: チケット消費 → CoreData保存 → 結果表示

@@ -223,14 +223,21 @@ struct AISNSPostView: View {
     private func executeAI() async {
         guard let book = selectedBook else { return }
         let platform = platforms[selectedPlatform]
-        let selectedMemos = memosForSelectedBook
-            .filter { selectedMemoIDs.contains($0.objectID) }
+        let filteredMemos = memosForSelectedBook.filter { selectedMemoIDs.contains($0.objectID) }
+        let selectedMemosText = filteredMemos
             .map { $0.content ?? "" }
             .joined(separator: "\n- ")
 
         let genreText = selectedGenres.sorted().joined(separator: "、")
-        let prompt = "\(platform)用の書評投稿を作成してください。書籍：\(book.title ?? "")（\(book.author ?? "")）\n選択したメモ：\n- \(selectedMemos)\n拡散ジャンル（読み手に与えたい感情）：\(genreText)"
-        await viewModel.executeAI(menuType: .sns, userInput: prompt)
+        let prompt = "\(platform)用の書評投稿を作成してください。書籍：\(book.title ?? "")（\(book.author ?? "")）\n選択したメモ：\n- \(selectedMemosText)\n拡散ジャンル（読み手に与えたい感情）：\(genreText)"
+
+        // 選択した書籍・メモのみをAPIに送信
+        let bookData = [AIBookData(
+            title: book.title ?? "",
+            author: book.author ?? "",
+            memos: filteredMemos.map { $0.content ?? "" }
+        )]
+        await viewModel.executeAI(menuType: .sns, userInput: prompt, bookData: bookData)
         if viewModel.result != nil {
             if viewModel.shouldShowAIAd {
                 InterstitialAdManager.shared.showAIAd { showResult = true }
