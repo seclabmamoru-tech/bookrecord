@@ -229,11 +229,20 @@ private struct AddTaskFromAIView: View {
             Group {
                 if actions.isEmpty {
                     // アクション抽出できなかった場合のフォールバック
-                    ContentUnavailableView(
-                        "ai.result.addTodo.noActions",
-                        systemImage: "text.badge.xmark",
-                        description: Text("ai.result.addTodo.noActionsDescription")
-                    )
+                    VStack(spacing: 16) {
+                        Spacer()
+                        Image(systemName: "text.badge.xmark")
+                            .font(.system(size: 48))
+                            .foregroundColor(.secondary)
+                        Text(LocalizedStringKey("ai.result.addTodo.noActions"))
+                            .font(.headline)
+                        Text(LocalizedStringKey("ai.result.addTodo.noActionsDescription"))
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                    }
+                    .padding()
                 } else {
                     List {
                         Section {
