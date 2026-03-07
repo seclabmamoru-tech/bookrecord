@@ -83,8 +83,9 @@
 "ai.consentBody" = "AI機能を使用するために、あなたの読書メモをAnthropicのAPIに送信します。送信されるデータは課題解決の提案生成のみに使用され、それ以外の目的には利用されません。詳細はプライバシーポリシーをご確認ください。";
 "ai.consentCheck" = "上記の内容を確認し、データの送信に同意します";
 "ai.consentConfirm" = "同意して始める";
-"ai.consentRequired" = "AI機能を利用するには、まずデータ送信への同意が必要です。";
+"ai.consentRequired" = "AI機能を利用するには、まずデータ送信への同意が必要です。\nマイページ → データとプライバシー から同意できます。";
 "ai.notConsented" = "AI機能への同意が必要です";
+"ai.consent.goMyPage" = "マイページへ";
 "ai.comingSoon" = "近日公開予定";
 "ai.inputPlaceholder" = "解決したい課題を入力...";
 "ai.disclaimer" = "この回答はあなたの読書メモに基づいています";

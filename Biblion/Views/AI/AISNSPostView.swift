@@ -11,6 +11,7 @@ struct AISNSPostView: View {
     @State private var selectedGenres: Set<String> = []
     @State private var showResult = false
     @State private var showRetryAlert = false
+    @State private var showMyPageForConsent = false
 
     private let platforms = ["X", "Instagram", "Threads"]
 
@@ -182,8 +183,14 @@ struct AISNSPostView: View {
                         Task { await executeAI() }
                     }
                 }
-                .sheet(isPresented: $viewModel.showConsentView) {
-                    AIConsentMenuView(viewModel: viewModel)
+                .alert("ai.notConsented", isPresented: $viewModel.showConsentView) {
+                    Button("ai.consent.goMyPage") { showMyPageForConsent = true }
+                    Button("common.cancel", role: .cancel) {}
+                } message: {
+                    Text("ai.consentRequired")
+                }
+                .sheet(isPresented: $showMyPageForConsent) {
+                    MyPageView()
                 }
                 .alert("ai.menu.noTicketTitle", isPresented: $viewModel.showPurchasePrompt) {
                     Button("common.cancel", role: .cancel) {}

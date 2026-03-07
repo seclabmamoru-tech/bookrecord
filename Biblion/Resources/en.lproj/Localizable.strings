@@ -83,8 +83,9 @@
 "ai.consentBody" = "To use the AI feature, your reading memos will be sent to Anthropic's API. The data is used solely for generating solution insights and for no other purpose. Please review our Privacy Policy for details.";
 "ai.consentCheck" = "I have read the above and agree to send my data";
 "ai.consentConfirm" = "Agree and Continue";
-"ai.consentRequired" = "To use the AI feature, you need to agree to data transmission first.";
+"ai.consentRequired" = "To use the AI feature, you need to agree to data transmission first.\nYou can consent in My Page → Data & Privacy.";
 "ai.notConsented" = "AI feature consent required";
+"ai.consent.goMyPage" = "Go to My Page";
 "ai.comingSoon" = "Coming Soon";
 "ai.inputPlaceholder" = "Enter a challenge you want to solve...";
 "ai.disclaimer" = "This response is based on your reading notes";

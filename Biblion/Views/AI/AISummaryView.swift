@@ -7,6 +7,7 @@ struct AISummaryView: View {
     @State private var selectedBook: Book?
     @State private var showResult = false
     @State private var showRetryAlert = false
+    @State private var showMyPageForConsent = false
 
     private var booksWithMemos: [Book] {
         CoreDataManager.shared.fetchBooks().filter { book in
@@ -56,8 +57,14 @@ struct AISummaryView: View {
                     )
                 }
             }
-            .sheet(isPresented: $viewModel.showConsentView) {
-                AIConsentMenuView(viewModel: viewModel)
+            .alert("ai.notConsented", isPresented: $viewModel.showConsentView) {
+                Button("ai.consent.goMyPage") { showMyPageForConsent = true }
+                Button("common.cancel", role: .cancel) {}
+            } message: {
+                Text("ai.consentRequired")
+            }
+            .sheet(isPresented: $showMyPageForConsent) {
+                MyPageView()
             }
             .alert("ai.menu.noTicketTitle", isPresented: $viewModel.showPurchasePrompt) {
                 Button("common.cancel", role: .cancel) {}

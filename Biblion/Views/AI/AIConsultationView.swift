@@ -7,6 +7,7 @@ struct AIConsultationView: View {
     @State private var inputText = ""
     @State private var showResult = false
     @State private var showRetryAlert = false
+    @State private var showMyPageForConsent = false
 
     private let maxChars = 500
 
@@ -92,8 +93,14 @@ struct AIConsultationView: View {
                     )
                 }
             }
-            .sheet(isPresented: $viewModel.showConsentView) {
-                AIConsentMenuView(viewModel: viewModel)
+            .alert("ai.notConsented", isPresented: $viewModel.showConsentView) {
+                Button("ai.consent.goMyPage") { showMyPageForConsent = true }
+                Button("common.cancel", role: .cancel) {}
+            } message: {
+                Text("ai.consentRequired")
+            }
+            .sheet(isPresented: $showMyPageForConsent) {
+                MyPageView()
             }
             .alert("ai.menu.noTicketTitle", isPresented: $viewModel.showPurchasePrompt) {
                 Button("common.cancel", role: .cancel) {}
