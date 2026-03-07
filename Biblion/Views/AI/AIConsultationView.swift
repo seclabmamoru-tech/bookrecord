@@ -13,6 +13,7 @@ struct AIConsultationView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                Color(.systemGroupedBackground).ignoresSafeArea()
                 VStack(spacing: 16) {
                     // 入力エリア
                     VStack(alignment: .leading, spacing: 8) {
