@@ -9,11 +9,20 @@ struct AIHistoryView: View {
     var body: some View {
         Group {
             if histories.isEmpty {
-                ContentUnavailableView(
-                    "ai.history.empty",
-                    systemImage: "clock.arrow.circlepath",
-                    description: Text("ai.history.emptyDescription")
-                )
+                VStack(spacing: 16) {
+                    Spacer()
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    Text(LocalizedStringKey("ai.history.empty"))
+                        .font(.headline)
+                    Text(LocalizedStringKey("ai.history.emptyDescription"))
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                    Spacer()
+                }
+                .padding()
             } else {
                 List(histories, id: \.id) { history in
                     Button {
