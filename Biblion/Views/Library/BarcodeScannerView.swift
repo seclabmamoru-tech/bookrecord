@@ -45,7 +45,10 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         func didFind(isbn: String) {
             Task { @MainActor in
                 do {
+                    // まず OpenBD（日本書籍）、次に Google Books（海外書籍）でフォールバック
                     if let info = try await OpenBDService.fetchBookInfo(isbn: isbn) {
+                        onFound(info)
+                    } else if let info = try await GoogleBooksService.fetchBookInfo(isbn: isbn) {
                         onFound(info)
                     } else {
                         onError(NSLocalizedString("barcode.notFound", comment: ""))
@@ -212,7 +215,7 @@ struct BarcodeScannerSheet: View {
     }
 }
 
-// MARK: - OpenBD API サービス
+// MARK: - OpenBD API サービス（日本書籍）
 
 struct OpenBDService {
     static func fetchBookInfo(isbn: String) async throws -> BarcodeBookInfo? {
@@ -229,10 +232,52 @@ struct OpenBDService {
         }
 
         let title = summary["title"] as? String ?? ""
-        let author = summary["author"] as? String ?? ""
+        let rawAuthor = summary["author"] as? String ?? ""
 
         guard !title.isEmpty else { return nil }
 
-        return BarcodeBookInfo(isbn: cleanISBN, title: title, author: author)
+        return BarcodeBookInfo(isbn: cleanISBN, title: title, author: cleanAuthor(rawAuthor))
+    }
+
+    /// MARC形式 "石井,勝利,1939-" → "石井 勝利" に変換
+    /// 複数著者（全角スペース区切り）にも対応
+    private static func cleanAuthor(_ raw: String) -> String {
+        let entries = raw.components(separatedBy: CharacterSet(charactersIn: " \u{3000}"))
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+
+        let cleaned = entries.compactMap { entry -> String? in
+            let parts = entry.split(separator: ",")
+                .map { String($0).trimmingCharacters(in: .whitespaces) }
+                .filter { !($0.first?.isNumber ?? false) }
+            return parts.isEmpty ? nil : parts.joined(separator: " ")
+        }
+
+        return cleaned.joined(separator: "・")
+    }
+}
+
+// MARK: - Google Books API サービス（海外書籍フォールバック）
+
+struct GoogleBooksService {
+    static func fetchBookInfo(isbn: String) async throws -> BarcodeBookInfo? {
+        let cleanISBN = isbn.filter { $0.isNumber }
+        guard let url = URL(string: "https://www.googleapis.com/books/v1/volumes?q=isbn:\(cleanISBN)") else {
+            return nil
+        }
+
+        let (data, _) = try await URLSession.shared.data(from: url)
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let items = json["items"] as? [[String: Any]],
+              let volumeInfo = items.first?["volumeInfo"] as? [String: Any] else {
+            return nil
+        }
+
+        let title = volumeInfo["title"] as? String ?? ""
+        let authors = volumeInfo["authors"] as? [String] ?? []
+
+        guard !title.isEmpty else { return nil }
+
+        return BarcodeBookInfo(isbn: cleanISBN, title: title, author: authors.joined(separator: ", "))
     }
 }
