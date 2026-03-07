@@ -29,6 +29,7 @@ struct AIMenuView: View {
                 BannerAdView()
                     .frame(height: 50)
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle(Text("ai.menu.title"))
             .onAppear { viewModel.refreshFromCoreData() }
             .sheet(isPresented: $showConsent) {
@@ -81,41 +82,51 @@ struct AIMenuView: View {
         VStack(spacing: 12) {
             let hasTickets = viewModel.ticketCount > 0
 
-            // 悩み相談
-            NavigationLink(destination: AIConsultationView(viewModel: viewModel)) {
-                AIMenuCard(
-                    icon: "brain.head.profile",
-                    titleKey: "ai.menu.consultation.title",
-                    descKey: "ai.menu.consultation.desc",
-                    isEnabled: hasTickets
-                )
-            }
-            .disabled(!hasTickets)
-            .onTapGesture {
-                if !viewModel.isAIConsentGiven { showConsent = true }
-            }
+            VStack(spacing: 0) {
+                // 悩み相談
+                NavigationLink(destination: AIConsultationView(viewModel: viewModel)) {
+                    AIMenuCard(
+                        icon: "brain.head.profile",
+                        titleKey: "ai.menu.consultation.title",
+                        descKey: "ai.menu.consultation.desc",
+                        isEnabled: hasTickets
+                    )
+                }
+                .disabled(!hasTickets)
+                .onTapGesture {
+                    if !viewModel.isAIConsentGiven { showConsent = true }
+                }
 
-            // 書籍要約
-            NavigationLink(destination: AISummaryView(viewModel: viewModel)) {
-                AIMenuCard(
-                    icon: "book.closed.fill",
-                    titleKey: "ai.menu.summary.title",
-                    descKey: "ai.menu.summary.desc",
-                    isEnabled: hasTickets
-                )
-            }
-            .disabled(!hasTickets)
+                Divider().padding(.leading, 68)
 
-            // SNS投稿生成
-            NavigationLink(destination: AISNSPostView(viewModel: viewModel)) {
-                AIMenuCard(
-                    icon: "square.and.pencil",
-                    titleKey: "ai.menu.sns.title",
-                    descKey: "ai.menu.sns.desc",
-                    isEnabled: hasTickets
-                )
+                // 書籍要約
+                NavigationLink(destination: AISummaryView(viewModel: viewModel)) {
+                    AIMenuCard(
+                        icon: "book.closed.fill",
+                        titleKey: "ai.menu.summary.title",
+                        descKey: "ai.menu.summary.desc",
+                        isEnabled: hasTickets
+                    )
+                }
+                .disabled(!hasTickets)
+
+                Divider().padding(.leading, 68)
+
+                // SNS投稿生成
+                NavigationLink(destination: AISNSPostView(viewModel: viewModel)) {
+                    AIMenuCard(
+                        icon: "square.and.pencil",
+                        titleKey: "ai.menu.sns.title",
+                        descKey: "ai.menu.sns.desc",
+                        isEnabled: hasTickets
+                    )
+                }
+                .disabled(!hasTickets)
             }
-            .disabled(!hasTickets)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.systemBackground))
+            )
 
             // チケットなし時の警告
             if !hasTickets {
@@ -170,11 +181,6 @@ private struct AIMenuCard: View {
                 .foregroundColor(.secondary)
         }
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
-        )
         .opacity(isEnabled ? 1.0 : 0.5)
     }
 }
