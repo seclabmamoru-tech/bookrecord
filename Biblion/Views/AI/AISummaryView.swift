@@ -165,6 +165,13 @@ struct AISummaryView: View {
 
     private func executeAI() async {
         guard let book = selectedBook else { return }
+        // フリーチケット使用時はAI依頼のタイミングで広告を表示
+        let willShowAd = CoreDataManager.shared.fetchOrCreateUserPlan().freeTicketCount > 0
+        if willShowAd {
+            await withCheckedContinuation { continuation in
+                InterstitialAdManager.shared.showAIAd { continuation.resume() }
+            }
+        }
         let memos = CoreDataManager.shared.fetchMemos(for: book)
             .map { $0.content ?? "" }
             .filter { !$0.isEmpty }
@@ -172,11 +179,7 @@ struct AISummaryView: View {
         let prompt = "\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。\(memoText)"
         await viewModel.executeAI(menuType: .summary, userInput: prompt)
         if viewModel.result != nil {
-            if viewModel.shouldShowAIAd {
-                InterstitialAdManager.shared.showAIAd { showResult = true }
-            } else {
-                showResult = true
-            }
+            showResult = true
         }
     }
 }

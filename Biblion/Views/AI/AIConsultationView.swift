@@ -150,13 +150,16 @@ struct AIConsultationView: View {
     }
 
     private func executeAI() async {
+        // フリーチケット使用時はAI依頼のタイミングで広告を表示
+        let willShowAd = CoreDataManager.shared.fetchOrCreateUserPlan().freeTicketCount > 0
+        if willShowAd {
+            await withCheckedContinuation { continuation in
+                InterstitialAdManager.shared.showAIAd { continuation.resume() }
+            }
+        }
         await viewModel.executeAI(menuType: .consultation, userInput: inputText)
         if viewModel.result != nil {
-            if viewModel.shouldShowAIAd {
-                InterstitialAdManager.shared.showAIAd { showResult = true }
-            } else {
-                showResult = true
-            }
+            showResult = true
         }
     }
 }

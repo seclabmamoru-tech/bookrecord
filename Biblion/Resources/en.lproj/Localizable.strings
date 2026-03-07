@@ -128,7 +128,8 @@
 "ai.result.disclaimer" = "Based on your reading notes";
 "ai.result.references" = "Referenced Books";
 "ai.result.addTodo" = "Add as Todo";
-"ai.result.copy" = "Copy";
+"ai.result.copy" = "Copy All";
+"ai.result.copied" = "Copied!";
 "ai.result.share" = "Share";
 "ai.result.retry" = "Try Again";
 "ai.result.retryAlert" = "This will use 1 ticket. Continue?";

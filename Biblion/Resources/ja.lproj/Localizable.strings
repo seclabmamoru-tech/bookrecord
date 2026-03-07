@@ -128,7 +128,8 @@
 "ai.result.disclaimer" = "この回答はあなたの読書メモに基づいています";
 "ai.result.references" = "参照した書籍";
 "ai.result.addTodo" = "Todoに追加";
-"ai.result.copy" = "コピー";
+"ai.result.copy" = "全文コピー";
+"ai.result.copied" = "コピーしました";
 "ai.result.share" = "シェア";
 "ai.result.retry" = "もう一度試す";
 "ai.result.retryAlert" = "チケットを1枚消費して再試行します。よろしいですか？";

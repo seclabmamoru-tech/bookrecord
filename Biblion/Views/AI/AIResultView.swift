@@ -11,8 +11,8 @@ struct AIResultView: View {
     @State private var showReferences = false
     @State private var includePromo = true
     @State private var showShareSheet = false
-    @State private var showAddTaskSheet = false
     @State private var showRetryAlert = false
+    @State private var showCopiedFeedback = false
 
     private var shareText: String {
         if includePromo {
@@ -24,10 +24,8 @@ struct AIResultView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // 生成テキスト
-                Text(result)
-                    .font(.body)
-                    .lineSpacing(6)
+                // 生成テキスト（マークダウン表示・テキスト選択可）
+                AIMarkdownView(text: result)
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 12)
@@ -88,32 +86,27 @@ struct AIResultView: View {
 
                 // アクションボタン群
                 VStack(spacing: 12) {
-                    // Todoに追加（悩み相談のみ）
-                    if menuType == .consultation {
-                        Button {
-                            showAddTaskSheet = true
-                        } label: {
-                            Label("ai.result.addTodo", systemImage: "plus.circle")
-                                .font(.subheadline.bold())
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.indigo.opacity(0.1))
-                                .foregroundColor(.indigo)
-                                .cornerRadius(12)
-                        }
-                    }
-
                     // コピーボタン
                     Button {
                         UIPasteboard.general.string = result
+                        withAnimation {
+                            showCopiedFeedback = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation { showCopiedFeedback = false }
+                        }
                     } label: {
-                        Label("ai.result.copy", systemImage: "doc.on.doc")
-                            .font(.subheadline.bold())
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color(.systemGray5))
-                            .foregroundColor(.primary)
-                            .cornerRadius(12)
+                        Label(
+                            showCopiedFeedback ? "ai.result.copied" : "ai.result.copy",
+                            systemImage: showCopiedFeedback ? "checkmark" : "doc.on.doc"
+                        )
+                        .font(.subheadline.bold())
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(showCopiedFeedback ? Color.green.opacity(0.15) : Color(.systemGray5))
+                        .foregroundColor(showCopiedFeedback ? .green : .primary)
+                        .cornerRadius(12)
+                        .animation(.easeInOut(duration: 0.2), value: showCopiedFeedback)
                     }
 
                     // シェアボタン（SNS投稿のみ）
@@ -164,8 +157,70 @@ struct AIResultView: View {
         .sheet(isPresented: $showShareSheet) {
             ShareSheet(activityItems: [shareText])
         }
-        .sheet(isPresented: $showAddTaskSheet) {
-            AddTaskFromAIView(result: result)
+    }
+}
+
+// MARK: - マークダウン表示ビュー
+
+struct AIMarkdownView: View {
+    let text: String
+
+    private var lines: [String] {
+        text.components(separatedBy: "\n")
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
+                lineView(line)
+            }
+        }
+        .textSelection(.enabled)
+    }
+
+    @ViewBuilder
+    private func lineView(_ line: String) -> some View {
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+
+        if trimmed.hasPrefix("## ") {
+            Text(trimmed.dropFirst(3))
+                .font(.headline)
+                .padding(.top, 12)
+                .padding(.bottom, 2)
+        } else if trimmed.hasPrefix("# ") {
+            Text(trimmed.dropFirst(2))
+                .font(.title3.bold())
+                .padding(.top, 12)
+                .padding(.bottom, 2)
+        } else if trimmed.hasPrefix("- ") || trimmed.hasPrefix("・") || trimmed.hasPrefix("• ") {
+            let prefix = trimmed.hasPrefix("- ") ? 2 : 1
+            HStack(alignment: .top, spacing: 6) {
+                Text("•")
+                    .foregroundColor(.secondary)
+                    .frame(width: 12)
+                inlineMarkdown(String(trimmed.dropFirst(prefix)))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.top, 3)
+        } else if trimmed.isEmpty {
+            Color.clear.frame(height: 8)
+        } else {
+            inlineMarkdown(trimmed)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 3)
+        }
+    }
+
+    @ViewBuilder
+    private func inlineMarkdown(_ text: String) -> some View {
+        if let attributed = try? AttributedString(markdown: text,
+            options: AttributedString.MarkdownParsingOptions(
+                interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
+            Text(attributed)
+                .lineSpacing(4)
+        } else {
+            Text(text)
+                .lineSpacing(4)
         }
     }
 }
@@ -182,127 +237,10 @@ struct ShareSheet: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
-// MARK: - AI結果からタスク追加
-
-private struct AddTaskFromAIView: View {
-    let result: String
-    @State private var actions: [String]
-    @State private var selections: [Bool]
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var taskViewModel: TaskViewModel
-
-    init(result: String) {
-        self.result = result
-        let parsed = Self.parseActions(from: result)
-        _actions = State(initialValue: parsed)
-        _selections = State(initialValue: Array(repeating: false, count: parsed.count))
-    }
-
-    /// AIの出力テキストから箇条書き・番号付きのアクション行を抽出する
-    static func parseActions(from text: String) -> [String] {
-        let bulletPrefixes = ["- ", "・", "• ", "● ", "◆ ", "▶ ", "✅ ", "→ "]
-        return text.components(separatedBy: "\n").compactMap { line in
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            for prefix in bulletPrefixes {
-                if trimmed.hasPrefix(prefix) {
-                    let content = String(trimmed.dropFirst(prefix.count)).trimmingCharacters(in: .whitespaces)
-                    return content.isEmpty ? nil : content
-                }
-            }
-            // 「1. 」「1） 」「① 」形式
-            if trimmed.range(of: #"^\d+[\.）\)]\s+"#, options: .regularExpression) != nil ||
-               trimmed.range(of: #"^[①-⑳]\s*"#, options: .regularExpression) != nil {
-                let content = trimmed.replacingOccurrences(of: #"^\d+[\.）\)]\s+"#, with: "", options: .regularExpression)
-                    .replacingOccurrences(of: #"^[①-⑳]\s*"#, with: "", options: .regularExpression)
-                    .trimmingCharacters(in: .whitespaces)
-                return content.isEmpty ? nil : content
-            }
-            return nil
-        }
-    }
-
-    private var allSelected: Bool { selections.allSatisfy { $0 } }
-    private var anySelected: Bool { selections.contains(true) }
-
-    var body: some View {
-        NavigationStack {
-            Group {
-                if actions.isEmpty {
-                    // アクション抽出できなかった場合のフォールバック
-                    VStack(spacing: 16) {
-                        Spacer()
-                        Image(systemName: "text.badge.xmark")
-                            .font(.system(size: 48))
-                            .foregroundColor(.secondary)
-                        Text(LocalizedStringKey("ai.result.addTodo.noActions"))
-                            .font(.headline)
-                        Text(LocalizedStringKey("ai.result.addTodo.noActionsDescription"))
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                        Spacer()
-                    }
-                    .padding()
-                } else {
-                    List {
-                        Section {
-                            ForEach(actions.indices, id: \.self) { i in
-                                Button {
-                                    selections[i].toggle()
-                                } label: {
-                                    HStack(alignment: .top, spacing: 12) {
-                                        Image(systemName: selections[i] ? "checkmark.circle.fill" : "circle")
-                                            .foregroundColor(selections[i] ? .indigo : Color(.systemGray3))
-                                            .font(.title3)
-                                        Text(actions[i])
-                                            .foregroundColor(.primary)
-                                            .multilineTextAlignment(.leading)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                    }
-                                    .padding(.vertical, 2)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        } header: {
-                            HStack {
-                                Text("ai.result.addTodo.selectActions")
-                                Spacer()
-                                Button(allSelected ? "common.deselectAll" : "common.selectAll") {
-                                    let next = !allSelected
-                                    selections = selections.map { _ in next }
-                                }
-                                .font(.caption)
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle(Text("ai.result.addTodo"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("common.cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("common.add") {
-                        zip(actions, selections)
-                            .filter(\.1)
-                            .map(\.0)
-                            .forEach { taskViewModel.addTask(title: $0) }
-                        dismiss()
-                    }
-                    .bold()
-                    .disabled(!anySelected)
-                }
-            }
-        }
-    }
-}
-
 #Preview {
     NavigationStack {
         AIResultView(
-            result: "これはAIが生成したテキストのサンプルです。読書メモに基づいて生成されました。",
+            result: "## 悩みへのアドバイス\n\nこれはAIが生成したテキストのサンプルです。\n\n**重要なポイント**として、読書メモに基づいて生成されました。\n\n- アクション1: まず〇〇するだけ\n- アクション2: 次に△△を試す\n\nあなたの「悩み」という言葉を受け取りました。一歩ずつ進んでいきましょう。",
             referencedBooks: ["ゼロ・トゥ・ワン", "影響力の武器"],
             menuType: .consultation,
             onRetry: {}
