@@ -270,11 +270,17 @@ final class CoreDataManager {
     /// 初回無料チケット付与（未付与の場合のみ100枚付与）
     func grantFreeTicketsIfNeeded() {
         let plan = fetchOrCreateUserPlan()
-        guard !plan.freeTicketGranted else { return }
-        plan.freeTicketCount = 100
-        plan.freeTicketGranted = true
-        plan.updatedAt = Date()
-        save()
+        if !plan.freeTicketGranted {
+            plan.freeTicketCount = 100
+            plan.freeTicketGranted = true
+            plan.updatedAt = Date()
+            save()
+        } else if plan.freeTicketCount < 100 {
+            // 旧バージョンで少ない枚数が付与された場合は100枚に更新
+            plan.freeTicketCount = 100
+            plan.updatedAt = Date()
+            save()
+        }
     }
 
     /// プラン情報を更新
