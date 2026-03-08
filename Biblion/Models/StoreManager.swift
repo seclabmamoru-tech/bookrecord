@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import StoreKit
-import UIKit
 
 // MARK: - プランタイプ
 
@@ -188,22 +187,6 @@ final class StoreManager: ObservableObject {
         }
     }
 
-    // MARK: - サブスクリプション管理
-
-    /// Apple のサブスクリプション管理画面をアプリ内で表示する（解約はここから行う）
-    func showManageSubscriptions() async {
-        guard let scene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else {
-            purchaseError = NSLocalizedString("store.error.sceneNotFound", comment: "")
-            return
-        }
-        do {
-            try await AppStore.showManageSubscriptions(in: scene)
-        } catch {
-            purchaseError = error.localizedDescription
-        }
-    }
-
     // MARK: - 購入復元
 
     func restorePurchases() async {
@@ -215,7 +198,7 @@ final class StoreManager: ObservableObject {
             try await AppStore.sync()
             for await result in Transaction.currentEntitlements {
                 if let transaction = try? checkVerified(result) {
-                    await handleTransaction(transaction)
+                    await handleTransaction(transaction, respectPriority: true)
                 }
             }
         } catch {
@@ -230,7 +213,8 @@ final class StoreManager: ObservableObject {
             for await result in Transaction.updates {
                 guard let self else { return }
                 if let transaction = try? await self.checkVerified(result) {
-                    await self.handleTransaction(transaction)
+                    // バックグラウンド更新は上位プランへの降格を防ぐ
+                    await self.handleTransaction(transaction, respectPriority: true)
                     await transaction.finish()
                 }
             }
@@ -239,37 +223,20 @@ final class StoreManager: ObservableObject {
 
     // MARK: - トランザクション処理
 
-    private func handleTransaction(_ transaction: Transaction) async {
+    /// - Parameter respectPriority: true のとき、バックグラウンド更新での Premium → Basic 降格を防ぐ
+    private func handleTransaction(_ transaction: Transaction, respectPriority: Bool = false) async {
         switch transaction.productID {
-        case ProductID.basicMonthly, ProductID.premiumMonthly:
-            // 有効なエンタイトルメント全体を確認し、最上位プランを設定
-            await refreshCurrentPlan()
+        case ProductID.basicMonthly:
+            if !respectPriority || currentPlan != .premium {
+                updatePlan(.basic, expiresAt: transaction.expirationDate)
+            }
+        case ProductID.premiumMonthly:
+            updatePlan(.premium, expiresAt: transaction.expirationDate)
         case ProductID.ticket45:
             CoreDataManager.shared.addPurchasedTickets(45)
         default:
             break
         }
-    }
-
-    /// 現在の有効なエンタイトルメントを全確認し、最上位プランを設定する
-    private func refreshCurrentPlan() async {
-        var highestPlan: PlanType = .free
-        var planExpiry: Date? = nil
-
-        for await result in Transaction.currentEntitlements {
-            guard let transaction = try? checkVerified(result) else { continue }
-            switch transaction.productID {
-            case ProductID.premiumMonthly:
-                highestPlan = .premium
-                planExpiry = transaction.expirationDate
-            case ProductID.basicMonthly where highestPlan != .premium:
-                highestPlan = .basic
-                planExpiry = transaction.expirationDate
-            default:
-                break
-            }
-        }
-        updatePlan(highestPlan, expiresAt: planExpiry)
     }
 
     // MARK: - 検証

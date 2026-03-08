@@ -173,8 +173,7 @@
 "mypage.upgrade.basic" = "Upgrade to Basic ($2.99/mo)";
 "mypage.upgrade.premium" = "Upgrade to Premium ($5.99/mo)";
 "mypage.restore" = "Restore Purchases";
-"mypage.manage.subscription" = "Manage Subscription (Cancel)";
-"store.error.sceneNotFound" = "Could not open the screen. Please restart the app and try again.";
+"mypage.cancel.note" = "* To cancel your subscription, go to Settings → Apple ID → Subscriptions on your iPhone.";
 "mypage.aiConsent" = "Allow AI data processing";
 "mypage.aiConsent.revokeAlert" = "Revoking consent will disable AI features. Continue?";
 "mypage.contact" = "Contact Support";
