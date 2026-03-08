@@ -142,25 +142,6 @@ struct MyPageView: View {
                     .foregroundColor(.primary)
                 }
 
-                // MARK: - サポート
-                Section(header: Text("mypage.section.support")) {
-                    Link(destination: URL(string: "mailto:support@it-master.jp")!) {
-                        HStack {
-                            Text("mypage.contact")
-                            Spacer()
-                            Image(systemName: "envelope")
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    .foregroundColor(.primary)
-
-                    Button("mypage.review") {
-                        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                            SKStoreReviewController.requestReview(in: scene)
-                        }
-                    }
-                }
-
                 // MARK: - アプリ情報
                 Section(header: Text("settings.about")) {
                     HStack {
@@ -168,6 +149,11 @@ struct MyPageView: View {
                         Spacer()
                         Text(String(format: NSLocalizedString("mypage.version", comment: ""), viewModel.appVersion))
                             .foregroundColor(.secondary)
+                    }
+                    Button("mypage.review") {
+                        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                            SKStoreReviewController.requestReview(in: scene)
+                        }
                     }
                 }
             }
