@@ -75,6 +75,7 @@
 "task.limitReached" = "Maximum 4 tasks reached";
 "task.executionRate" = "Completion Rate";
 "task.description" = "Make 4 action declarations inspired by your books. (Free Plan)";
+"task.description.paid" = "Make action declarations inspired by your books.";
 "task.hint.edit" = "← Left swipe: Edit name";
 "task.hint.manage" = "Right swipe: Delete →";
 

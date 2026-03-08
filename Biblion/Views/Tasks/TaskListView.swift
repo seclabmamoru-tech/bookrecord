@@ -24,7 +24,7 @@ struct TaskListView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 // 説明文
-                Text("task.description")
+                Text(currentPlan == .free ? "task.description" : "task.description.paid")
                     .font(.subheadline)
                     .foregroundColor(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
