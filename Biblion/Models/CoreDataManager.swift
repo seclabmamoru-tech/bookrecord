@@ -306,12 +306,28 @@ final class CoreDataManager {
         UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
     }
 
-    /// プラン情報を更新
+    /// プラン情報を更新（アップグレード時は当月分のチケットを即時付与）
     func updateUserPlan(planType: String, expiresAt: Date?) {
         let plan = fetchOrCreateUserPlan()
+        let oldPlanType = PlanType(rawValue: plan.planType ?? "free") ?? .free
+        let newPlanType = PlanType(rawValue: planType) ?? .free
+
         plan.planType = planType
         plan.expiresAt = expiresAt
         plan.updatedAt = Date()
+
+        // 有料プランへのアップグレード時、当月チケットをまだ付与していなければ即時付与
+        let newMonthly = PlanLimits.monthlyTickets(for: newPlanType)
+        if newPlanType != oldPlanType && newMonthly > 0 {
+            let cal = Calendar.current; let now = Date()
+            let currentYearMonth = cal.component(.year, from: now) * 100 + cal.component(.month, from: now)
+            let lastYearMonth = UserDefaults.standard.integer(forKey: "lastMonthlyTicketGrantYearMonth")
+            if currentYearMonth != lastYearMonth {
+                plan.freeTicketCount += Int32(newMonthly)
+                UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
+            }
+        }
+
         save()
     }
 
