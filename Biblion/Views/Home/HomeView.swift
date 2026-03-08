@@ -5,8 +5,6 @@ import Charts
 struct HomeView: View {
 
     @EnvironmentObject var viewModel: HomeViewModel
-    @State private var showSettings = false
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -33,18 +31,6 @@ struct HomeView: View {
             }
             .navigationTitle(Text("tab.home"))
             .background(Color(.systemGroupedBackground))
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Image(systemName: "gearshape.fill")
-                    }
-                }
-            }
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
         }
         .onAppear {
             viewModel.fetchBooks()
