@@ -165,10 +165,15 @@ struct MyPageView: View {
                     .foregroundColor(.secondary)
                     .disabled(viewModel.isProcessing)
 
-                    Text("mypage.cancel.note")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.top, 4)
+                    if viewModel.planType != .free {
+                        Button {
+                            Task { await viewModel.manageSubscriptions() }
+                        } label: {
+                            Text("mypage.manage.subscription")
+                        }
+                        .foregroundColor(.red)
+                        .disabled(viewModel.isProcessing)
+                    }
                 }
 
                 // MARK: - データとプライバシー

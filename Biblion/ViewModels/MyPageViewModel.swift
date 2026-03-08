@@ -93,6 +93,19 @@ final class MyPageViewModel: ObservableObject {
         }
     }
 
+    // MARK: - サブスクリプション管理
+
+    func manageSubscriptions() async {
+        isProcessing = true
+        await store.showManageSubscriptions()
+        isProcessing = false
+        if let error = store.purchaseError {
+            alertMessage = error
+            showAlert = true
+        }
+        refresh()
+    }
+
     // MARK: - 購入復元
 
     func restorePurchases() async {

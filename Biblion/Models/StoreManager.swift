@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import StoreKit
+import UIKit
 
 // MARK: - プランタイプ
 
@@ -182,6 +183,22 @@ final class StoreManager: ObservableObject {
             @unknown default:
                 break
             }
+        } catch {
+            purchaseError = error.localizedDescription
+        }
+    }
+
+    // MARK: - サブスクリプション管理
+
+    /// Apple のサブスクリプション管理画面をアプリ内で表示する（解約はここから行う）
+    func showManageSubscriptions() async {
+        guard let scene = UIApplication.shared.connectedScenes
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else {
+            purchaseError = NSLocalizedString("store.error.sceneNotFound", comment: "")
+            return
+        }
+        do {
+            try await AppStore.showManageSubscriptions(in: scene)
         } catch {
             purchaseError = error.localizedDescription
         }
