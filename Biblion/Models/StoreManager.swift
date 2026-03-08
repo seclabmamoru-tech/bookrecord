@@ -54,8 +54,8 @@ struct PlanLimits {
     /// 月次チケット付与数
     static func monthlyTickets(for plan: PlanType) -> Int {
         switch plan {
-        case .free: return 0
-        case .basic: return 0
+        case .free: return 1
+        case .basic: return 1
         case .premium: return 10
         }
     }

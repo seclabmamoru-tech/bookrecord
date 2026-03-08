@@ -54,8 +54,10 @@ struct BibliionApp: App {
         let cdManager = CoreDataManager.shared
         // fetchOrCreateUserPlan() 内でマイグレーションも実施
         cdManager.fetchOrCreateUserPlan()
-        // 初回無料3チケット付与
+        // 初回無料チケット付与（3枚）
         cdManager.grantFreeTicketsIfNeeded()
+        // 月次チケット付与（Free/Basic: 1枚/月, Premium: 10枚/月）
+        cdManager.grantMonthlyTicketsIfNeeded()
     }
 }
 

@@ -271,20 +271,33 @@ final class CoreDataManager {
         save()
     }
 
-    /// 初回無料チケット付与（未付与の場合のみ100枚付与）
+    /// 初回無料チケット付与（未付与の場合のみ3枚付与）
     func grantFreeTicketsIfNeeded() {
         let plan = fetchOrCreateUserPlan()
-        if !plan.freeTicketGranted {
-            plan.freeTicketCount = 100
-            plan.freeTicketGranted = true
-            plan.updatedAt = Date()
-            save()
-        } else if plan.freeTicketCount < 100 {
-            // 旧バージョンで少ない枚数が付与された場合は100枚に更新
-            plan.freeTicketCount = 100
-            plan.updatedAt = Date()
-            save()
-        }
+        guard !plan.freeTicketGranted else { return }
+        plan.freeTicketCount = 3
+        plan.freeTicketGranted = true
+        plan.updatedAt = Date()
+        save()
+    }
+
+    /// 月次チケット付与（当月未付与の場合のみ）
+    func grantMonthlyTicketsIfNeeded() {
+        let plan = fetchOrCreateUserPlan()
+        let planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
+        let monthlyCount = PlanLimits.monthlyTickets(for: planType)
+        guard monthlyCount > 0 else { return }
+
+        let calendar = Calendar.current
+        let now = Date()
+        let currentYearMonth = calendar.component(.year, from: now) * 100 + calendar.component(.month, from: now)
+        let lastYearMonth = UserDefaults.standard.integer(forKey: "lastMonthlyTicketGrantYearMonth")
+        guard currentYearMonth != lastYearMonth else { return }
+
+        plan.freeTicketCount += Int32(monthlyCount)
+        plan.updatedAt = now
+        save()
+        UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
     }
 
     /// プラン情報を更新
