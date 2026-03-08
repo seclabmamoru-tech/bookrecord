@@ -165,6 +165,10 @@
 "mypage.plan.premium" = "Premiumプラン";
 "mypage.plan.expires" = "有効期限：%@";
 "mypage.ticket.count" = "%d枚";
+"mypage.ticket.plan" = "サブスクチケット（広告なし）";
+"mypage.ticket.free" = "無料チケット";
+"mypage.ticket.purchased" = "購入チケット（広告なし）";
+"mypage.ticket.total" = "合計";
 "mypage.ticket.buy" = "チケットを購入（45枚 ¥900）";
 "mypage.upgrade.basic" = "Basicにアップグレード（¥200/月）";
 "mypage.upgrade.premium" = "Premiumにアップグレード（¥500/月）";

@@ -9,6 +9,9 @@ final class MyPageViewModel: ObservableObject {
 
     @Published var planType: PlanType = .free
     @Published var ticketCount: Int32 = 0
+    @Published var freeTicketCount: Int32 = 0
+    @Published var planTicketCount: Int32 = 0
+    @Published var purchasedTicketCount: Int32 = 0
     @Published var expiresAt: Date?
     @Published var isAIConsentGiven: Bool = false
     @Published var showRevokeConsentAlert = false
@@ -32,6 +35,9 @@ final class MyPageViewModel: ObservableObject {
     func refresh() {
         let plan = cdManager.fetchOrCreateUserPlan()
         planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
+        freeTicketCount = plan.freeTicketCount
+        planTicketCount = plan.planTicketCount
+        purchasedTicketCount = plan.purchasedTicketCount
         ticketCount = cdManager.totalTicketCount
         expiresAt = plan.expiresAt
         isAIConsentGiven = plan.isAIConsentGiven

@@ -300,7 +300,12 @@ final class CoreDataManager {
         let lastYearMonth = UserDefaults.standard.integer(forKey: "lastMonthlyTicketGrantYearMonth")
         guard currentYearMonth != lastYearMonth else { return }
 
-        plan.freeTicketCount += Int32(monthlyCount)
+        // 有料プランのチケットは planTicketCount（広告なし枠）へ、無料プランは freeTicketCount へ
+        if planType == .free {
+            plan.freeTicketCount += Int32(monthlyCount)
+        } else {
+            plan.planTicketCount += Int32(monthlyCount)
+        }
         plan.updatedAt = now
         save()
         UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
@@ -317,11 +322,16 @@ final class CoreDataManager {
         plan.updatedAt = Date()
 
         // プラン変更時、新プランの当月チケットを即時付与（既付与チェックなし）
+        // 有料プランのチケットは planTicketCount（広告なし枠）へ
         let newMonthly = PlanLimits.monthlyTickets(for: newPlanType)
         if newPlanType != oldPlanType && newMonthly > 0 {
             let cal = Calendar.current; let now = Date()
             let currentYearMonth = cal.component(.year, from: now) * 100 + cal.component(.month, from: now)
-            plan.freeTicketCount += Int32(newMonthly)
+            if newPlanType == .free {
+                plan.freeTicketCount += Int32(newMonthly)
+            } else {
+                plan.planTicketCount += Int32(newMonthly)
+            }
             UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
         }
 

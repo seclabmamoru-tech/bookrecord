@@ -224,15 +224,35 @@ final class StoreManager: ObservableObject {
 
     private func handleTransaction(_ transaction: Transaction) async {
         switch transaction.productID {
-        case ProductID.basicMonthly:
-            updatePlan(.basic, expiresAt: transaction.expirationDate)
-        case ProductID.premiumMonthly:
-            updatePlan(.premium, expiresAt: transaction.expirationDate)
+        case ProductID.basicMonthly, ProductID.premiumMonthly:
+            // 有効なエンタイトルメント全体を確認し、最上位プランを設定
+            await refreshCurrentPlan()
         case ProductID.ticket45:
             CoreDataManager.shared.addPurchasedTickets(45)
         default:
             break
         }
+    }
+
+    /// 現在の有効なエンタイトルメントを全確認し、最上位プランを設定する
+    private func refreshCurrentPlan() async {
+        var highestPlan: PlanType = .free
+        var planExpiry: Date? = nil
+
+        for await result in Transaction.currentEntitlements {
+            guard let transaction = try? checkVerified(result) else { continue }
+            switch transaction.productID {
+            case ProductID.premiumMonthly:
+                highestPlan = .premium
+                planExpiry = transaction.expirationDate
+            case ProductID.basicMonthly where highestPlan != .premium:
+                highestPlan = .basic
+                planExpiry = transaction.expirationDate
+            default:
+                break
+            }
+        }
+        updatePlan(highestPlan, expiresAt: planExpiry)
     }
 
     // MARK: - 検証

@@ -39,16 +39,45 @@ struct MyPageView: View {
 
                 // MARK: - チケット
                 Section(header: Text("mypage.section.ticket")) {
-                    VStack(spacing: 8) {
-                        Text("\(viewModel.ticketCount)")
-                            .font(.largeTitle.bold())
-                            .foregroundColor(.indigo)
-                            .frame(maxWidth: .infinity)
-                        Text(String(format: NSLocalizedString("mypage.ticket.count", comment: ""), viewModel.ticketCount))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                    VStack(spacing: 6) {
+                        HStack {
+                            Text("mypage.ticket.plan")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text(String(format: NSLocalizedString("mypage.ticket.count", comment: ""), viewModel.planTicketCount))
+                                .font(.caption.bold())
+                                .foregroundColor(.indigo)
+                        }
+                        HStack {
+                            Text("mypage.ticket.free")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text(String(format: NSLocalizedString("mypage.ticket.count", comment: ""), viewModel.freeTicketCount))
+                                .font(.caption.bold())
+                                .foregroundColor(.secondary)
+                        }
+                        HStack {
+                            Text("mypage.ticket.purchased")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text(String(format: NSLocalizedString("mypage.ticket.count", comment: ""), viewModel.purchasedTicketCount))
+                                .font(.caption.bold())
+                                .foregroundColor(.orange)
+                        }
+                        Divider()
+                        HStack {
+                            Text("mypage.ticket.total")
+                                .font(.subheadline.bold())
+                            Spacer()
+                            Text(String(format: NSLocalizedString("mypage.ticket.count", comment: ""), viewModel.ticketCount))
+                                .font(.subheadline.bold())
+                                .foregroundColor(.indigo)
+                        }
                     }
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 4)
 
                     Button {
                         Task { await viewModel.buyTicket45() }
