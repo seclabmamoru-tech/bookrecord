@@ -65,7 +65,7 @@ struct PlanLimits {
 // MARK: - プロダクトID
 
 enum ProductID {
-    static let basicMonthly   = "jp.it_master.Biblion.basic.monthlyPremium"
+    static let basicMonthly   = "jp.it_master.Biblion.basic.monthly"
     static let premiumMonthly = "jp.it_master.Biblion.premium.monthly"
     static let ticket45       = "jp.it_master.Biblion.tickets.45"
 
