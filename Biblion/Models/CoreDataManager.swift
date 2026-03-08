@@ -348,51 +348,6 @@ final class CoreDataManager {
         save()
     }
 
-    // MARK: - ScheduledTask CRUD
-
-    @discardableResult
-    func addScheduledTask(
-        taskTitle: String,
-        startHour: Int16,
-        startMinute: Int16,
-        endHour: Int16,
-        endMinute: Int16,
-        frequency: String,
-        weekdays: String,
-        referenceDate: Date
-    ) -> ScheduledTask {
-        let task = ScheduledTask(context: context)
-        task.id = UUID()
-        task.taskTitle = taskTitle
-        task.startHour = startHour
-        task.startMinute = startMinute
-        task.endHour = endHour
-        task.endMinute = endMinute
-        task.frequency = frequency
-        task.weekdays = weekdays
-        task.referenceDate = referenceDate
-        task.createdAt = Date()
-        save()
-        return task
-    }
-
-    func updateScheduledTask(_ task: ScheduledTask) {
-        save()
-    }
-
-    func deleteScheduledTask(_ task: ScheduledTask) {
-        context.delete(task)
-        save()
-    }
-
-    func fetchScheduledTasks() -> [ScheduledTask] {
-        let request: NSFetchRequest<ScheduledTask> = ScheduledTask.fetchRequest()
-        request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \ScheduledTask.createdAt, ascending: true)
-        ]
-        return (try? context.fetch(request)) ?? []
-    }
-
     // MARK: - AIHistory CRUD
 
     @discardableResult

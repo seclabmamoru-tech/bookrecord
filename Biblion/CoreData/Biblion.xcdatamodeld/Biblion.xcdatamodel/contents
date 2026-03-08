@@ -48,18 +48,6 @@
         <attribute name="isDone" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="task" maxCount="1" deletionRule="Nullify" destinationEntity="TaskEntity" inverseName="records" inverseEntity="TaskRecord"/>
     </entity>
-    <entity name="ScheduledTask" representedClassName="ScheduledTask" syncable="YES" codeGenerationType="class">
-        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="endHour" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="endMinute" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="frequency" attributeType="String" defaultValueString="weekly"/>
-        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="referenceDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="startHour" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="startMinute" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="taskTitle" attributeType="String" defaultValueString=""/>
-        <attribute name="weekdays" attributeType="String" defaultValueString=""/>
-    </entity>
     <entity name="UserPlan" representedClassName="UserPlan" syncable="YES" codeGenerationType="class">
         <attribute name="expiresAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="freeTicketCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>

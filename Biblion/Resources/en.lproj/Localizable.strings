@@ -79,27 +79,6 @@
 "task.hint.edit" = "← Left swipe: Edit name";
 "task.hint.manage" = "Right swipe: Delete →";
 
-// MARK: - Scheduler
-"scheduler.title" = "Scheduler";
-"scheduler.thisWeek" = "This Week";
-"scheduler.manage" = "Manage Tasks";
-"scheduler.manageTitle" = "Manage Schedules";
-"scheduler.addTitle" = "Add Schedule";
-"scheduler.editTitle" = "Edit Schedule";
-"scheduler.addSchedule" = "Add Schedule";
-"scheduler.noSchedules" = "No schedules yet";
-"scheduler.noTasksAvailable" = "No tasks available. Please create a task first.";
-"scheduler.taskName" = "Task Name";
-"scheduler.time" = "Time";
-"scheduler.startTime" = "Start Time";
-"scheduler.endTime" = "End Time";
-"scheduler.frequency" = "Frequency";
-"scheduler.weekdays" = "Days";
-"scheduler.weekdaysRequired" = "Please select at least one day";
-"scheduler.frequency.daily" = "Daily";
-"scheduler.frequency.weekly" = "Weekly";
-"scheduler.frequency.biweekly" = "Every 2 Weeks";
-
 // MARK: - AI
 "ai.consentTitle" = "About AI Feature";
 "ai.consentBody" = "To use the AI feature, your reading memos will be sent to Anthropic's API. The data is used solely for generating solution insights and for no other purpose. Please review our Privacy Policy for details.";
