@@ -17,14 +17,27 @@ struct AISNSPostView: View {
         let genres: [String]
     }
 
-    private let genreCategories: [GenreCategory] = [
-        GenreCategory(name: "直感", genres: ["驚き", "楽しい", "尊い", "癒し", "感動", "ショック"]),
-        GenreCategory(name: "知識", genres: ["得した", "注意喚起"]),
-        GenreCategory(name: "主張", genres: ["同調", "物申す"]),
-        GenreCategory(name: "納得", genres: ["あるある", "真理"]),
-        GenreCategory(name: "声援", genres: ["応援", "支援"]),
-        GenreCategory(name: "欲求", genres: ["したい", "報酬"])
-    ]
+    private var genreCategories: [GenreCategory] {
+        if AIPrompts.isJapanese {
+            return [
+                GenreCategory(name: "直感", genres: ["驚き", "楽しい", "尊い", "癒し", "感動", "ショック"]),
+                GenreCategory(name: "知識", genres: ["得した", "注意喚起"]),
+                GenreCategory(name: "主張", genres: ["同調", "物申す"]),
+                GenreCategory(name: "納得", genres: ["あるある", "真理"]),
+                GenreCategory(name: "声援", genres: ["応援", "支援"]),
+                GenreCategory(name: "欲求", genres: ["したい", "報酬"])
+            ]
+        } else {
+            return [
+                GenreCategory(name: "Instinct", genres: ["Surprise", "Fun", "Heartwarming", "Healing", "Moving", "Shock"]),
+                GenreCategory(name: "Knowledge", genres: ["Gained", "Caution"]),
+                GenreCategory(name: "Assertion", genres: ["Agree", "Speak Out"]),
+                GenreCategory(name: "Conviction", genres: ["Relatable", "Truth"]),
+                GenreCategory(name: "Support", genres: ["Cheering", "Solidarity"]),
+                GenreCategory(name: "Desire", genres: ["Want to Try", "Reward"])
+            ]
+        }
+    }
 
     private var booksWithMemos: [Book] {
         CoreDataManager.shared.fetchBooks().filter { book in
@@ -226,54 +239,14 @@ struct AISNSPostView: View {
             .map { $0.content ?? "" }
             .joined(separator: "\n- ")
 
-        let genreText = selectedGenres.sorted().joined(separator: "・")
-        let prompt = """
-あなたはフォロワー100万人を超えるインフルエンサーです。\
-読んだ本の「本質」を一言で刺せる投稿を量産してきたプロです。\
-以下の条件をもとに、SNSで拡散される書評投稿を1つ作成してください。
-
----
-
-【書籍】
-\(book.title ?? "")（\(book.author ?? "")）
-
-【選んだメモ（本の核心）】
-- \(selectedMemosText)
-
-【読み手に与えたい感情】
-\(genreText)
-
----
-
-## 投稿を作るときのルール
-
-### ① 冒頭で「スクロールを止める」
-- 最初の1行で読者の手を止めること
-- 「え、それ私のことだ」と思わせる書き出し
-- 数字・問いかけ・逆説のどれかを使う
-
-### ② 「感情の流れ」を設計する
-以下の順番で感情を動かすこと：
-違和感 → 共感 → 納得 → 行動したくなる
-
-### ③ 具体と抽象を交互に使う
-- 抽象論だけでは刺さらない
-- 選んだメモの内容から "あの瞬間"を想起させる具体場面を入れる
-
-### ④ 締めは「行動・思考の変化」を促す一言
-- 読後に何かしたくなる・考えたくなる余韻を残す
-- 問いかけ or 短い命令形が効果的
-
-### ⑤ ハッシュタグ
-- 3〜5個・拡散力のあるものだけ選ぶ
-- 書名タグは必ず入れる
-
----
-
-## 出力形式
-投稿案を3つ作成してください。
-各案は「【案1】」「【案2】」「【案3】」の見出しで区切り、投稿本文のみ出力してください（解説・注釈・補足は不要）。
-"""
+        let separator = AIPrompts.isJapanese ? "・" : ", "
+        let genreText = selectedGenres.sorted().joined(separator: separator)
+        let prompt = AIPrompts.sns(
+            bookTitle: book.title ?? "",
+            author: book.author ?? "",
+            memos: selectedMemosText,
+            genre: genreText
+        )
 
         // 選択した書籍・メモのみをAPIに送信
         let bookData = [AIBookData(

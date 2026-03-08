@@ -140,6 +140,8 @@
 "ai.summary.noMemoNote" = "No memos (will summarize from general knowledge)";
 "ai.sns.platform" = "Platform";
 "ai.sns.selectMemos" = "Select memos to use";
+"ai.sns.genre" = "Select emotion genre (multiple allowed)";
+"ai.consultation.inputLabel" = "Enter a challenge or concern you'd like to solve";
 "ai.share.appPromo" = "\n\n📚 Discuss your reading with AI on Biblion\nhttps://apps.apple.com/app/biblion/idXXXXXXXXXX";
 "ai.share.includePromo" = "Include app promotion";
 

@@ -174,30 +174,11 @@ struct AISummaryView: View {
             .map { $0.content ?? "" }
             .filter { !$0.isEmpty }
 
-        // メモの有無に応じてプロンプトを切り替え
-        let memoSection: String
-        let noMemoInstruction: String
-        if memos.isEmpty {
-            memoSection = ""
-            noMemoInstruction = """
-
-## 重要な注意事項
-この書籍にはユーザーのメモがありません。
-回答の冒頭に必ず「メモが少ないため、世間の情報をサマリーします」と1行で記載してから要約を開始してください。
-一般的な知識・書評・世間の評価に基づいて要約してください。
-"""
-        } else {
-            memoSection = "\n\n【読書メモ】\n" + memos.map { "  - \($0)" }.joined(separator: "\n")
-            noMemoInstruction = ""
-        }
-
-        let prompt = """
-\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。\(memoSection)\(noMemoInstruction)
-
-## 出力ルール
-- 表形式（テーブル）は使用しないでください
-- 箇条書きや文章で出力してください
-"""
+        let prompt = AIPrompts.summary(
+            bookTitle: book.title ?? "",
+            author: book.author ?? "",
+            memos: memos
+        )
         // 選択した書籍のみを送信（他の書籍が参照書籍に混入しないよう）
         let bookData = [AIBookData(title: book.title ?? "", author: book.author ?? "", memos: memos)]
         let willShowAd = CoreDataManager.shared.fetchOrCreateUserPlan().freeTicketCount > 0

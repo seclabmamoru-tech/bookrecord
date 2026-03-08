@@ -86,26 +86,19 @@ final class AIViewModel: ObservableObject {
         // 5. メニュータイプに応じてプロンプトを構築
         let resolvedUserInput: String
         if menuType == .consultation {
-            let bookContext = resolvedBookData.map { book in
-                let memoText = book.memos.map { "  - \($0)" }.joined(separator: "\n")
-                return "【\(book.title)】（\(book.author)）\n\(memoText)"
-            }.joined(separator: "\n\n")
-
-            resolvedUserInput = """
-あなたは1000冊以上を読んできた読書家のメンターです。押しつけがましくなく、ユーザーが自分で気づけるよう問いかけながら導くスタイルで話してください。
-
-【ユーザーの悩み・課題】
-\(userInput)
-
-【参考にする書籍とメモ】
-\(bookContext)
-
-## 回答のルール
-- ユーザーの悩みに直接答えること
-- 書籍メモを引用する際は「このメモが悩みにどう関係するか」を1文で説明してから使うこと
-- アクションは「15分以内・スマホかノートだけ・まず〇〇するだけ」の基準で提示すること
-- 締めはユーザーの悩みの言葉を1つ拾い、その人固有の状況に合わせた一言で終えること（汎用的な励ましは使わない）
-"""
+            let bookContext: String
+            if AIPrompts.isJapanese {
+                bookContext = resolvedBookData.map { book in
+                    let memoText = book.memos.map { "  - \($0)" }.joined(separator: "\n")
+                    return "【\(book.title)】（\(book.author)）\n\(memoText)"
+                }.joined(separator: "\n\n")
+            } else {
+                bookContext = resolvedBookData.map { book in
+                    let memoText = book.memos.map { "  - \($0)" }.joined(separator: "\n")
+                    return "[\(book.title)] by \(book.author)\n\(memoText)"
+                }.joined(separator: "\n\n")
+            }
+            resolvedUserInput = AIPrompts.consultation(userInput: userInput, bookContext: bookContext)
         } else {
             resolvedUserInput = userInput
         }

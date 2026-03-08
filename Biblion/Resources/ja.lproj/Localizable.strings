@@ -141,6 +141,7 @@
 "ai.sns.platform" = "投稿先";
 "ai.sns.selectMemos" = "活用するメモを選択（複数可）";
 "ai.sns.genre" = "拡散ジャンルを選択（複数可）";
+"ai.consultation.inputLabel" = "今の悩みや解決したい課題を入力してください";
 "ai.share.appPromo" = "\n\n📚 Biblionで読書メモをAIに相談しよう\nhttps://apps.apple.com/jp/app/biblion/idXXXXXXXXXX";
 "ai.share.includePromo" = "アプリ紹介文を含める";
 

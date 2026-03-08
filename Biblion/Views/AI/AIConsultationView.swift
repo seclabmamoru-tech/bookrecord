@@ -17,7 +17,7 @@ struct AIConsultationView: View {
             VStack(spacing: 16) {
                 // 入力エリア
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("今の悩みや解決したい課題を入力してください")
+                    Text(LocalizedStringKey("ai.consultation.inputLabel"))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
 
