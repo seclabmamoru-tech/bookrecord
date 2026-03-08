@@ -60,47 +60,40 @@ enum AIPrompts {
 """
         } else {
             return """
-You are a social media influencer with over 1 million followers. \
-You are a pro at producing posts that distill the "essence" of a book in a single striking line. \
-Based on the conditions below, create one viral book review post for social media.
-
----
+You are an experienced book reviewer who crafts compelling posts. \
+Based on the following book and selected highlights, write an engaging book review post for sharing online.
 
 [Book]
 \(bookTitle) by \(author)
 
-[Selected Memos (Core Insights)]
+[Selected Highlights]
 - \(memos)
 
-[Emotion to Evoke in the Reader]
+[Tone and Emotion]
 \(genre)
 
----
+## Writing Rules
 
-## Rules for Crafting the Post
+### ① Hook the Reader from the First Line
+- The opening line must immediately grab attention
+- Make readers think "That's exactly me"
+- Use a number, question, or surprising contrast
 
-### ① Stop the Scroll from the First Line
-- The opening line must make the reader stop scrolling
-- Write it so readers think "Wait, that's exactly me"
-- Use numbers, questions, or paradox
+### ② Shape the Emotional Flow
+Guide readers through these emotions in order:
+Tension → Empathy → Insight → Motivation
 
-### ② Design the Emotional Flow
-Move the reader through these emotions in order:
-Unease → Empathy → Conviction → Desire to Act
+### ③ Balance Concrete and Abstract
+- Avoid pure abstraction
+- Use the selected highlights to evoke a relatable moment
 
-### ③ Alternate Between Concrete and Abstract
-- Pure abstraction won't resonate
-- Use the selected memos to evoke a specific moment the reader can recall
-
-### ④ End with a Call to Action or Reflection
-- Leave a lingering feeling that makes the reader want to do or think something
+### ④ Close with a Thought or Action
+- Leave a lingering feeling that makes the reader want to do or reflect on something
 - A question or short imperative works best
 
-### ⑤ Hashtags
-- Choose 3–5 high-reach hashtags only
-- Always include the book title as a hashtag
-
----
+### ⑤ Tags
+- Add 3–5 relevant tags
+- Include the book title as a tag
 
 ## Output Format
 Create 3 post drafts.
