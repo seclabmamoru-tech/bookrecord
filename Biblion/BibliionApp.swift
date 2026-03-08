@@ -14,11 +14,13 @@ struct BibliionApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
-    init() {
-        // 通知許可の申請
-        NotificationManager.shared.requestAuthorization()
+    /// 同一フォアグラウンド滞在中に .active が複数回発火しても処理を1回に限定するフラグ
+    /// バックグラウンドへ移行すると false にリセットされる
+    @State private var pendingActivationHandled = false
 
+    init() {
         // UserPlan 初期化（初回起動時）
+        // ※通知許可は ATT より先に表示されないよう、ATT 完了後にリクエストする
         initializeUserPlan()
     }
 
@@ -30,9 +32,15 @@ struct BibliionApp: App {
                 .environmentObject(libraryViewModel)
                 .environmentObject(taskViewModel)
                 .onChange(of: scenePhase) { newPhase in
-                    if newPhase == .active {
-                        // ATT 確認後に AdMob を初期化し、必要に応じて広告をロード・表示
+                    if newPhase == .background {
+                        // バックグラウンドへ移行したらフラグをリセット（次回復帰時に再処理）
+                        pendingActivationHandled = false
+                    } else if newPhase == .active, !pendingActivationHandled {
+                        pendingActivationHandled = true
+                        // ATT 確認後に通知許可・AdMob 初期化を行う
                         ATTManager.shared.requestIfNeeded { wasFirstRequest in
+                            // ATT 完了後に通知許可をリクエスト（初回のみダイアログが出る）
+                            NotificationManager.shared.requestAuthorization()
                             // 初回起動（ATT ダイアログ表示直後）は広告を出さない
                             let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
                             let planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
