@@ -81,7 +81,7 @@
 
 // MARK: - AI
 "ai.consentTitle" = "About AI Feature";
-"ai.consentBody" = "To use the AI feature, your reading memos will be sent to Anthropic's API. The data is used solely for generating solution insights and for no other purpose. Please review our Privacy Policy for details.";
+"ai.consentBody" = "To use the AI feature, your reading memos and consultation text will be sent to Anthropic's servers. The data is used solely for generating advice, summaries, and posts, and for no other purpose. Please review our Privacy Policy for details.";
 "ai.consentCheck" = "I have read the above and agree to send my data";
 "ai.consentConfirm" = "Agree and Continue";
 "ai.consentRequired" = "To use the AI feature, you need to agree to data transmission first.\nYou can consent in My Page → Data & Privacy.";
