@@ -137,6 +137,7 @@
 "ai.result.retryAlert" = "チケットを1枚消費して再試行します。よろしいですか？";
 "ai.error.noMemo" = "まずメモを追加してください";
 "ai.error.network" = "通信エラーが発生しました。チケットは消費されていません。";
+"ai.summary.noMemoNote" = "メモなし（一般情報でサマリー）";
 "ai.sns.platform" = "投稿先";
 "ai.sns.selectMemos" = "活用するメモを選択（複数可）";
 "ai.sns.genre" = "拡散ジャンルを選択（複数可）";

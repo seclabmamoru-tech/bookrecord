@@ -137,6 +137,7 @@
 "ai.result.retryAlert" = "This will use 1 ticket. Continue?";
 "ai.error.noMemo" = "Please add memos first";
 "ai.error.network" = "Network error. No ticket was used.";
+"ai.summary.noMemoNote" = "No memos (will summarize from general knowledge)";
 "ai.sns.platform" = "Platform";
 "ai.sns.selectMemos" = "Select memos to use";
 "ai.share.appPromo" = "\n\n📚 Discuss your reading with AI on Biblion\nhttps://apps.apple.com/app/biblion/idXXXXXXXXXX";

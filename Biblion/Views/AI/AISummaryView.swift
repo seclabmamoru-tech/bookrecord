@@ -9,16 +9,14 @@ struct AISummaryView: View {
     @State private var showRetryAlert = false
     @State private var showMyPageForConsent = false
 
-    private var booksWithMemos: [Book] {
-        CoreDataManager.shared.fetchBooks().filter { book in
-            !CoreDataManager.shared.fetchMemos(for: book).isEmpty
-        }
+    private var allBooks: [Book] {
+        CoreDataManager.shared.fetchBooks()
     }
 
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                if booksWithMemos.isEmpty {
+                if allBooks.isEmpty {
                     emptyState
                 } else {
                     bookList
@@ -93,10 +91,11 @@ struct AISummaryView: View {
         }
     }
 
-    // MARK: - 書籍リスト
+    // MARK: - 書籍リスト（全書籍表示）
 
     private var bookList: some View {
-        List(booksWithMemos, id: \.id, selection: $selectedBook) { book in
+        List(allBooks, id: \.id, selection: $selectedBook) { book in
+            let memoCount = CoreDataManager.shared.fetchMemos(for: book).count
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(book.title ?? "")
@@ -104,10 +103,16 @@ struct AISummaryView: View {
                     Text(book.author ?? "")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    let memoCount = CoreDataManager.shared.fetchMemos(for: book).count
-                    Text(String(format: NSLocalizedString("book.memoCount", comment: ""), memoCount))
-                        .font(.caption2)
-                        .foregroundColor(.indigo)
+                    if memoCount == 0 {
+                        // メモなし：一般情報でサマリーすることを示すバッジ
+                        Text("ai.summary.noMemoNote")
+                            .font(.caption2)
+                            .foregroundColor(.orange)
+                    } else {
+                        Text(String(format: NSLocalizedString("book.memoCount", comment: ""), memoCount))
+                            .font(.caption2)
+                            .foregroundColor(.indigo)
+                    }
                 }
 
                 Spacer()
@@ -126,7 +131,7 @@ struct AISummaryView: View {
         .listStyle(.insetGrouped)
     }
 
-    // MARK: - 空状態
+    // MARK: - 空状態（書籍が1冊もない場合）
 
     private var emptyState: some View {
         VStack(spacing: 16) {
@@ -134,7 +139,7 @@ struct AISummaryView: View {
             Image(systemName: "book.closed")
                 .font(.system(size: 48))
                 .foregroundColor(.secondary)
-            Text("ai.error.noMemo")
+            Text("library.empty")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -168,9 +173,26 @@ struct AISummaryView: View {
         let memos = CoreDataManager.shared.fetchMemos(for: book)
             .map { $0.content ?? "" }
             .filter { !$0.isEmpty }
-        let memoText = memos.isEmpty ? "" : "\n\n【読書メモ】\n" + memos.map { "  - \($0)" }.joined(separator: "\n")
+
+        // メモの有無に応じてプロンプトを切り替え
+        let memoSection: String
+        let noMemoInstruction: String
+        if memos.isEmpty {
+            memoSection = ""
+            noMemoInstruction = """
+
+## 重要な注意事項
+この書籍にはユーザーのメモがありません。
+回答の冒頭に必ず「メモが少ないため、世間の情報をサマリーします」と1行で記載してから要約を開始してください。
+一般的な知識・書評・世間の評価に基づいて要約してください。
+"""
+        } else {
+            memoSection = "\n\n【読書メモ】\n" + memos.map { "  - \($0)" }.joined(separator: "\n")
+            noMemoInstruction = ""
+        }
+
         let prompt = """
-\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。\(memoText)
+\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。\(memoSection)\(noMemoInstruction)
 
 ## 出力ルール
 - 表形式（テーブル）は使用しないでください
