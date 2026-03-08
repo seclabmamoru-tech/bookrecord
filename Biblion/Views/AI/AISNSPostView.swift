@@ -7,13 +7,10 @@ struct AISNSPostView: View {
     @ObservedObject var viewModel: AIViewModel
     @State private var selectedBook: Book?
     @State private var selectedMemoIDs: Set<NSManagedObjectID> = []
-    @State private var selectedPlatform = 0  // 0=X, 1=Instagram, 2=Threads
     @State private var selectedGenres: Set<String> = []
     @State private var showResult = false
     @State private var showRetryAlert = false
     @State private var showMyPageForConsent = false
-
-    private let platforms = ["X", "Instagram", "Threads"]
 
     private struct GenreCategory {
         let name: String
@@ -101,17 +98,6 @@ struct AISNSPostView: View {
                                 }
                             }
                         }
-                    }
-
-                    // 投稿先選択
-                    Section(header: Text("ai.sns.platform")) {
-                        Picker("ai.sns.platform", selection: $selectedPlatform) {
-                            ForEach(platforms.indices, id: \.self) { i in
-                                Text(platforms[i]).tag(i)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .labelsHidden()
                     }
 
                     // ジャンル選択
@@ -235,7 +221,6 @@ struct AISNSPostView: View {
 
     private func executeAI() async {
         guard let book = selectedBook else { return }
-        let platform = platforms[selectedPlatform]
         let filteredMemos = memosForSelectedBook.filter { selectedMemoIDs.contains($0.objectID) }
         let selectedMemosText = filteredMemos
             .map { $0.content ?? "" }
@@ -245,7 +230,7 @@ struct AISNSPostView: View {
         let prompt = """
 あなたはフォロワー100万人を超えるインフルエンサーです。\
 読んだ本の「本質」を一言で刺せる投稿を量産してきたプロです。\
-以下の条件をもとに、\(platform)で拡散される書評投稿を1つ作成してください。
+以下の条件をもとに、SNSで拡散される書評投稿を1つ作成してください。
 
 ---
 
