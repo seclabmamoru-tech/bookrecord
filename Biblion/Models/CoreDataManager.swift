@@ -272,6 +272,7 @@ final class CoreDataManager {
     }
 
     /// 初回無料チケット付与（未付与の場合のみ3枚付与）
+    /// 同時に当月の月次付与済みフラグを立て、初回起動で月次チケットが二重付与されるのを防ぐ
     func grantFreeTicketsIfNeeded() {
         let plan = fetchOrCreateUserPlan()
         guard !plan.freeTicketGranted else { return }
@@ -279,6 +280,11 @@ final class CoreDataManager {
         plan.freeTicketGranted = true
         plan.updatedAt = Date()
         save()
+        // 当月の月次付与をスキップさせる（初回インストール月は月次付与なし）
+        let now = Date()
+        let cal = Calendar.current
+        let yearMonth = cal.component(.year, from: now) * 100 + cal.component(.month, from: now)
+        UserDefaults.standard.set(yearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
     }
 
     /// 月次チケット付与（当月未付与の場合のみ）
