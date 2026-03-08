@@ -96,7 +96,7 @@
 "settings.title" = "Settings";
 "settings.revokeConsent" = "Revoke AI Consent";
 "settings.revokeConsentFooter" = "Revoking will disable the AI feature.";
-"settings.revokeConsentMessage" = "Revoke your consent to the AI feature? This will stop sending your reading memos to the API.";
+"settings.revokeConsentMessage" = "Revoke your consent to the AI feature? This will stop sending your reading memos and consultation text to Anthropic's servers.";
 "settings.privacyPolicy" = "Privacy Policy";
 "settings.terms" = "Terms of Service";
 "settings.legal" = "Legal";

@@ -96,7 +96,7 @@
 "settings.title" = "設定";
 "settings.revokeConsent" = "AI同意を撤回する";
 "settings.revokeConsentFooter" = "撤回するとAI機能が使えなくなります。";
-"settings.revokeConsentMessage" = "AI機能への同意を撤回しますか？読書メモのAPI送信が停止されます。";
+"settings.revokeConsentMessage" = "AI機能への同意を撤回しますか？読書メモおよび相談内容のサーバー送信が停止されます。";
 "settings.privacyPolicy" = "プライバシーポリシー";
 "settings.terms" = "利用規約";
 "settings.legal" = "法的情報";
