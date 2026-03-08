@@ -32,11 +32,11 @@ struct BibliionApp: App {
                 .onChange(of: scenePhase) { newPhase in
                     if newPhase == .active {
                         // ATT 確認後に AdMob を初期化し、必要に応じて広告をロード・表示
-                        ATTManager.shared.requestIfNeeded {
-                            // Freeプランの場合のみインタースティシャルを表示
+                        ATTManager.shared.requestIfNeeded { wasFirstRequest in
+                            // 初回起動（ATT ダイアログ表示直後）は広告を出さない
                             let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
                             let planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
-                            if PlanLimits.showLaunchInterstitial(for: planType) {
+                            if !wasFirstRequest && PlanLimits.showLaunchInterstitial(for: planType) {
                                 InterstitialAdManager.shared.startSdkAndLoadIfNeeded()
                             } else {
                                 // SDK初期化のみ（広告表示なし）
@@ -72,19 +72,20 @@ private final class ATTManager {
 
     /// ATT 未確認なら許可ダイアログを表示し、完了後に completion を呼ぶ。
     /// 既に確認済みの場合は即座に completion を呼ぶ。
-    func requestIfNeeded(completion: @escaping () -> Void) {
+    /// - Parameter completion: wasFirstRequest が true の場合は初回起動（ATT ダイアログを表示した）
+    func requestIfNeeded(completion: @escaping (_ wasFirstRequest: Bool) -> Void) {
         guard !UserDefaults.standard.bool(forKey: hasRequestedKey) else {
-            completion()
+            completion(false)
             return
         }
         UserDefaults.standard.set(true, forKey: hasRequestedKey)
 
         if #available(iOS 14, *) {
             ATTrackingManager.requestTrackingAuthorization { _ in
-                DispatchQueue.main.async { completion() }
+                DispatchQueue.main.async { completion(true) }
             }
         } else {
-            completion()
+            completion(true)
         }
     }
 }
