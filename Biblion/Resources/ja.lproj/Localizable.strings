@@ -108,6 +108,8 @@
 // MARK: - AIメニュー（Phase 2）
 "ai.menu.title" = "AI相談";
 "ai.menu.ticketCount" = "チケット残数：%d枚";
+"ai.menu.freeTicketCount" = "無料 %d枚";
+"ai.menu.paidTicketCount" = "購入 %d枚";
 "ai.menu.buy" = "購入する";
 "ai.menu.consultation.title" = "悩み相談";
 "ai.menu.consultation.desc" = "読書メモから解決策を提案";

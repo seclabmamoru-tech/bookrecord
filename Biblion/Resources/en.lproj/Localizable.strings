@@ -108,6 +108,8 @@
 // MARK: - AI Menu (Phase 2)
 "ai.menu.title" = "AI Advisor";
 "ai.menu.ticketCount" = "Tickets: %d";
+"ai.menu.freeTicketCount" = "Free %d";
+"ai.menu.paidTicketCount" = "Paid %d";
 "ai.menu.buy" = "Buy Tickets";
 "ai.menu.consultation.title" = "Get Advice";
 "ai.menu.consultation.desc" = "Solutions from your reading";

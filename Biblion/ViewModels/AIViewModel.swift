@@ -15,6 +15,8 @@ final class AIViewModel: ObservableObject {
     @Published var showConsentView = false
     @Published var showPurchasePrompt = false
     @Published var ticketCount: Int32 = 0
+    @Published var freeTicketCount: Int32 = 0
+    @Published var paidTicketCount: Int32 = 0
     @Published var currentPlan: PlanType = .free
     @Published var lastMenuType: AIMenuType?
     @Published var shouldShowAIAd = false
@@ -33,6 +35,8 @@ final class AIViewModel: ObservableObject {
     func refreshFromCoreData() {
         let plan = cdManager.fetchOrCreateUserPlan()
         ticketCount = cdManager.totalTicketCount
+        freeTicketCount = plan.freeTicketCount
+        paidTicketCount = plan.planTicketCount + plan.purchasedTicketCount
         currentPlan = PlanType(rawValue: plan.planType ?? "free") ?? .free
     }
 

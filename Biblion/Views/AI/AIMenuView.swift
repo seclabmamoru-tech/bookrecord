@@ -54,18 +54,29 @@ struct AIMenuView: View {
 
     private var ticketHeader: some View {
         HStack {
-            HStack(spacing: 6) {
-                Image(systemName: "ticket.fill")
+            // 無料チケット数
+            HStack(spacing: 4) {
+                Image(systemName: "gift.fill")
+                    .font(.caption)
                     .foregroundColor(.indigo)
-                Text(String(format: NSLocalizedString("ai.menu.ticketCount", comment: ""), viewModel.ticketCount))
-                    .font(.subheadline.bold())
+                Text(String(format: NSLocalizedString("ai.menu.freeTicketCount", comment: ""), viewModel.freeTicketCount))
+                    .font(.caption.bold())
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.indigo.opacity(0.1))
-            )
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color.indigo.opacity(0.1)))
+
+            // 購入チケット数
+            HStack(spacing: 4) {
+                Image(systemName: "ticket.fill")
+                    .font(.caption)
+                    .foregroundColor(.indigo)
+                Text(String(format: NSLocalizedString("ai.menu.paidTicketCount", comment: ""), viewModel.paidTicketCount))
+                    .font(.caption.bold())
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color.indigo.opacity(0.1)))
 
             Spacer()
 

@@ -296,14 +296,17 @@ struct AISNSPostView: View {
             author: book.author ?? "",
             memos: filteredMemos.map { $0.content ?? "" }
         )]
-        // フリーチケット使用時はAI依頼のタイミングで広告を表示
         let willShowAd = CoreDataManager.shared.fetchOrCreateUserPlan().freeTicketCount > 0
         if willShowAd {
-            await withCheckedContinuation { continuation in
-                InterstitialAdManager.shared.showAIAd { continuation.resume() }
+            // 広告とAI生成を並行実行
+            async let adTask: Void = withCheckedContinuation { cont in
+                InterstitialAdManager.shared.showAIAd { cont.resume() }
             }
+            await viewModel.executeAI(menuType: .sns, userInput: prompt, bookData: bookData)
+            _ = await adTask
+        } else {
+            await viewModel.executeAI(menuType: .sns, userInput: prompt, bookData: bookData)
         }
-        await viewModel.executeAI(menuType: .sns, userInput: prompt, bookData: bookData)
         if viewModel.result != nil {
             showResult = true
         }

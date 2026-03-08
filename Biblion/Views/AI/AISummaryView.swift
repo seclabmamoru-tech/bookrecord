@@ -165,19 +165,30 @@ struct AISummaryView: View {
 
     private func executeAI() async {
         guard let book = selectedBook else { return }
-        // フリーチケット使用時はAI依頼のタイミングで広告を表示
-        let willShowAd = CoreDataManager.shared.fetchOrCreateUserPlan().freeTicketCount > 0
-        if willShowAd {
-            await withCheckedContinuation { continuation in
-                InterstitialAdManager.shared.showAIAd { continuation.resume() }
-            }
-        }
         let memos = CoreDataManager.shared.fetchMemos(for: book)
             .map { $0.content ?? "" }
             .filter { !$0.isEmpty }
         let memoText = memos.isEmpty ? "" : "\n\n【読書メモ】\n" + memos.map { "  - \($0)" }.joined(separator: "\n")
-        let prompt = "\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。\(memoText)"
-        await viewModel.executeAI(menuType: .summary, userInput: prompt)
+        let prompt = """
+\(book.title ?? "")（著者：\(book.author ?? "")）を要約してください。\(memoText)
+
+## 出力ルール
+- 表形式（テーブル）は使用しないでください
+- 箇条書きや文章で出力してください
+"""
+        // 選択した書籍のみを送信（他の書籍が参照書籍に混入しないよう）
+        let bookData = [AIBookData(title: book.title ?? "", author: book.author ?? "", memos: memos)]
+        let willShowAd = CoreDataManager.shared.fetchOrCreateUserPlan().freeTicketCount > 0
+        if willShowAd {
+            // 広告とAI生成を並行実行
+            async let adTask: Void = withCheckedContinuation { cont in
+                InterstitialAdManager.shared.showAIAd { cont.resume() }
+            }
+            await viewModel.executeAI(menuType: .summary, userInput: prompt, bookData: bookData)
+            _ = await adTask
+        } else {
+            await viewModel.executeAI(menuType: .summary, userInput: prompt, bookData: bookData)
+        }
         if viewModel.result != nil {
             showResult = true
         }

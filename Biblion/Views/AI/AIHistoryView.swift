@@ -70,7 +70,7 @@ private struct AIHistoryRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(LocalizedStringKey(menuLabel.text))
                     .font(.subheadline.bold())
-                Text(history.inputText ?? "")
+                Text(history.outputText ?? "")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(2)
@@ -127,31 +127,13 @@ private struct AIHistoryDetailView: View {
                         }
                     }
 
-                    // 入力内容
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("ai.history.input")
-                            .font(.caption.bold())
-                            .foregroundColor(.secondary)
-                        Text(history.inputText ?? "")
-                            .font(.subheadline)
-                            .padding(12)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color(.systemGray6))
-                            )
-                    }
-
-                    // 出力結果
+                    // 出力結果（テキスト選択可）
                     VStack(alignment: .leading, spacing: 6) {
                         Text("ai.history.output")
                             .font(.caption.bold())
                             .foregroundColor(.secondary)
-                        Text(history.outputText ?? "")
-                            .font(.body)
-                            .lineSpacing(6)
+                        SelectableMarkdownView(text: history.outputText ?? "")
                             .padding(12)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(Color(.systemGray6))
