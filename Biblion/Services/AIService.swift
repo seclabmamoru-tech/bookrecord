@@ -71,6 +71,7 @@ struct AIService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(AIService.appSecret, forHTTPHeaderField: "X-App-Secret")
+        request.setValue("ja", forHTTPHeaderField: "Accept-Language")
         request.timeoutInterval = AIService.timeoutSeconds
 
         let body: [String: Any] = [
