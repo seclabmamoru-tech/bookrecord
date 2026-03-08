@@ -316,16 +316,13 @@ final class CoreDataManager {
         plan.expiresAt = expiresAt
         plan.updatedAt = Date()
 
-        // 有料プランへのアップグレード時、当月チケットをまだ付与していなければ即時付与
+        // プラン変更時、新プランの当月チケットを即時付与（既付与チェックなし）
         let newMonthly = PlanLimits.monthlyTickets(for: newPlanType)
         if newPlanType != oldPlanType && newMonthly > 0 {
             let cal = Calendar.current; let now = Date()
             let currentYearMonth = cal.component(.year, from: now) * 100 + cal.component(.month, from: now)
-            let lastYearMonth = UserDefaults.standard.integer(forKey: "lastMonthlyTicketGrantYearMonth")
-            if currentYearMonth != lastYearMonth {
-                plan.freeTicketCount += Int32(newMonthly)
-                UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
-            }
+            plan.freeTicketCount += Int32(newMonthly)
+            UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
         }
 
         save()
