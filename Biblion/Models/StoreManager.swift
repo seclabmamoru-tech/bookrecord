@@ -36,9 +36,9 @@ struct PlanLimits {
         }
     }
 
-    /// バーコードスキャン利用可否（デモ用：全プラン解放）
+    /// バーコードスキャン利用可否（Basic以上のプランで利用可能）
     static func canUseBarcodeScanner(for plan: PlanType) -> Bool {
-        return true
+        return plan == .basic || plan == .premium
     }
 
     /// 起動時インタースティシャル表示可否
