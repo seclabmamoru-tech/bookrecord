@@ -22,15 +22,6 @@ struct SettingsView: View {
             Form {
                 // リンクセクション
                 Section {
-                    Link(destination: privacyPolicyURL) {
-                        HStack {
-                            Label("settings.privacyPolicy", systemImage: "hand.raised.fill")
-                            Spacer()
-                            Image(systemName: "arrow.up.right.square")
-                                .foregroundColor(.secondary)
-                                .font(.caption)
-                        }
-                    }
                     Link(destination: termsURL) {
                         HStack {
                             Label("settings.terms", systemImage: "doc.text.fill")
