@@ -44,11 +44,11 @@
 
 	<!-- プライバシー許可説明文（ローカライズは InfoPlist.strings で管理） -->
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>書籍の表紙画像を登録するためにフォトライブラリへのアクセスが必要です。</string>
+	<string>Photo library access is required to register book cover images.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>書籍の表紙画像を撮影するためにカメラへのアクセスが必要です。</string>
+	<string>Camera access is required to take photos of book covers.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>より適切な広告を表示するために使用されます。</string>
+	<string>Used to display more relevant advertisements.</string>
 
 	<!-- AdMob アプリID -->
 	<key>GADApplicationIdentifier</key>
