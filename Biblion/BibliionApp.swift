@@ -90,6 +90,7 @@ private final class ATTManager {
         let status = ATTrackingManager.trackingAuthorizationStatus
         guard status == .notDetermined else {
             // 既にユーザーが回答済み（または制限あり）→ ダイアログ不要
+            print("[ATT] ステータス確定済みのためダイアログをスキップ: \(status.rawValue)")
             completion(false)
             return
         }
@@ -206,11 +207,11 @@ final class InterstitialAdManager: NSObject {
     }
 
     private func present() {
-        presentAd()
-        UserDefaults.standard.set(Date(), forKey: lastShownDateKey)
+        // 日付は実際にウィンドウが見つかって表示する直前に記録する（失敗時は記録しない）
+        presentAd(retriesLeft: 3)
     }
 
-    private func presentAd() {
+    private func presentAd(retriesLeft: Int = 0) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             guard let ad = self.interstitialAd else {
@@ -222,10 +223,18 @@ final class InterstitialAdManager: NSObject {
             }
             guard let windowScene = UIApplication.shared.connectedScenes
                 .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else {
-                print("[Ad] アクティブなWindowSceneが見つかりません")
-                let completion = self.aiAdCompletion
-                self.aiAdCompletion = nil
-                completion?()
+                // ウィンドウ未確立の場合はリトライ
+                if retriesLeft > 0 {
+                    print("[Ad] ウィンドウ未確立、1秒後にリトライ（残り\(retriesLeft)回）")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                        self?.presentAd(retriesLeft: retriesLeft - 1)
+                    }
+                } else {
+                    print("[Ad] アクティブなWindowSceneが見つかりません（リトライ上限）")
+                    let completion = self.aiAdCompletion
+                    self.aiAdCompletion = nil
+                    completion?()
+                }
                 return
             }
             guard let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController else {
@@ -235,7 +244,10 @@ final class InterstitialAdManager: NSObject {
                 completion?()
                 return
             }
-
+            // 起動時広告（aiAdCompletion が nil）は表示直前に日次フラグを記録
+            if self.aiAdCompletion == nil {
+                UserDefaults.standard.set(Date(), forKey: self.lastShownDateKey)
+            }
             print("[Ad] 表示します")
             ad.present(fromRootViewController: rootVC)
         }
