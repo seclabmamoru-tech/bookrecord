@@ -39,6 +39,129 @@ final class NotificationManager {
         scheduleDaily(hour: 22, minute: 0, identifier: "biblion_evening")
     }
 
+    // MARK: - スケジュールタスク通知
+
+    /// スケジュールタスクの通知を登録する（既存のスケジュール通知を置き換える）
+    func scheduleScheduledTaskNotifications(tasks: [ScheduledTask]) {
+        // 既存のスケジュールタスク通知を削除
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            let scheduledIDs = requests
+                .map { $0.identifier }
+                .filter { $0.hasPrefix("scheduled_task_") }
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: scheduledIDs)
+
+            for task in tasks {
+                self.registerNotifications(for: task)
+            }
+        }
+    }
+
+    private func registerNotifications(for task: ScheduledTask) {
+        guard let id = task.id,
+              let title = task.taskTitle, !title.isEmpty,
+              let freq = task.frequency
+        else { return }
+
+        let hour = Int(task.startHour)
+        let minute = Int(task.startMinute)
+        let baseID = "scheduled_task_\(id.uuidString)"
+
+        switch freq {
+        case ScheduleFrequency.daily.rawValue:
+            scheduleWeeklyRepeating(
+                identifier: "\(baseID)_daily",
+                title: title,
+                hour: hour,
+                minute: minute,
+                weekday: nil
+            )
+
+        case ScheduleFrequency.weekly.rawValue:
+            let weekdays = SchedulerViewModel.parseWeekdays(task.weekdays ?? "")
+            for weekday in weekdays {
+                scheduleWeeklyRepeating(
+                    identifier: "\(baseID)_wd\(weekday)",
+                    title: title,
+                    hour: hour,
+                    minute: minute,
+                    weekday: weekday
+                )
+            }
+
+        case ScheduleFrequency.biweekly.rawValue:
+            // 隔週: 今後14日間の対象日に個別登録
+            let weekdays = SchedulerViewModel.parseWeekdays(task.weekdays ?? "")
+            let refDate = task.referenceDate ?? task.createdAt ?? Date()
+            let calendar = Calendar.current
+            let now = Date()
+            for dayOffset in 0..<14 {
+                guard let targetDate = calendar.date(byAdding: .day, value: dayOffset, to: now) else { continue }
+                let wd = calendar.component(.weekday, from: targetDate)
+                guard weekdays.contains(wd) else { continue }
+                guard let refWeekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: refDate)),
+                      let thisWeekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: targetDate))
+                else { continue }
+                let weeksDiff = calendar.dateComponents([.weekOfYear], from: refWeekStart, to: thisWeekStart).weekOfYear ?? 0
+                guard weeksDiff % 2 == 0 else { continue }
+
+                var components = calendar.dateComponents([.year, .month, .day], from: targetDate)
+                components.hour = hour
+                components.minute = minute
+                let fireDate = calendar.date(from: components) ?? targetDate
+                guard fireDate > now else { continue }
+
+                scheduleDateSpecific(
+                    identifier: "\(baseID)_bw_\(dayOffset)",
+                    title: title,
+                    fireDate: fireDate
+                )
+            }
+
+        default:
+            break
+        }
+    }
+
+    /// 毎週（または毎日）繰り返し通知を登録する
+    private func scheduleWeeklyRepeating(identifier: String, title: String, hour: Int, minute: Int, weekday: Int?) {
+        let content = UNMutableNotificationContent()
+        content.title = "Biblion"
+        content.body = title
+        content.sound = .default
+
+        var dateComponents = DateComponents()
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+        if let wd = weekday {
+            dateComponents.weekday = wd
+        }
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("スケジュール通知の登録に失敗しました(\(identifier)): \(error.localizedDescription)")
+            }
+        }
+    }
+
+    /// 特定日時の通知を1回だけ登録する（隔週用）
+    private func scheduleDateSpecific(identifier: String, title: String, fireDate: Date) {
+        let content = UNMutableNotificationContent()
+        content.title = "Biblion"
+        content.body = title
+        content.sound = .default
+
+        let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fireDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("日時指定通知の登録に失敗しました(\(identifier)): \(error.localizedDescription)")
+            }
+        }
+    }
+
     // MARK: - プライベートメソッド
 
     /// 毎日指定時刻にローカル通知を登録する

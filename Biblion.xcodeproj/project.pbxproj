@@ -51,6 +51,10 @@
 		00000000000000000002002D /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002D /* MyPageView.swift */; };
 		00000000000000000002002E /* AIHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002E /* AIHistoryView.swift */; };
 		00000000000000000002002F /* AIPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002F /* AIPrompts.swift */; };
+		000000000000000000020030 /* SchedulerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010030 /* SchedulerViewModel.swift */; };
+		000000000000000000020031 /* TaskSchedulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010031 /* TaskSchedulerView.swift */; };
+		000000000000000000020032 /* ScheduledTaskManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010032 /* ScheduledTaskManagerView.swift */; };
+		000000000000000000020033 /* AddEditScheduledTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010033 /* AddEditScheduledTaskView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +92,10 @@
 		000000000000000000010023 /* StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		000000000000000000010024 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
 		00000000000000000001002F /* AIPrompts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIPrompts.swift; sourceTree = "<group>"; };
+		000000000000000000010030 /* SchedulerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerViewModel.swift; sourceTree = "<group>"; };
+		000000000000000000010031 /* TaskSchedulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskSchedulerView.swift; sourceTree = "<group>"; };
+		000000000000000000010032 /* ScheduledTaskManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledTaskManagerView.swift; sourceTree = "<group>"; };
+		000000000000000000010033 /* AddEditScheduledTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditScheduledTaskView.swift; sourceTree = "<group>"; };
 		000000000000000000010025 /* AIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIViewModel.swift; sourceTree = "<group>"; };
 		000000000000000000010026 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
 		000000000000000000010027 /* AIMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIMenuView.swift; sourceTree = "<group>"; };
@@ -205,6 +213,9 @@
 				00000000000000000001000A /* TaskListView.swift */,
 				00000000000000000001000B /* AddEditTaskView.swift */,
 				00000000000000000001000C /* TaskWeeklyStatsView.swift */,
+				000000000000000000010031 /* TaskSchedulerView.swift */,
+				000000000000000000010032 /* ScheduledTaskManagerView.swift */,
+				000000000000000000010033 /* AddEditScheduledTaskView.swift */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -235,6 +246,7 @@
 				000000000000000000010013 /* AIInsightViewModel.swift */,
 				000000000000000000010025 /* AIViewModel.swift */,
 				000000000000000000010026 /* MyPageViewModel.swift */,
+				000000000000000000010030 /* SchedulerViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -415,6 +427,10 @@
 				000000000000000000020023 /* StoreManager.swift in Sources */,
 				000000000000000000020024 /* AIService.swift in Sources */,
 				00000000000000000002002F /* AIPrompts.swift in Sources */,
+				000000000000000000020030 /* SchedulerViewModel.swift in Sources */,
+				000000000000000000020031 /* TaskSchedulerView.swift in Sources */,
+				000000000000000000020032 /* ScheduledTaskManagerView.swift in Sources */,
+				000000000000000000020033 /* AddEditScheduledTaskView.swift in Sources */,
 				000000000000000000020025 /* AIViewModel.swift in Sources */,
 				000000000000000000020026 /* MyPageViewModel.swift in Sources */,
 				000000000000000000020027 /* AIMenuView.swift in Sources */,

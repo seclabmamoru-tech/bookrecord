@@ -10,6 +10,10 @@ final class CoreDataManager {
 
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Biblion")
+        if let description = container.persistentStoreDescriptions.first {
+            description.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
+            description.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
+        }
         container.loadPersistentStores { _, error in
             if let error = error {
                 fatalError("CoreData ストアの読み込みに失敗しました: \(error)")
@@ -342,6 +346,51 @@ final class CoreDataManager {
         plan.purchasedTicketCount += count
         plan.updatedAt = Date()
         save()
+    }
+
+    // MARK: - ScheduledTask CRUD
+
+    @discardableResult
+    func addScheduledTask(
+        taskTitle: String,
+        startHour: Int16,
+        startMinute: Int16,
+        endHour: Int16,
+        endMinute: Int16,
+        frequency: String,
+        weekdays: String,
+        referenceDate: Date
+    ) -> ScheduledTask {
+        let task = ScheduledTask(context: context)
+        task.id = UUID()
+        task.taskTitle = taskTitle
+        task.startHour = startHour
+        task.startMinute = startMinute
+        task.endHour = endHour
+        task.endMinute = endMinute
+        task.frequency = frequency
+        task.weekdays = weekdays
+        task.referenceDate = referenceDate
+        task.createdAt = Date()
+        save()
+        return task
+    }
+
+    func updateScheduledTask(_ task: ScheduledTask) {
+        save()
+    }
+
+    func deleteScheduledTask(_ task: ScheduledTask) {
+        context.delete(task)
+        save()
+    }
+
+    func fetchScheduledTasks() -> [ScheduledTask] {
+        let request: NSFetchRequest<ScheduledTask> = ScheduledTask.fetchRequest()
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \ScheduledTask.createdAt, ascending: true)
+        ]
+        return (try? context.fetch(request)) ?? []
     }
 
     // MARK: - AIHistory CRUD

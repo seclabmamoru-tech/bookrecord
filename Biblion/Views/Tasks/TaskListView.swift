@@ -6,6 +6,7 @@ struct TaskListView: View {
     @EnvironmentObject var viewModel: TaskViewModel
     @State private var showAddTask = false
     @State private var editingTask: TaskEntity?
+    @State private var showScheduler = false
 
     private var currentPlan: PlanType {
         let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
@@ -75,12 +76,22 @@ struct TaskListView: View {
             .navigationTitle(Text("task.title"))
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    // プランに応じた上限チェック
-                    if canAddTaskByPlan {
-                        Button {
-                            showAddTask = true
-                        } label: {
-                            Image(systemName: "plus")
+                    HStack(spacing: 16) {
+                        // スケジューラーボタン（Basic/Premium のみ）
+                        if currentPlan != .free {
+                            Button {
+                                showScheduler = true
+                            } label: {
+                                Image(systemName: "calendar")
+                            }
+                        }
+                        // タスク追加ボタン（プランに応じた上限チェック）
+                        if canAddTaskByPlan {
+                            Button {
+                                showAddTask = true
+                            } label: {
+                                Image(systemName: "plus")
+                            }
                         }
                     }
                 }
@@ -92,6 +103,9 @@ struct TaskListView: View {
             .sheet(item: $editingTask) { task in
                 AddEditTaskView(task: task)
                     .environmentObject(viewModel)
+            }
+            .sheet(isPresented: $showScheduler) {
+                TaskSchedulerView()
             }
         }
         .onAppear {

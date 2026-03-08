@@ -79,6 +79,27 @@
 "task.hint.edit" = "← 左スワイプ：名前を編集";
 "task.hint.manage" = "右スワイプ：削除 →";
 
+// MARK: - スケジューラー
+"scheduler.title" = "スケジューラー";
+"scheduler.thisWeek" = "今週";
+"scheduler.manage" = "タスクを管理";
+"scheduler.manageTitle" = "スケジュール管理";
+"scheduler.addTitle" = "スケジュールを追加";
+"scheduler.editTitle" = "スケジュールを編集";
+"scheduler.addSchedule" = "スケジュールを追加";
+"scheduler.noSchedules" = "スケジュールがありません";
+"scheduler.noTasksAvailable" = "タスクがありません。先にタスクを作成してください。";
+"scheduler.taskName" = "タスク名";
+"scheduler.time" = "時刻";
+"scheduler.startTime" = "開始時刻";
+"scheduler.endTime" = "終了時刻";
+"scheduler.frequency" = "周期";
+"scheduler.weekdays" = "曜日";
+"scheduler.weekdaysRequired" = "曜日を1つ以上選択してください";
+"scheduler.frequency.daily" = "毎日";
+"scheduler.frequency.weekly" = "毎週";
+"scheduler.frequency.biweekly" = "隔週";
+
 // MARK: - AI
 "ai.consentTitle" = "AI機能の利用について";
 "ai.consentBody" = "AI機能を使用するために、あなたの読書メモをAnthropicのAPIに送信します。送信されるデータは課題解決の提案生成のみに使用され、それ以外の目的には利用されません。詳細はプライバシーポリシーをご確認ください。";
