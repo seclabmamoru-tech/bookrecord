@@ -165,9 +165,9 @@
 "mypage.plan.premium" = "Premium Plan";
 "mypage.plan.expires" = "Expires: %@";
 "mypage.ticket.count" = "%d tickets";
-"mypage.ticket.plan" = "Subscription Tickets (No Ads)";
-"mypage.ticket.free" = "Free Tickets";
-"mypage.ticket.purchased" = "Purchased Tickets (No Ads)";
+"mypage.ticket.plan" = "Premium Tickets (No AI Ads)";
+"mypage.ticket.free" = "Free / Basic Tickets";
+"mypage.ticket.purchased" = "Purchased Tickets (No AI Ads)";
 "mypage.ticket.total" = "Total";
 "mypage.ticket.buy" = "Buy Tickets (45 for $9.99)";
 "mypage.upgrade.basic" = "Upgrade to Basic ($2.99/mo)";
