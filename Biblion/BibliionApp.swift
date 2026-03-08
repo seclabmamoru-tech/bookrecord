@@ -74,26 +74,31 @@ struct BibliionApp: App {
 private final class ATTManager {
 
     static let shared = ATTManager()
-    private let hasRequestedKey = "attHasRequested"
 
     private init() {}
 
-    /// ATT 未確認なら許可ダイアログを表示し、完了後に completion を呼ぶ。
-    /// 既に確認済みの場合は即座に completion を呼ぶ。
-    /// - Parameter completion: wasFirstRequest が true の場合は初回起動（ATT ダイアログを表示した）
+    /// ATT ステータスが未確定ならダイアログを表示し、完了後に completion を呼ぶ。
+    /// UserDefaults ではなく OS が管理する実際のステータスを参照するため、
+    /// 再インストール後に UserDefaults がリセットされても正しく動作する。
+    /// - Parameter completion: wasFirstRequest が true の場合はダイアログを表示した（広告スキップ対象）
     func requestIfNeeded(completion: @escaping (_ wasFirstRequest: Bool) -> Void) {
-        guard !UserDefaults.standard.bool(forKey: hasRequestedKey) else {
+        guard #available(iOS 14, *) else {
             completion(false)
             return
         }
-        UserDefaults.standard.set(true, forKey: hasRequestedKey)
 
-        if #available(iOS 14, *) {
+        let status = ATTrackingManager.trackingAuthorizationStatus
+        guard status == .notDetermined else {
+            // 既にユーザーが回答済み（または制限あり）→ ダイアログ不要
+            completion(false)
+            return
+        }
+
+        // ウィンドウ階層が確立されてからダイアログを表示する
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             ATTrackingManager.requestTrackingAuthorization { _ in
                 DispatchQueue.main.async { completion(true) }
             }
-        } else {
-            completion(true)
         }
     }
 }
