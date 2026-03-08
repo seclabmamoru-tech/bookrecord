@@ -165,7 +165,7 @@
 "mypage.plan.premium" = "Premiumプラン";
 "mypage.plan.expires" = "有効期限：%@";
 "mypage.ticket.count" = "%d枚";
-"mypage.ticket.buy" = "チケットを購入（45枚 ¥980）";
+"mypage.ticket.buy" = "チケットを購入（45枚 ¥900）";
 "mypage.upgrade.basic" = "Basicにアップグレード（¥200/月）";
 "mypage.upgrade.premium" = "Premiumにアップグレード（¥500/月）";
 "mypage.restore" = "購入を復元する";
@@ -209,3 +209,7 @@
 "ai.result.addTodo.selectActions" = "追加するアクションを選択";
 "ai.result.addTodo.noActions" = "アクションが見つかりませんでした";
 "ai.result.addTodo.noActionsDescription" = "AIの回答に箇条書きのアクション項目がありませんでした";
+
+// MARK: - ストアエラー
+"store.error.failedVerification" = "購入の検証に失敗しました。";
+"store.error.productNotFound" = "商品情報が見つかりませんでした。しばらくしてから再度お試しください。";

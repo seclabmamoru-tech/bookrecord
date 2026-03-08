@@ -13,7 +13,13 @@ final class MyPageViewModel: ObservableObject {
     @Published var isAIConsentGiven: Bool = false
     @Published var showRevokeConsentAlert = false
 
+    // 購入処理の状態
+    @Published var isProcessing = false
+    @Published var alertMessage: String?
+    @Published var showAlert = false
+
     private let cdManager = CoreDataManager.shared
+    private let store = StoreManager.shared
 
     // MARK: - 初期化
 
@@ -41,6 +47,57 @@ final class MyPageViewModel: ObservableObject {
     func grantAIConsent() {
         cdManager.setAIConsent(true)
         isAIConsentGiven = true
+    }
+
+    // MARK: - 購入処理
+
+    func buyTicket45() async {
+        isProcessing = true
+        await store.purchaseTicket45()
+        isProcessing = false
+        if let error = store.purchaseError {
+            alertMessage = error
+            showAlert = true
+        } else if store.purchaseError == nil {
+            refresh()
+        }
+    }
+
+    func purchaseBasic() async {
+        isProcessing = true
+        await store.purchaseBasic()
+        isProcessing = false
+        if let error = store.purchaseError {
+            alertMessage = error
+            showAlert = true
+        } else {
+            refresh()
+        }
+    }
+
+    func purchasePremium() async {
+        isProcessing = true
+        await store.purchasePremium()
+        isProcessing = false
+        if let error = store.purchaseError {
+            alertMessage = error
+            showAlert = true
+        } else {
+            refresh()
+        }
+    }
+
+    // MARK: - 購入復元
+
+    func restorePurchases() async {
+        isProcessing = true
+        await store.restorePurchases()
+        isProcessing = false
+        refresh()
+        if let error = store.purchaseError {
+            alertMessage = error
+            showAlert = true
+        }
     }
 
     // MARK: - プランバッジカラー

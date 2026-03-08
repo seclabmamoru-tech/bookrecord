@@ -209,3 +209,7 @@
 "ai.result.addTodo.selectActions" = "Select actions to add";
 "ai.result.addTodo.noActions" = "No actions found";
 "ai.result.addTodo.noActionsDescription" = "No bullet-point action items were found in the AI response";
+
+// MARK: - Store Errors
+"store.error.failedVerification" = "Purchase verification failed.";
+"store.error.productNotFound" = "Product information not found. Please try again later.";

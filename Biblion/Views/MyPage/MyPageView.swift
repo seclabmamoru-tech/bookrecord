@@ -50,16 +50,21 @@ struct MyPageView: View {
                     }
                     .padding(.vertical, 8)
 
-                    // 購入ボタン（将来のStoreKit実装用プレースホルダー）
                     Button {
-                        // Phase 3: StoreKit 2 でチケット購入
+                        Task { await viewModel.buyTicket45() }
                     } label: {
                         HStack {
-                            Image(systemName: "ticket.fill")
+                            if viewModel.isProcessing {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                            } else {
+                                Image(systemName: "ticket.fill")
+                            }
                             Text("mypage.ticket.buy")
                         }
                         .foregroundColor(.indigo)
                     }
+                    .disabled(viewModel.isProcessing)
                 }
 
                 // MARK: - プラン変更
@@ -74,7 +79,8 @@ struct MyPageView: View {
                                 NSLocalizedString("mypage.plan.basic.feature3", comment: "")
                             ],
                             upgradeKey: "mypage.upgrade.basic",
-                            color: .blue
+                            color: .blue,
+                            onUpgrade: { Task { await viewModel.purchaseBasic() } }
                         )
                         planCard(
                             title: NSLocalizedString("mypage.plan.premium", comment: ""),
@@ -85,7 +91,8 @@ struct MyPageView: View {
                                 NSLocalizedString("mypage.plan.premium.feature3", comment: "")
                             ],
                             upgradeKey: "mypage.upgrade.premium",
-                            color: Color(hex: "C9A84C")
+                            color: Color(hex: "C9A84C"),
+                            onUpgrade: { Task { await viewModel.purchasePremium() } }
                         )
                     } else {
                         HStack {
@@ -96,10 +103,19 @@ struct MyPageView: View {
                         }
                     }
 
-                    Button("mypage.restore") {
-                        // Phase 3: AppStore.sync()
+                    Button {
+                        Task { await viewModel.restorePurchases() }
+                    } label: {
+                        HStack {
+                            if viewModel.isProcessing {
+                                ProgressView()
+                                    .scaleEffect(0.8)
+                            }
+                            Text("mypage.restore")
+                        }
                     }
                     .foregroundColor(.secondary)
+                    .disabled(viewModel.isProcessing)
                 }
 
                 // MARK: - データとプライバシー
@@ -165,6 +181,15 @@ struct MyPageView: View {
                     viewModel.revokeAIConsent()
                 }
             }
+            .alert(
+                NSLocalizedString("common.error", comment: ""),
+                isPresented: $viewModel.showAlert,
+                presenting: viewModel.alertMessage
+            ) { _ in
+                Button("common.done") {}
+            } message: { message in
+                Text(message)
+            }
         }
     }
 
@@ -180,7 +205,14 @@ struct MyPageView: View {
 
     // MARK: - プランカード
 
-    private func planCard(title: String, price: String, features: [String], upgradeKey: String, color: Color) -> some View {
+    private func planCard(
+        title: String,
+        price: String,
+        features: [String],
+        upgradeKey: String,
+        color: Color,
+        onUpgrade: @escaping () -> Void
+    ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(title)
@@ -204,16 +236,24 @@ struct MyPageView: View {
             }
 
             Button {
-                // Phase 3: 購入処理
+                onUpgrade()
             } label: {
-                Text(LocalizedStringKey(upgradeKey))
-                    .font(.subheadline.bold())
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .background(color.opacity(0.12))
-                    .foregroundColor(color)
-                    .cornerRadius(8)
+                Group {
+                    if viewModel.isProcessing {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Text(LocalizedStringKey(upgradeKey))
+                            .font(.subheadline.bold())
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding(.vertical, 8)
+                .background(color.opacity(0.12))
+                .foregroundColor(color)
+                .cornerRadius(8)
             }
+            .disabled(viewModel.isProcessing)
         }
         .padding(.vertical, 4)
     }
