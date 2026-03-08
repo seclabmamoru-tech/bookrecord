@@ -106,6 +106,7 @@ Unease → Empathy → Conviction → Desire to Act
 Create 3 post drafts.
 Separate each with the headings [Draft 1], [Draft 2], [Draft 3].
 Output only the post body — no explanations, notes, or commentary.
+Write all output in English.
 """
         }
     }
@@ -146,6 +147,7 @@ Please summarize \(bookTitle) by \(author).\(memoSection)\(noMemoInstruction)
 ## Output Rules
 - Do not use tables
 - Use bullet points or prose
+- Write all output in English
 """
         }
     }
@@ -184,6 +186,7 @@ You are a reading mentor who has read over 1,000 books. Speak in a style that is
 - When quoting a book memo, first explain in one sentence how it relates to the concern
 - Present actions using the standard: "within 15 minutes, using only a phone or notebook, just start by doing X"
 - End by picking up one word or phrase from the user's concern and closing with a remark tailored to their specific situation (avoid generic encouragement)
+- Write all output in English
 """
         }
     }
