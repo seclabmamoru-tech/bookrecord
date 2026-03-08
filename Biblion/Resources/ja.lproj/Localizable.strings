@@ -169,6 +169,7 @@
 "mypage.upgrade.basic" = "Basicにアップグレード（¥200/月）";
 "mypage.upgrade.premium" = "Premiumにアップグレード（¥500/月）";
 "mypage.restore" = "購入を復元する";
+"mypage.cancel.note" = "※ サブスクリプションの解約は、iPhoneの「設定」→「Apple ID」→「サブスクリプション」から行えます。";
 "mypage.aiConsent" = "AI機能のデータ送信に同意する";
 "mypage.aiConsent.revokeAlert" = "同意を撤回するとAI機能が利用できなくなります。よろしいですか？";
 "mypage.contact" = "お問い合わせ";

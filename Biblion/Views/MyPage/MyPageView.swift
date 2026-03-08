@@ -94,6 +94,25 @@ struct MyPageView: View {
                             color: Color(hex: "C9A84C"),
                             onUpgrade: { Task { await viewModel.purchasePremium() } }
                         )
+                    } else if viewModel.planType == .basic {
+                        HStack {
+                            Text(planDisplayName)
+                            Spacer()
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                        }
+                        planCard(
+                            title: NSLocalizedString("mypage.plan.premium", comment: ""),
+                            price: NSLocalizedString("mypage.plan.premium.price", comment: ""),
+                            features: [
+                                NSLocalizedString("mypage.plan.premium.feature1", comment: ""),
+                                NSLocalizedString("mypage.plan.premium.feature2", comment: ""),
+                                NSLocalizedString("mypage.plan.premium.feature3", comment: "")
+                            ],
+                            upgradeKey: "mypage.upgrade.premium",
+                            color: Color(hex: "C9A84C"),
+                            onUpgrade: { Task { await viewModel.purchasePremium() } }
+                        )
                     } else {
                         HStack {
                             Text(planDisplayName)
@@ -116,6 +135,11 @@ struct MyPageView: View {
                     }
                     .foregroundColor(.secondary)
                     .disabled(viewModel.isProcessing)
+
+                    Text("mypage.cancel.note")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.top, 4)
                 }
 
                 // MARK: - データとプライバシー
