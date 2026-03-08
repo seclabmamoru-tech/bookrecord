@@ -77,13 +77,11 @@ struct TaskListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 16) {
-                        // スケジューラーボタン（Basic/Premium のみ）
-                        if currentPlan != .free {
-                            Button {
-                                showScheduler = true
-                            } label: {
-                                Image(systemName: "calendar")
-                            }
+                        // スケジューラーボタン（全プラン対象）
+                        Button {
+                            showScheduler = true
+                        } label: {
+                            Image(systemName: "calendar")
                         }
                         // タスク追加ボタン（プランに応じた上限チェック）
                         if canAddTaskByPlan {
