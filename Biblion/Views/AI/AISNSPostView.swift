@@ -254,7 +254,9 @@ struct AISNSPostView: View {
             author: book.author ?? "",
             memos: filteredMemos.map { $0.content ?? "" }
         )]
-        let willShowAd = CoreDataManager.shared.fetchOrCreateUserPlan().freeTicketCount > 0
+        let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
+        let planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
+        let willShowAd = PlanLimits.showAIInterstitial(for: planType)
         if willShowAd {
             // 広告とAI生成を並行実行
             async let adTask: Void = withCheckedContinuation { cont in
