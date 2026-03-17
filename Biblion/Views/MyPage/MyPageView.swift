@@ -1,10 +1,12 @@
 import SwiftUI
 import StoreKit
+import UserNotifications
 
 /// マイページ画面
 struct MyPageView: View {
 
     @StateObject private var viewModel = MyPageViewModel()
+    @StateObject private var notifVM   = NotificationSettingsViewModel()
     @State private var showConsentSheet = false
     @State private var showRevokeAlert = false
 
@@ -171,6 +173,54 @@ struct MyPageView: View {
                         .padding(.top, 4)
                 }
 
+                // MARK: - 通知設定
+                Section(header: Text("mypage.section.notification")) {
+                    // 通知許可が拒否されている場合の案内
+                    if notifVM.authorizationStatus == .denied {
+                        HStack(spacing: 8) {
+                            Image(systemName: "bell.slash.fill")
+                                .foregroundColor(.orange)
+                            Text("mypage.notification.denied")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+
+                    // 通知 ON/OFF トグル
+                    Toggle(isOn: Binding(
+                        get: { notifVM.isEnabled },
+                        set: { newValue in
+                            if newValue && notifVM.authorizationStatus == .notDetermined {
+                                notifVM.requestAuthorizationAndApply()
+                            }
+                            notifVM.isEnabled = newValue
+                        }
+                    )) {
+                        Label("mypage.notification.enable", systemImage: "bell.fill")
+                    }
+                    .tint(.indigo)
+                    .disabled(notifVM.authorizationStatus == .denied)
+
+                    if notifVM.isEnabled {
+                        // 時刻ピッカー
+                        DatePicker(
+                            selection: $notifVM.notificationTime,
+                            displayedComponents: .hourAndMinute
+                        ) {
+                            Label("mypage.notification.time", systemImage: "clock")
+                        }
+
+                        // 曜日選択
+                        VStack(alignment: .leading, spacing: 8) {
+                            Label("mypage.notification.weekdays", systemImage: "calendar")
+                                .font(.subheadline)
+                            weekdaySelector
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                .onAppear { Task { await notifVM.refreshAuthorizationStatus() } }
+
                 // MARK: - データとプライバシー
                 Section(header: Text("mypage.section.privacy")) {
                     // AI同意トグル
@@ -242,6 +292,38 @@ struct MyPageView: View {
                 Button("common.done") {}
             } message: { message in
                 Text(message)
+            }
+        }
+    }
+
+    // MARK: - 曜日選択ビュー
+
+    /// 曜日ボタン（日〜土）
+    /// Calendar.weekday 準拠: 1=日, 2=月, ..., 7=土
+    private var weekdaySelector: some View {
+        let weekdays: [(Int, String)] = [
+            (2, NSLocalizedString("weekday.mon", comment: "")),
+            (3, NSLocalizedString("weekday.tue", comment: "")),
+            (4, NSLocalizedString("weekday.wed", comment: "")),
+            (5, NSLocalizedString("weekday.thu", comment: "")),
+            (6, NSLocalizedString("weekday.fri", comment: "")),
+            (7, NSLocalizedString("weekday.sat", comment: "")),
+            (1, NSLocalizedString("weekday.sun", comment: ""))
+        ]
+        return HStack(spacing: 6) {
+            ForEach(weekdays, id: \.0) { weekday, label in
+                let isSelected = notifVM.selectedWeekdays.contains(weekday)
+                Button {
+                    notifVM.toggleWeekday(weekday)
+                } label: {
+                    Text(label)
+                        .font(.caption.bold())
+                        .frame(width: 36, height: 36)
+                        .background(isSelected ? Color.indigo : Color(.systemGray5))
+                        .foregroundColor(isSelected ? .white : .primary)
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
             }
         }
     }

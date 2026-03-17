@@ -105,6 +105,23 @@
 
 // MARK: - 通知
 "notification.body" = "タスクを確認しましょう 📝";
+"notification.reading.body" = "読書の時間です 📚";
+
+// MARK: - 通知設定（マイページ）
+"mypage.section.notification" = "通知設定";
+"mypage.notification.enable" = "読書リマインダー";
+"mypage.notification.time" = "通知時刻";
+"mypage.notification.weekdays" = "通知する曜日";
+"mypage.notification.denied" = "通知が拒否されています。設定アプリからBiblionの通知を許可してください。";
+
+// MARK: - 曜日
+"weekday.sun" = "日";
+"weekday.mon" = "月";
+"weekday.tue" = "火";
+"weekday.wed" = "水";
+"weekday.thu" = "木";
+"weekday.fri" = "金";
+"weekday.sat" = "土";
 
 // MARK: - AIメニュー（Phase 2）
 "ai.menu.title" = "AI相談";
