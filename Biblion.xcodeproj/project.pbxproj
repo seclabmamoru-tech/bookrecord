@@ -42,6 +42,7 @@
 		000000000000000000020024 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010024 /* AIService.swift */; };
 		000000000000000000020025 /* AIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010025 /* AIViewModel.swift */; };
 		000000000000000000020026 /* MyPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010026 /* MyPageViewModel.swift */; };
+		000000000000000000020030 /* NotificationSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010030 /* NotificationSettingsViewModel.swift */; };
 		000000000000000000020027 /* AIMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010027 /* AIMenuView.swift */; };
 		000000000000000000020028 /* AIConsultationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010028 /* AIConsultationView.swift */; };
 		000000000000000000020029 /* AISummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010029 /* AISummaryView.swift */; };
@@ -90,6 +91,7 @@
 		00000000000000000001002F /* AIPrompts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIPrompts.swift; sourceTree = "<group>"; };
 		000000000000000000010025 /* AIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIViewModel.swift; sourceTree = "<group>"; };
 		000000000000000000010026 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
+		000000000000000000010030 /* NotificationSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewModel.swift; sourceTree = "<group>"; };
 		000000000000000000010027 /* AIMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIMenuView.swift; sourceTree = "<group>"; };
 		000000000000000000010028 /* AIConsultationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConsultationView.swift; sourceTree = "<group>"; };
 		000000000000000000010029 /* AISummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummaryView.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				000000000000000000010013 /* AIInsightViewModel.swift */,
 				000000000000000000010025 /* AIViewModel.swift */,
 				000000000000000000010026 /* MyPageViewModel.swift */,
+				000000000000000000010030 /* NotificationSettingsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -417,6 +420,7 @@
 				00000000000000000002002F /* AIPrompts.swift in Sources */,
 				000000000000000000020025 /* AIViewModel.swift in Sources */,
 				000000000000000000020026 /* MyPageViewModel.swift in Sources */,
+				000000000000000000020030 /* NotificationSettingsViewModel.swift in Sources */,
 				000000000000000000020027 /* AIMenuView.swift in Sources */,
 				000000000000000000020028 /* AIConsultationView.swift in Sources */,
 				000000000000000000020029 /* AISummaryView.swift in Sources */,
