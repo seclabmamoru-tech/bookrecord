@@ -169,7 +169,7 @@ final class InterstitialAdManager: NSObject {
         }
     }
 
-    func loadAndShowIfNeeded() {
+    func loadAndShowIfNeeded(retryCount: Int = 0) {
         guard isSdkStarted else {
             print("[Ad] SDK未初期化のためスキップ")
             return
@@ -184,12 +184,20 @@ final class InterstitialAdManager: NSObject {
         }
 
         isLoading = true
-        print("[Ad] インタースティシャル広告をロード開始")
+        print("[Ad] インタースティシャル広告をロード開始（試行\(retryCount + 1)回目）")
         GADInterstitialAd.load(withAdUnitID: adUnitID, request: GADRequest()) { [weak self] ad, error in
             guard let self else { return }
             self.isLoading = false
             if let error {
                 print("[Ad] 読み込み失敗: \(error.localizedDescription)")
+                // 最大2回リトライ（2秒・4秒後）
+                if retryCount < 2 {
+                    let delay = Double(retryCount + 1) * 2.0
+                    print("[Ad] \(Int(delay))秒後にリトライ（残り\(2 - retryCount)回）")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                        self?.loadAndShowIfNeeded(retryCount: retryCount + 1)
+                    }
+                }
                 return
             }
             print("[Ad] 読み込み成功、表示を試みます")

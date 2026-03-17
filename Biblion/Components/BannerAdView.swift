@@ -17,10 +17,14 @@ struct BannerAdView: UIViewRepresentable {
         // rootViewController を設定してリクエストを送信
         guard bannerView.rootViewController == nil else { return }
 
-        if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
-           let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController {
-            bannerView.rootViewController = rootVC
-            bannerView.load(GADRequest())
+        // ウィンドウ階層が確立されてから取得するため次のランループに遅延
+        DispatchQueue.main.async {
+            guard bannerView.rootViewController == nil else { return }
+            if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+               let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController {
+                bannerView.rootViewController = rootVC
+                bannerView.load(GADRequest())
+            }
         }
     }
 
