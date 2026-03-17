@@ -245,11 +245,25 @@ final class InterstitialAdManager: NSObject {
                 }
                 return
             }
-            guard let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController else {
-                print("[Ad] rootViewControllerが見つかりません")
-                let completion = self.aiAdCompletion
-                self.aiAdCompletion = nil
-                completion?()
+            let keyWindow: UIWindow?
+            if #available(iOS 15, *) {
+                keyWindow = windowScene.keyWindow
+            } else {
+                keyWindow = windowScene.windows.first(where: { $0.isKeyWindow })
+            }
+            guard let rootVC = keyWindow?.rootViewController else {
+                // rootVC未確立の場合もリトライ
+                if retriesLeft > 0 {
+                    print("[Ad] rootVC未確立、1秒後にリトライ（残り\(retriesLeft)回）")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                        self?.presentAd(retriesLeft: retriesLeft - 1)
+                    }
+                } else {
+                    print("[Ad] rootViewControllerが見つかりません（リトライ上限）")
+                    let completion = self.aiAdCompletion
+                    self.aiAdCompletion = nil
+                    completion?()
+                }
                 return
             }
             // 起動時広告（aiAdCompletion が nil）は表示直前に日次フラグを記録
