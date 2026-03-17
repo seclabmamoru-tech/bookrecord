@@ -28,7 +28,19 @@ struct BookCardView: View {
             }
 
             // ステータスバッジ
-            StatusBadge(status: book.status ?? "want")
+            HStack(spacing: 4) {
+                StatusBadge(status: book.status ?? "want")
+                let memoCount = book.memos?.count ?? 0
+                if memoCount > 0 {
+                    Text(String(format: NSLocalizedString("book.memoCount", comment: ""), memoCount))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color(.systemGray5))
+                        .clipShape(Capsule())
+                }
+            }
         }
         .padding(10)
         .background(
