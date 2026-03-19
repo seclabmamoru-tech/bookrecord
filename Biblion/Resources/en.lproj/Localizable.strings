@@ -24,6 +24,8 @@
 "book.timer" = "Reading Timer";
 "home.currentlyReading" = "Currently Reading";
 "home.noReadingBooks" = "No books currently being read";
+"home.readingHistory.title" = "Reading History";
+"home.readingHistory.empty" = "No reading history yet";
 "book.noData" = "No data available";
 
 // MARK: - Library

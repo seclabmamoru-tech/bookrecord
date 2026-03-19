@@ -5,6 +5,8 @@ import Charts
 struct HomeView: View {
 
     @EnvironmentObject var viewModel: HomeViewModel
+    @State private var showReadingHistory = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -47,12 +49,20 @@ struct HomeView: View {
                 value: "\(viewModel.completedBooksCount)",
                 unit: Text("common.books")
             )
-            StatCard(
-                icon: "clock.fill",
-                title: Text("home.stats.totalTime"),
-                value: viewModel.totalReadingTimeFormatted,
-                unit: Text("")
-            )
+            Button {
+                showReadingHistory = true
+            } label: {
+                StatCard(
+                    icon: "clock.fill",
+                    title: Text("home.stats.totalTime"),
+                    value: viewModel.totalReadingTimeFormatted,
+                    unit: Text("")
+                )
+            }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $showReadingHistory) {
+                ReadingHistoryView()
+            }
         }
     }
 

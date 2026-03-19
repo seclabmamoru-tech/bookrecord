@@ -24,6 +24,8 @@
 "book.timer" = "読書タイマー";
 "home.currentlyReading" = "読書中";
 "home.noReadingBooks" = "読書中の書籍はありません";
+"home.readingHistory.title" = "読書履歴";
+"home.readingHistory.empty" = "読書履歴がありません";
 "book.noData" = "データがありません";
 
 // MARK: - ライブラリ

@@ -52,6 +52,7 @@
 		00000000000000000002002D /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002D /* MyPageView.swift */; };
 		00000000000000000002002E /* AIHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002E /* AIHistoryView.swift */; };
 		00000000000000000002002F /* AIPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002F /* AIPrompts.swift */; };
+		000000000000000000020031 /* ReadingHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010031 /* ReadingHistoryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +93,7 @@
 		000000000000000000010025 /* AIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIViewModel.swift; sourceTree = "<group>"; };
 		000000000000000000010026 /* MyPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageViewModel.swift; sourceTree = "<group>"; };
 		000000000000000000010030 /* NotificationSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewModel.swift; sourceTree = "<group>"; };
+		000000000000000000010031 /* ReadingHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingHistoryView.swift; sourceTree = "<group>"; };
 		000000000000000000010027 /* AIMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIMenuView.swift; sourceTree = "<group>"; };
 		000000000000000000010028 /* AIConsultationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConsultationView.swift; sourceTree = "<group>"; };
 		000000000000000000010029 /* AISummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISummaryView.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 			children = (
 				000000000000000000010004 /* HomeView.swift */,
 				000000000000000000010005 /* TimerMemoSheetView.swift */,
+				000000000000000000010031 /* ReadingHistoryView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -396,6 +399,7 @@
 				000000000000000000020003 /* CoreDataManager.swift in Sources */,
 				000000000000000000020004 /* HomeView.swift in Sources */,
 				000000000000000000020005 /* TimerMemoSheetView.swift in Sources */,
+				000000000000000000020031 /* ReadingHistoryView.swift in Sources */,
 				000000000000000000020006 /* LibraryView.swift in Sources */,
 				000000000000000000020007 /* AddBookView.swift in Sources */,
 				000000000000000000020008 /* BookDetailView.swift in Sources */,
