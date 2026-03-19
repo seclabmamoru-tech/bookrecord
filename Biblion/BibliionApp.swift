@@ -266,9 +266,20 @@ final class InterstitialAdManager: NSObject {
                 }
                 return
             }
-            // 起動時広告（aiAdCompletion が nil）は表示直前に日次フラグを記録
-            if self.aiAdCompletion == nil {
-                UserDefaults.standard.set(Date(), forKey: self.lastShownDateKey)
+            // rootVC がすでにモーダルを表示中（通知許可ダイアログ等）の場合はリトライ
+            if rootVC.presentedViewController != nil {
+                if retriesLeft > 0 {
+                    print("[Ad] rootVCが他のVCを表示中、1秒後にリトライ（残り\(retriesLeft)回）")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                        self?.presentAd(retriesLeft: retriesLeft - 1)
+                    }
+                } else {
+                    print("[Ad] rootVCが他のVCを表示中のまま上限に達しました")
+                    let completion = self.aiAdCompletion
+                    self.aiAdCompletion = nil
+                    completion?()
+                }
+                return
             }
             print("[Ad] 表示します")
             ad.present(fromRootViewController: rootVC)
@@ -277,6 +288,14 @@ final class InterstitialAdManager: NSObject {
 }
 
 extension InterstitialAdManager: GADFullScreenContentDelegate {
+    func adWillPresentFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+        // 実際に画面に表示されたタイミングで日次フラグを記録（失敗時は記録しない）
+        if aiAdCompletion == nil {
+            UserDefaults.standard.set(Date(), forKey: lastShownDateKey)
+        }
+        print("[Ad] 広告を表示しました")
+    }
+
     func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
         print("[Ad] 表示失敗: \(error.localizedDescription)")
         interstitialAd = nil
