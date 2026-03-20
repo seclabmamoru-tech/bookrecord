@@ -12,10 +12,8 @@ struct BibliionApp: App {
     @StateObject private var libraryViewModel = LibraryViewModel()
     @StateObject private var taskViewModel = TaskViewModel()
 
-    @Environment(\.scenePhase) private var scenePhase
-
-    /// 同一フォアグラウンド滞在中に .active が複数回発火しても処理を1回に限定するフラグ
-    /// バックグラウンドへ移行すると false にリセットされる
+    /// 同一フォアグラウンド滞在中に didBecomeActive が複数回発火しても処理を1回に限定するフラグ
+    /// didEnterBackground で false にリセットされる
     @State private var pendingActivationHandled = false
 
     init() {
@@ -31,27 +29,22 @@ struct BibliionApp: App {
                 .environmentObject(homeViewModel)
                 .environmentObject(libraryViewModel)
                 .environmentObject(taskViewModel)
-                .onChange(of: scenePhase) { newPhase in
-                    if newPhase == .background {
-                        // バックグラウンドへ移行したらフラグをリセット（次回復帰時に再処理）
-                        pendingActivationHandled = false
-                    } else if newPhase == .active, !pendingActivationHandled {
-                        pendingActivationHandled = true
-                        // ATT 確認後に通知許可・AdMob 初期化を行う
-                        ATTManager.shared.requestIfNeeded { wasFirstRequest in
-                            // ATT 完了後に通知許可をリクエスト（初回のみダイアログが出る）
-                            NotificationManager.shared.requestAuthorization()
-                            // 初回起動（ATT ダイアログ表示直後）は広告を出さない
-                            let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
-                            let planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
-                            if !wasFirstRequest && PlanLimits.showLaunchInterstitial(for: planType) {
-                                InterstitialAdManager.shared.startSdkAndLoadIfNeeded()
-                            } else {
-                                // SDK初期化のみ（広告表示なし）
-                                InterstitialAdManager.shared.initializeSdkOnly()
-                            }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                    guard !pendingActivationHandled else { return }
+                    pendingActivationHandled = true
+                    ATTManager.shared.requestIfNeeded { wasFirstRequest in
+                        NotificationManager.shared.requestAuthorization()
+                        let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
+                        let planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
+                        if !wasFirstRequest && PlanLimits.showLaunchInterstitial(for: planType) {
+                            InterstitialAdManager.shared.startSdkAndLoadIfNeeded()
+                        } else {
+                            InterstitialAdManager.shared.initializeSdkOnly()
                         }
                     }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+                    pendingActivationHandled = false
                 }
         }
     }
