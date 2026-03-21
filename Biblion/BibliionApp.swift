@@ -30,6 +30,8 @@ struct BibliionApp: App {
                 .environmentObject(libraryViewModel)
                 .environmentObject(taskViewModel)
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                    // バッジをクリアする
+                    NotificationManager.shared.clearBadge()
                     guard !pendingActivationHandled else { return }
                     pendingActivationHandled = true
                     ATTManager.shared.requestIfNeeded { wasFirstRequest in
@@ -45,8 +47,45 @@ struct BibliionApp: App {
                 }
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                     pendingActivationHandled = false
+                    // 朝のメモ通知をスケジュール（有効な場合）
+                    scheduleMorningMemoNotificationIfNeeded()
                 }
         }
+    }
+
+    // MARK: - 朝のメモ通知スケジューリング
+
+    /// バックグラウンド移行時に翌朝のメモ通知を動的にスケジュールする
+    private func scheduleMorningMemoNotificationIfNeeded() {
+        let defaults = UserDefaults.standard
+        guard defaults.bool(forKey: "morningMemo.isEnabled") else { return }
+
+        let hour   = defaults.object(forKey: "morningMemo.hour")   != nil ? defaults.integer(forKey: "morningMemo.hour")   : 8
+        let minute = defaults.object(forKey: "morningMemo.minute") != nil ? defaults.integer(forKey: "morningMemo.minute") : 0
+
+        // メモが存在する書籍からランダムに1件選択
+        let books = CoreDataManager.shared.fetchBooks()
+        let booksWithMemos = books.filter { book in
+            let memos = CoreDataManager.shared.fetchMemos(for: book)
+            return !memos.isEmpty
+        }
+
+        guard let randomBook = booksWithMemos.randomElement(),
+              let bookTitle = randomBook.title else {
+            NotificationManager.shared.removeMorningMemoNotification()
+            return
+        }
+
+        let memos = CoreDataManager.shared.fetchMemos(for: randomBook)
+        guard let randomMemo = memos.randomElement(),
+              let memoContent = randomMemo.content else { return }
+
+        NotificationManager.shared.scheduleMorningMemoNotification(
+            memo: memoContent,
+            bookTitle: bookTitle,
+            hour: hour,
+            minute: minute
+        )
     }
 
     // MARK: - UserPlan 初期化

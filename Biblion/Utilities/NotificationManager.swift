@@ -8,6 +8,8 @@ final class NotificationManager {
 
     /// 読書リマインダー通知の識別子プレフィックス
     private let readingReminderPrefix = "biblion_reading_weekday_"
+    /// 朝のメモ通知の識別子
+    private let morningMemoIdentifier = "biblion_morning_memo"
 
     private init() {}
 
@@ -64,6 +66,63 @@ final class NotificationManager {
     func removeReadingReminders() {
         let identifiers = (1...7).map { "\(readingReminderPrefix)\($0)" }
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+
+    // MARK: - バッジ管理
+
+    /// アプリアイコンのバッジをクリアする
+    func clearBadge() {
+        UNUserNotificationCenter.current().setBadgeCount(0) { error in
+            if let error = error {
+                print("バッジのクリアに失敗しました: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // MARK: - 朝のメモ通知
+
+    /// 朝のメモ通知をスケジュールする（次回の指定時刻に1回のみ配信）
+    /// - Parameters:
+    ///   - memo: 通知本文に表示するメモ内容
+    ///   - bookTitle: 書籍名
+    ///   - hour: 通知時刻（時）
+    ///   - minute: 通知時刻（分）
+    func scheduleMorningMemoNotification(memo: String, bookTitle: String, hour: Int, minute: Int) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [morningMemoIdentifier])
+
+        let content = UNMutableNotificationContent()
+        content.title = bookTitle
+        content.body = memo
+        content.sound = .default
+        content.badge = 1
+
+        var dateComponents = DateComponents()
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: dateComponents,
+            repeats: false
+        )
+
+        let request = UNNotificationRequest(
+            identifier: morningMemoIdentifier,
+            content: content,
+            trigger: trigger
+        )
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("朝のメモ通知のスケジュールに失敗しました: \(error.localizedDescription)")
+            } else {
+                print("朝のメモ通知をスケジュールしました: \(bookTitle) - \(hour):\(String(format: "%02d", minute))")
+            }
+        }
+    }
+
+    /// 朝のメモ通知を削除する
+    func removeMorningMemoNotification() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [morningMemoIdentifier])
     }
 
     // MARK: - プライベートメソッド

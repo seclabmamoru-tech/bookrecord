@@ -115,6 +115,9 @@
 "mypage.notification.time" = "通知時刻";
 "mypage.notification.weekdays" = "通知する曜日";
 "mypage.notification.denied" = "通知が拒否されています。設定アプリからBiblionの通知を許可してください。";
+"mypage.section.morningMemo" = "朝のメモ通知";
+"mypage.morningMemo.enable" = "朝のメモ通知";
+"mypage.morningMemo.description" = "毎朝、過去に記録した書籍のメモをランダムに1件お知らせします。";
 
 // MARK: - 曜日
 "weekday.sun" = "日";

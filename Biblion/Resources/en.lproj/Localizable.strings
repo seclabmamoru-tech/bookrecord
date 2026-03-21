@@ -115,6 +115,9 @@
 "mypage.notification.time" = "Notification Time";
 "mypage.notification.weekdays" = "Days";
 "mypage.notification.denied" = "Notifications are disabled. Please enable them in Settings for Biblion.";
+"mypage.section.morningMemo" = "Morning Memo";
+"mypage.morningMemo.enable" = "Morning Memo Notification";
+"mypage.morningMemo.description" = "Each morning, receive a random memo from your past books.";
 
 // MARK: - Weekdays
 "weekday.sun" = "Sun";

@@ -13,6 +13,9 @@ final class NotificationSettingsViewModel: ObservableObject {
         static let weekdays    = "readingReminder.weekdays"
         static let hour        = "readingReminder.hour"
         static let minute      = "readingReminder.minute"
+        static let morningMemoEnabled = "morningMemo.isEnabled"
+        static let morningMemoHour    = "morningMemo.hour"
+        static let morningMemoMinute  = "morningMemo.minute"
     }
 
     // MARK: - Published プロパティ
@@ -43,6 +46,25 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
     }
 
+    /// 朝のメモ通知の有効/無効
+    @Published var morningMemoEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(morningMemoEnabled, forKey: Keys.morningMemoEnabled)
+            if !morningMemoEnabled {
+                NotificationManager.shared.removeMorningMemoNotification()
+            }
+        }
+    }
+
+    /// 朝のメモ通知時刻
+    @Published var morningMemoTime: Date {
+        didSet {
+            let cal = Calendar.current
+            UserDefaults.standard.set(cal.component(.hour, from: morningMemoTime), forKey: Keys.morningMemoHour)
+            UserDefaults.standard.set(cal.component(.minute, from: morningMemoTime), forKey: Keys.morningMemoMinute)
+        }
+    }
+
     /// 通知許可ステータス
     @Published var authorizationStatus: UNAuthorizationStatus = .notDetermined
 
@@ -56,6 +78,11 @@ final class NotificationSettingsViewModel: ObservableObject {
         let hour   = defaults.object(forKey: Keys.hour)   != nil ? defaults.integer(forKey: Keys.hour)   : 8
         let minute = defaults.object(forKey: Keys.minute) != nil ? defaults.integer(forKey: Keys.minute) : 0
         notificationTime = NotificationSettingsViewModel.makeTime(hour: hour, minute: minute)
+
+        morningMemoEnabled = defaults.bool(forKey: Keys.morningMemoEnabled)
+        let mHour   = defaults.object(forKey: Keys.morningMemoHour)   != nil ? defaults.integer(forKey: Keys.morningMemoHour)   : 8
+        let mMinute = defaults.object(forKey: Keys.morningMemoMinute) != nil ? defaults.integer(forKey: Keys.morningMemoMinute) : 0
+        morningMemoTime = NotificationSettingsViewModel.makeTime(hour: mHour, minute: mMinute)
 
         Task { await refreshAuthorizationStatus() }
     }
@@ -76,6 +103,15 @@ final class NotificationSettingsViewModel: ObservableObject {
             await refreshAuthorizationStatus()
             applySettings()
         }
+    }
+
+    /// 朝のメモ通知の時刻設定を取得する（hour, minute）
+    var morningMemoHourAndMinute: (hour: Int, minute: Int) {
+        let cal = Calendar.current
+        return (
+            cal.component(.hour, from: morningMemoTime),
+            cal.component(.minute, from: morningMemoTime)
+        )
     }
 
     /// 曜日の選択状態をトグルする

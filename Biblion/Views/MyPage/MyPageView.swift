@@ -221,6 +221,46 @@ struct MyPageView: View {
                 }
                 .onAppear { Task { await notifVM.refreshAuthorizationStatus() } }
 
+                // MARK: - 朝のメモ通知設定
+                Section(header: Text("mypage.section.morningMemo")) {
+                    if notifVM.authorizationStatus == .denied {
+                        HStack(spacing: 8) {
+                            Image(systemName: "bell.slash.fill")
+                                .foregroundColor(.orange)
+                            Text("mypage.notification.denied")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+
+                    Toggle(isOn: Binding(
+                        get: { notifVM.morningMemoEnabled },
+                        set: { newValue in
+                            if newValue && notifVM.authorizationStatus == .notDetermined {
+                                notifVM.requestAuthorizationAndApply()
+                            }
+                            notifVM.morningMemoEnabled = newValue
+                        }
+                    )) {
+                        Label("mypage.morningMemo.enable", systemImage: "sun.max.fill")
+                    }
+                    .tint(.orange)
+                    .disabled(notifVM.authorizationStatus == .denied)
+
+                    if notifVM.morningMemoEnabled {
+                        DatePicker(
+                            selection: $notifVM.morningMemoTime,
+                            displayedComponents: .hourAndMinute
+                        ) {
+                            Label("mypage.notification.time", systemImage: "clock")
+                        }
+
+                        Text("mypage.morningMemo.description")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
                 // MARK: - データとプライバシー
                 Section(header: Text("mypage.section.privacy")) {
                     // AI同意トグル
