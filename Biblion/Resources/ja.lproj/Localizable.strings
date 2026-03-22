@@ -194,6 +194,7 @@
 "mypage.ticket.buy" = "チケットを購入（45枚 ¥900）";
 "mypage.upgrade.basic" = "Basicにアップグレード（¥200/月）";
 "mypage.upgrade.premium" = "Premiumにアップグレード（¥500/月）";
+"mypage.plan.current" = "現在のプラン";
 "mypage.restore" = "購入を復元する";
 "mypage.cancel.note" = "※ サブスクリプションの解約は、iPhoneの「設定」→「Apple ID」→「サブスクリプション」から行えます。";
 "mypage.aiConsent" = "AI機能のデータ送信に同意する";

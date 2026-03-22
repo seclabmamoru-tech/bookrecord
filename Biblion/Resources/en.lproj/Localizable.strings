@@ -194,6 +194,7 @@
 "mypage.ticket.buy" = "Buy Tickets (45 for $9.99)";
 "mypage.upgrade.basic" = "Upgrade to Basic ($2.99/mo)";
 "mypage.upgrade.premium" = "Upgrade to Premium ($5.99/mo)";
+"mypage.plan.current" = "Current Plan";
 "mypage.restore" = "Restore Purchases";
 "mypage.cancel.note" = "* To cancel your subscription, go to Settings → Apple ID → Subscriptions on your iPhone.";
 "mypage.aiConsent" = "Allow AI data processing";

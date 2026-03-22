@@ -126,12 +126,16 @@ struct MyPageView: View {
                             onUpgrade: { Task { await viewModel.purchasePremium() } }
                         )
                     } else if viewModel.planType == .basic {
-                        HStack {
-                            Text(planDisplayName)
-                            Spacer()
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                        }
+                        currentPlanCard(
+                            title: NSLocalizedString("mypage.plan.basic", comment: ""),
+                            price: NSLocalizedString("mypage.plan.basic.price", comment: ""),
+                            features: [
+                                NSLocalizedString("mypage.plan.basic.feature1", comment: ""),
+                                NSLocalizedString("mypage.plan.basic.feature2", comment: ""),
+                                NSLocalizedString("mypage.plan.basic.feature3", comment: "")
+                            ],
+                            color: .blue
+                        )
                         planCard(
                             title: NSLocalizedString("mypage.plan.premium", comment: ""),
                             price: NSLocalizedString("mypage.plan.premium.price", comment: ""),
@@ -145,12 +149,16 @@ struct MyPageView: View {
                             onUpgrade: { Task { await viewModel.purchasePremium() } }
                         )
                     } else {
-                        HStack {
-                            Text(planDisplayName)
-                            Spacer()
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                        }
+                        currentPlanCard(
+                            title: NSLocalizedString("mypage.plan.premium", comment: ""),
+                            price: NSLocalizedString("mypage.plan.premium.price", comment: ""),
+                            features: [
+                                NSLocalizedString("mypage.plan.premium.feature1", comment: ""),
+                                NSLocalizedString("mypage.plan.premium.feature2", comment: ""),
+                                NSLocalizedString("mypage.plan.premium.feature3", comment: "")
+                            ],
+                            color: Color(hex: "C9A84C")
+                        )
                     }
 
                     Button {
@@ -376,6 +384,43 @@ struct MyPageView: View {
         case .basic: return NSLocalizedString("mypage.plan.basic", comment: "")
         case .premium: return NSLocalizedString("mypage.plan.premium", comment: "")
         }
+    }
+
+    // MARK: - 現在のプランカード（アップグレードボタンなし）
+
+    private func currentPlanCard(
+        title: String,
+        price: String,
+        features: [String],
+        color: Color
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(color)
+                Spacer()
+                HStack(spacing: 4) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Text(NSLocalizedString("mypage.plan.current", comment: ""))
+                        .font(.caption.bold())
+                        .foregroundColor(.green)
+                }
+            }
+
+            ForEach(features, id: \.self) { feature in
+                HStack(spacing: 6) {
+                    Image(systemName: "checkmark")
+                        .font(.caption.bold())
+                        .foregroundColor(color)
+                    Text(feature)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .padding(.vertical, 4)
     }
 
     // MARK: - プランカード
