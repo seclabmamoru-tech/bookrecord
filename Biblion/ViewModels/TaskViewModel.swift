@@ -10,10 +10,6 @@ final class TaskViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showError = false
 
-    // MARK: - 定数
-
-    static let maxTaskCount = 4
-
     // MARK: - プライベートプロパティ
 
     private var cancellables = Set<AnyCancellable>()
@@ -26,13 +22,6 @@ final class TaskViewModel: ObservableObject {
         observeContext()
     }
 
-    // MARK: - 計算プロパティ
-
-    /// タスクを追加できるか（最大4件）
-    var canAddTask: Bool {
-        tasks.count < TaskViewModel.maxTaskCount
-    }
-
     // MARK: - データ操作
 
     func fetchTasks() {
@@ -40,7 +29,6 @@ final class TaskViewModel: ObservableObject {
     }
 
     func addTask(title: String) {
-        guard canAddTask else { return }
         let nextOrder = Int32(tasks.count)
         coreData.addTask(title: title, sortOrder: nextOrder)
         fetchTasks()
