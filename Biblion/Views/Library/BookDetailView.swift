@@ -224,6 +224,7 @@ struct BookDetailView: View {
     private var timerSection: some View {
         let isThisBook = homeViewModel.isTimerRunning && homeViewModel.selectedBook?.id == book.id
         let isOtherBook = homeViewModel.isTimerRunning && homeViewModel.selectedBook?.id != book.id
+        let isPaused = isThisBook && homeViewModel.isTimerPaused
         return CardContainer {
             VStack(spacing: 16) {
                 Label("book.timer", systemImage: "timer")
@@ -232,15 +233,32 @@ struct BookDetailView: View {
 
                 Text(isThisBook ? homeViewModel.elapsedTimeString : "00:00")
                     .font(.system(size: 52, weight: .thin, design: .monospaced))
-                    .foregroundColor(isThisBook ? .indigo : .primary)
+                    .foregroundColor(isThisBook ? (isPaused ? .orange : .indigo) : .primary)
 
                 if isThisBook {
-                    Button(action: homeViewModel.stopTimer) {
-                        Label("home.timer.stop", systemImage: "stop.circle.fill")
-                            .frame(maxWidth: .infinity)
+                    HStack(spacing: 12) {
+                        if isPaused {
+                            Button(action: homeViewModel.resumeTimer) {
+                                Label("home.timer.resume", systemImage: "play.circle.fill")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.indigo)
+                        } else {
+                            Button(action: homeViewModel.pauseTimer) {
+                                Label("home.timer.pause", systemImage: "pause.circle.fill")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.orange)
+                        }
+                        Button(action: homeViewModel.stopTimer) {
+                            Label("home.timer.stop", systemImage: "stop.circle.fill")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.red)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
                 } else if isOtherBook {
                     Text("home.timer.otherBook")
                         .font(.caption)

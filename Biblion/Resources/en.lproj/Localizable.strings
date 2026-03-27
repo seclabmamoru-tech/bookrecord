@@ -16,6 +16,8 @@
 "home.stats.byGenre" = "By Genre";
 "home.stats.byMonth" = "Monthly Books";
 "home.timer.start" = "Start Timer";
+"home.timer.pause" = "Pause";
+"home.timer.resume" = "Resume";
 "home.timer.stop" = "Stop Timer";
 "home.timer.addMemo" = "Add Memo";
 "home.timer.selectBook" = "Select Book";

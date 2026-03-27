@@ -9,6 +9,7 @@ final class HomeViewModel: ObservableObject {
     @Published var allBooks: [Book] = []
     @Published var readingBooks: [Book] = []
     @Published var isTimerRunning = false
+    @Published var isTimerPaused = false
     @Published var elapsedSeconds: Int = 0
     @Published var selectedBook: Book?
     @Published var showMemoSheet = false
@@ -17,6 +18,10 @@ final class HomeViewModel: ObservableObject {
     // MARK: - プライベートプロパティ
 
     private var timerInstance: Timer?
+    /// 現在の計測セグメントの開始日時（一時停止中は nil）
+    private var timerStartDate: Date?
+    /// 一時停止までに積算した秒数
+    private var accumulatedSeconds: Int = 0
     private var cancellables = Set<AnyCancellable>()
     private let coreData = CoreDataManager.shared
 
@@ -25,6 +30,7 @@ final class HomeViewModel: ObservableObject {
     init() {
         fetchBooks()
         observeContext()
+        observeAppLifecycle()
     }
 
     // MARK: - データ取得
@@ -40,7 +46,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - CoreData 変更監視
+    // MARK: - CoreData 変更監視・アプリライフサイクル監視
 
     private func observeContext() {
         NotificationCenter.default.publisher(
@@ -52,6 +58,25 @@ final class HomeViewModel: ObservableObject {
             self?.fetchBooks()
         }
         .store(in: &cancellables)
+    }
+
+    private func observeAppLifecycle() {
+        NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)
+            .sink { [weak self] _ in
+                // バックグラウンド移行時: UI 更新タイマーを停止（経過秒は timerStartDate で保持）
+                self?.timerInstance?.invalidate()
+                self?.timerInstance = nil
+            }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                guard let self, self.isTimerRunning, !self.isTimerPaused else { return }
+                // フォアグラウンド復帰時: 壁時計で経過秒を再計算し UI タイマーを再開
+                self.updateElapsed()
+                self.startUIRefreshTimer()
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - 統計計算
@@ -126,20 +151,43 @@ final class HomeViewModel: ObservableObject {
     func startTimer() {
         guard !isTimerRunning else { return }
         isTimerRunning = true
+        isTimerPaused = false
+        accumulatedSeconds = 0
+        timerStartDate = Date()
         elapsedSeconds = 0
-        timerInstance = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.elapsedSeconds += 1
-        }
-        if let t = timerInstance {
-            RunLoop.main.add(t, forMode: .common)
-        }
+        startUIRefreshTimer()
+    }
+
+    /// タイマーを一時停止する
+    func pauseTimer() {
+        guard isTimerRunning, !isTimerPaused else { return }
+        updateElapsed()
+        accumulatedSeconds = elapsedSeconds
+        timerStartDate = nil
+        timerInstance?.invalidate()
+        timerInstance = nil
+        isTimerPaused = true
+    }
+
+    /// タイマーを再開する
+    func resumeTimer() {
+        guard isTimerRunning, isTimerPaused else { return }
+        timerStartDate = Date()
+        isTimerPaused = false
+        startUIRefreshTimer()
     }
 
     /// タイマーを停止し ReadingSession を保存する
     func stopTimer() {
+        if isTimerRunning && !isTimerPaused {
+            updateElapsed()
+        }
         timerInstance?.invalidate()
         timerInstance = nil
         isTimerRunning = false
+        isTimerPaused = false
+        timerStartDate = nil
+        accumulatedSeconds = 0
 
         // 1秒以上計測した場合は秒数をそのまま保存
         if elapsedSeconds > 0, let book = selectedBook {
@@ -147,6 +195,23 @@ final class HomeViewModel: ObservableObject {
             fetchBooks()
         }
         elapsedSeconds = 0
+    }
+
+    /// 現在の経過秒を壁時計から再計算する
+    private func updateElapsed() {
+        guard let startDate = timerStartDate else { return }
+        elapsedSeconds = accumulatedSeconds + Int(Date().timeIntervalSince(startDate))
+    }
+
+    /// UI 更新用タイマーを起動する
+    private func startUIRefreshTimer() {
+        timerInstance?.invalidate()
+        timerInstance = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.updateElapsed()
+        }
+        if let t = timerInstance {
+            RunLoop.main.add(t, forMode: .common)
+        }
     }
 
     /// 経過時間の表示文字列（mm:ss 形式）

@@ -16,6 +16,8 @@
 "home.stats.byGenre" = "ジャンル別";
 "home.stats.byMonth" = "月別読了数";
 "home.timer.start" = "タイマー開始";
+"home.timer.pause" = "一時停止";
+"home.timer.resume" = "再開";
 "home.timer.stop" = "タイマー停止";
 "home.timer.addMemo" = "メモを追加";
 "home.timer.selectBook" = "書籍を選択";
