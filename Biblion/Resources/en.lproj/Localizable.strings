@@ -8,7 +8,7 @@
 "tab.library" = "Library";
 "tab.tasks" = "Tasks";
 "tab.ai" = "AI Advisor";
-"tab.mypage" = "My Page";
+"tab.mypage" = "Plan";
 
 // MARK: - Home
 "home.stats.totalBooks" = "Books Read";
@@ -171,7 +171,7 @@
 "ai.share.includePromo" = "Include app promotion";
 
 // MARK: - My Page
-"mypage.title" = "My Page";
+"mypage.title" = "Plan";
 "mypage.section.ticket" = "Tickets";
 "mypage.section.plan" = "Change Plan";
 "mypage.section.privacy" = "Data & Privacy";

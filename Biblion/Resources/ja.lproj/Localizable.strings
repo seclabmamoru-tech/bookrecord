@@ -8,7 +8,7 @@
 "tab.library" = "ライブラリ";
 "tab.tasks" = "タスク";
 "tab.ai" = "AI相談";
-"tab.mypage" = "マイページ";
+"tab.mypage" = "プラン";
 
 // MARK: - ホーム
 "home.stats.totalBooks" = "総読了冊数";
@@ -171,7 +171,7 @@
 "ai.share.includePromo" = "アプリ紹介文を含める";
 
 // MARK: - マイページ
-"mypage.title" = "マイページ";
+"mypage.title" = "プラン";
 "mypage.section.ticket" = "チケット";
 "mypage.section.plan" = "プラン変更";
 "mypage.section.privacy" = "データとプライバシー";

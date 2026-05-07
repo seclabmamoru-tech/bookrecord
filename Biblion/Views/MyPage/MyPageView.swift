@@ -32,12 +32,7 @@ struct MyPageView: View {
                             .clipShape(Capsule())
                     }
 
-                    if let expires = viewModel.expiresAt {
-                        let formatter = DateFormatter()
-                        let _ = { formatter.dateStyle = .medium }()
-                        Text(String(format: NSLocalizedString("mypage.plan.expires", comment: ""), formatter.string(from: expires)))
-                            .foregroundColor(.secondary)
-                    }
+
                 }
 
                 // MARK: - チケット
