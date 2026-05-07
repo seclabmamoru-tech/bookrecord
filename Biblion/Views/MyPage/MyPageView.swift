@@ -18,7 +18,7 @@ struct MyPageView: View {
         NavigationStack {
             List {
                 // MARK: - プラン情報
-                Section(header: Text("mypage.title")) {
+                Section(header: Text("mypage.section.plan")) {
                     HStack {
                         Text(planDisplayName)
                             .font(.headline)
