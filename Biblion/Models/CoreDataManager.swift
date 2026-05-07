@@ -279,6 +279,7 @@ final class CoreDataManager {
         plan.freeTicketCount = 3
         plan.freeTicketGranted = true
         plan.updatedAt = Date()
+        TicketHistoryStore.shared.record(amount: 3, reason: .initialGrant)
         save()
         // 当月の月次付与をスキップさせる（初回インストール月は月次付与なし）
         let now = Date()
@@ -307,6 +308,7 @@ final class CoreDataManager {
             plan.freeTicketCount += Int32(monthlyCount)
         }
         plan.updatedAt = now
+        TicketHistoryStore.shared.record(amount: monthlyCount, reason: .monthly)
         save()
         UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
     }
@@ -332,6 +334,7 @@ final class CoreDataManager {
             } else {
                 plan.freeTicketCount += Int32(newMonthly)
             }
+            TicketHistoryStore.shared.record(amount: newMonthly, reason: .planChange)
             UserDefaults.standard.set(currentYearMonth, forKey: "lastMonthlyTicketGrantYearMonth")
         }
 
@@ -387,6 +390,7 @@ final class CoreDataManager {
         let plan = fetchOrCreateUserPlan()
         plan.purchasedTicketCount += count
         plan.updatedAt = Date()
+        TicketHistoryStore.shared.record(amount: Int(count), reason: .purchase)
         save()
     }
 

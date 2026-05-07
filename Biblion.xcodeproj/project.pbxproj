@@ -53,6 +53,8 @@
 		00000000000000000002002E /* AIHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002E /* AIHistoryView.swift */; };
 		00000000000000000002002F /* AIPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000001002F /* AIPrompts.swift */; };
 		000000000000000000020031 /* ReadingHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010031 /* ReadingHistoryView.swift */; };
+		000000000000000000020032 /* TicketHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010032 /* TicketHistoryStore.swift */; };
+		000000000000000000020033 /* TicketHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000010033 /* TicketHistoryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -102,6 +104,8 @@
 		00000000000000000001002C /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		00000000000000000001002D /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		00000000000000000001002E /* AIHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIHistoryView.swift; sourceTree = "<group>"; };
+		000000000000000000010032 /* TicketHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketHistoryStore.swift; sourceTree = "<group>"; };
+		000000000000000000010033 /* TicketHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketHistoryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +168,7 @@
 			children = (
 				000000000000000000010003 /* CoreDataManager.swift */,
 				000000000000000000010023 /* StoreManager.swift */,
+				000000000000000000010032 /* TicketHistoryStore.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -309,6 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				00000000000000000001002D /* MyPageView.swift */,
+				000000000000000000010033 /* TicketHistoryView.swift */,
 			);
 			path = MyPage;
 			sourceTree = "<group>";
@@ -433,6 +439,8 @@
 				00000000000000000002002C /* BarcodeScannerView.swift in Sources */,
 				00000000000000000002002D /* MyPageView.swift in Sources */,
 				00000000000000000002002E /* AIHistoryView.swift in Sources */,
+				000000000000000000020032 /* TicketHistoryStore.swift in Sources */,
+				000000000000000000020033 /* TicketHistoryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,7 @@ struct MyPageView: View {
     @StateObject private var notifVM   = NotificationSettingsViewModel()
     @State private var showConsentSheet = false
     @State private var showRevokeAlert = false
+    @State private var showTicketHistory = false
 
     private let privacyURL = URL(string: "https://it-master.jp/biblion/privacy-policy.html")!
     private let termsURL = URL(string: "https://it-master.jp/biblion/terms.html")!
@@ -327,6 +328,18 @@ struct MyPageView: View {
                 }
             }
             .navigationTitle(Text("mypage.title"))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showTicketHistory = true
+                    } label: {
+                        Image(systemName: "ticket")
+                    }
+                }
+            }
+            .sheet(isPresented: $showTicketHistory) {
+                TicketHistoryView()
+            }
             .onAppear { viewModel.refresh() }
             .alert("mypage.aiConsent.revokeAlert", isPresented: $showRevokeAlert) {
                 Button("common.cancel", role: .cancel) {}

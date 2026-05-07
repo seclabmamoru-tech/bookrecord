@@ -244,3 +244,13 @@
 // MARK: - ストアエラー
 "store.error.failedVerification" = "購入の検証に失敗しました。";
 "store.error.productNotFound" = "商品情報が見つかりませんでした。しばらくしてから再度お試しください。";
+
+// MARK: - チケット履歴
+"ticket.history.title" = "チケット付与履歴";
+"ticket.history.empty" = "履歴がありません";
+"ticket.history.empty.description" = "チケットが付与されると、ここに履歴が表示されます。";
+"ticket.history.amount" = "+%dチケット";
+"ticket.history.reason.initial" = "初回ウェルカムボーナス";
+"ticket.history.reason.monthly" = "月次付与";
+"ticket.history.reason.planChange" = "プラン変更";
+"ticket.history.reason.purchase" = "購入";

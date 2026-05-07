@@ -244,3 +244,13 @@
 // MARK: - Store Errors
 "store.error.failedVerification" = "Purchase verification failed.";
 "store.error.productNotFound" = "Product information not found. Please try again later.";
+
+// MARK: - Ticket History
+"ticket.history.title" = "Ticket History";
+"ticket.history.empty" = "No History";
+"ticket.history.empty.description" = "Ticket grant history will appear here.";
+"ticket.history.amount" = "+%d tickets";
+"ticket.history.reason.initial" = "Welcome bonus";
+"ticket.history.reason.monthly" = "Monthly grant";
+"ticket.history.reason.planChange" = "Plan change";
+"ticket.history.reason.purchase" = "Purchased";
