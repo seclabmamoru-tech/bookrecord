@@ -374,6 +374,15 @@ private struct MemoRow: View {
             }
             .buttonStyle(.plain)
 
+            Button {
+                UIPasteboard.general.string = memo.content ?? ""
+            } label: {
+                Image(systemName: "doc.on.doc")
+                    .foregroundColor(.secondary)
+                    .font(.caption)
+            }
+            .padding(.top, 2)
+
             Button(action: onDelete) {
                 Image(systemName: "trash")
                     .foregroundColor(.red)
