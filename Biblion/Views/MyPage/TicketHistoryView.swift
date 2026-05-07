@@ -15,11 +15,19 @@ struct TicketHistoryView: View {
         NavigationStack {
             Group {
                 if entries.isEmpty {
-                    ContentUnavailableView(
-                        NSLocalizedString("ticket.history.empty", comment: ""),
-                        systemImage: "ticket",
-                        description: Text("ticket.history.empty.description")
-                    )
+                    VStack(spacing: 12) {
+                        Image(systemName: "ticket")
+                            .font(.system(size: 48))
+                            .foregroundColor(.secondary)
+                        Text("ticket.history.empty")
+                            .font(.headline)
+                        Text("ticket.history.empty.description")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     List(entries) { entry in
                         HStack {
