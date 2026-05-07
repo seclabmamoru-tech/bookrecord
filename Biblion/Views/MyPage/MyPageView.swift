@@ -107,7 +107,8 @@ struct MyPageView: View {
                             features: [
                                 NSLocalizedString("mypage.plan.basic.feature1", comment: ""),
                                 NSLocalizedString("mypage.plan.basic.feature2", comment: ""),
-                                NSLocalizedString("mypage.plan.basic.feature3", comment: "")
+                                NSLocalizedString("mypage.plan.basic.feature3", comment: ""),
+                                NSLocalizedString("mypage.plan.basic.feature4", comment: "")
                             ],
                             upgradeKey: "mypage.upgrade.basic",
                             color: .blue,
@@ -132,7 +133,8 @@ struct MyPageView: View {
                             features: [
                                 NSLocalizedString("mypage.plan.basic.feature1", comment: ""),
                                 NSLocalizedString("mypage.plan.basic.feature2", comment: ""),
-                                NSLocalizedString("mypage.plan.basic.feature3", comment: "")
+                                NSLocalizedString("mypage.plan.basic.feature3", comment: ""),
+                                NSLocalizedString("mypage.plan.basic.feature4", comment: "")
                             ],
                             color: .blue
                         )

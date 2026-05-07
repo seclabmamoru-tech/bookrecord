@@ -181,6 +181,7 @@
 "mypage.plan.basic.feature1" = "バーコード登録";
 "mypage.plan.basic.feature2" = "タスク無制限";
 "mypage.plan.basic.feature3" = "起動時の広告なし";
+"mypage.plan.basic.feature4" = "月3チケット付与";
 "mypage.plan.premium.feature1" = "Basicの全機能";
 "mypage.plan.premium.feature2" = "月10チケット付与";
 "mypage.plan.premium.feature3" = "AI利用時の広告なし";

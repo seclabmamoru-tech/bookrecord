@@ -181,6 +181,7 @@
 "mypage.plan.basic.feature1" = "Barcode Scanning";
 "mypage.plan.basic.feature2" = "Unlimited Tasks";
 "mypage.plan.basic.feature3" = "No Launch Ads";
+"mypage.plan.basic.feature4" = "3 tickets/month";
 "mypage.plan.premium.feature1" = "All Basic features";
 "mypage.plan.premium.feature2" = "10 tickets/month";
 "mypage.plan.premium.feature3" = "No Ads During AI Use";
