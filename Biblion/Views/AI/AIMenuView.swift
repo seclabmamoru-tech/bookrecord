@@ -130,19 +130,6 @@ struct AIMenuView: View {
                 .buttonStyle(.plain)
                 .disabled(!hasTickets)
 
-                Divider().padding(.leading, 68)
-
-                // SNS投稿生成
-                NavigationLink(destination: AISNSPostView(viewModel: viewModel)) {
-                    AIMenuCard(
-                        icon: "square.and.pencil",
-                        titleKey: "ai.menu.sns.title",
-                        descKey: "ai.menu.sns.desc",
-                        isEnabled: hasTickets
-                    )
-                }
-                .buttonStyle(.plain)
-                .disabled(!hasTickets)
             }
             .background(
                 RoundedRectangle(cornerRadius: 12)
