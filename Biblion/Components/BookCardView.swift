@@ -1,17 +1,33 @@
 import SwiftUI
 
+private let appStoreURL = "https://apps.apple.com/jp/app/biblion/id6759857926"
+
 /// 書籍一覧グリッド用のカードビュー
 struct BookCardView: View {
 
     @ObservedObject var book: Book
+    @State private var showShareSheet = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // 表紙画像
+            // 表紙画像 + 共有ボタン
             coverImage
                 .frame(height: 160)
                 .clipped()
                 .cornerRadius(10)
+                .overlay(alignment: .topTrailing) {
+                    Button {
+                        showShareSheet = true
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.caption.bold())
+                            .foregroundColor(.white)
+                            .padding(6)
+                            .background(Color.black.opacity(0.4))
+                            .clipShape(Circle())
+                    }
+                    .padding(6)
+                }
 
             // タイトル
             Text(book.title ?? "")
@@ -48,6 +64,17 @@ struct BookCardView: View {
                 .fill(Color(.systemBackground))
                 .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
         )
+        .sheet(isPresented: $showShareSheet) {
+            ActivityShareView(items: shareItems)
+        }
+    }
+
+    private var shareItems: [Any] {
+        let text = "\(book.title ?? "")\n\(appStoreURL)"
+        if let data = book.coverImageData, let image = UIImage(data: data) {
+            return [image, text]
+        }
+        return [text]
     }
 
     // MARK: - 表紙画像
@@ -75,6 +102,18 @@ struct BookCardView: View {
             }
         }
     }
+}
+
+// MARK: - UIActivityViewController ラッパー
+
+private struct ActivityShareView: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #Preview {
