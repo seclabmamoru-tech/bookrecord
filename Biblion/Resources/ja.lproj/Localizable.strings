@@ -8,7 +8,7 @@
 "tab.library" = "ライブラリ";
 "tab.tasks" = "タスク";
 "tab.ai" = "AI相談";
-"tab.mypage" = "プラン";
+"tab.mypage" = "マイページ";
 
 // MARK: - ホーム
 "home.stats.totalBooks" = "総読了冊数";

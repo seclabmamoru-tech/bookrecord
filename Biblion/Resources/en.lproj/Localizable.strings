@@ -8,7 +8,7 @@
 "tab.library" = "Library";
 "tab.tasks" = "Tasks";
 "tab.ai" = "AI Advisor";
-"tab.mypage" = "Plan";
+"tab.mypage" = "My Page";
 
 // MARK: - Home
 "home.stats.totalBooks" = "Books Read";
