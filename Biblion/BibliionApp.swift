@@ -32,6 +32,8 @@ struct BibliionApp: App {
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
                     // バッジをクリアする
                     NotificationManager.shared.clearBadge()
+                    // 月次チケット付与（新しい月になっていれば付与、冪等）
+                    CoreDataManager.shared.grantMonthlyTicketsIfNeeded()
                     guard !pendingActivationHandled else { return }
                     pendingActivationHandled = true
                     ATTManager.shared.requestIfNeeded { wasFirstRequest in
