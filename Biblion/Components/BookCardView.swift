@@ -70,11 +70,7 @@ struct BookCardView: View {
     }
 
     private var shareItems: [Any] {
-        let text = "\(book.title ?? "")\n\(appStoreURL)"
-        if let data = book.coverImageData, let image = UIImage(data: data) {
-            return [image, text]
-        }
-        return [text]
+        ["\(book.title ?? "")\n\(appStoreURL)"]
     }
 
     // MARK: - 表紙画像
