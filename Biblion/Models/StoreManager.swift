@@ -56,7 +56,7 @@ struct PlanLimits {
     static func monthlyTickets(for plan: PlanType) -> Int {
         switch plan {
         case .free: return 1
-        case .basic: return 1
+        case .basic: return 3
         case .premium: return 10
         }
     }
