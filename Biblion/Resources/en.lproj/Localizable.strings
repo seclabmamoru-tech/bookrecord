@@ -171,7 +171,7 @@
 "ai.share.includePromo" = "Include app promotion";
 
 // MARK: - My Page
-"mypage.title" = "Plan";
+"mypage.title" = "My Page";
 "mypage.section.ticket" = "Tickets";
 "mypage.section.plan" = "Change Plan";
 "mypage.section.privacy" = "Data & Privacy";

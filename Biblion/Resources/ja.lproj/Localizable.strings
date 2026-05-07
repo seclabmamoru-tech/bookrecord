@@ -171,7 +171,7 @@
 "ai.share.includePromo" = "アプリ紹介文を含める";
 
 // MARK: - マイページ
-"mypage.title" = "プラン";
+"mypage.title" = "マイページ";
 "mypage.section.ticket" = "チケット";
 "mypage.section.plan" = "プラン変更";
 "mypage.section.privacy" = "データとプライバシー";
