@@ -1,5 +1,10 @@
 import SwiftUI
-import CoreData
+
+/// メモ選択シート用の値型
+private struct MemoItem: Identifiable {
+    let id: Int   // fetchMemos の順番インデックス
+    let content: String
+}
 
 /// 書籍要約画面
 struct AISummaryView: View {
@@ -10,8 +15,8 @@ struct AISummaryView: View {
     @State private var showRetryAlert = false
     @State private var showMyPageForConsent = false
     @State private var showMemoSelection = false
-    @State private var memosForSelection: [Memo] = []
-    @State private var selectedMemoIDs: Set<NSManagedObjectID> = []
+    @State private var memosForSelection: [MemoItem] = []
+    @State private var selectedMemoIDs: Set<Int> = []
 
     private let memoLimit = 30
 
@@ -192,9 +197,8 @@ struct AISummaryView: View {
 
     private var selectedMemos: [String] {
         memosForSelection
-            .filter { selectedMemoIDs.contains($0.objectID) }
-            .map { $0.content ?? "" }
-            .filter { !$0.isEmpty }
+            .filter { selectedMemoIDs.contains($0.id) }
+            .map { $0.content }
     }
 
     // MARK: - 実行ハンドラ
@@ -202,16 +206,17 @@ struct AISummaryView: View {
     private func handleExecute() async {
         guard let book = selectedBook else { return }
         let memos = CoreDataManager.shared.fetchMemos(for: book)
-        let nonEmpty = memos.filter { !($0.content ?? "").isEmpty }
+        let nonEmpty = memos
+            .map { $0.content ?? "" }
+            .filter { !$0.isEmpty }
 
         if nonEmpty.count > memoLimit {
-            // メモ選択シートを表示
-            memosForSelection = nonEmpty
+            // CoreData オブジェクトをシンプルな値型に変換してシートへ渡す
+            memosForSelection = nonEmpty.enumerated().map { MemoItem(id: $0.offset, content: $0.element) }
             selectedMemoIDs = []
             showMemoSelection = true
         } else {
-            let memoStrings = nonEmpty.map { $0.content ?? "" }
-            await executeAI(memos: memoStrings)
+            await executeAI(memos: nonEmpty)
         }
     }
 
@@ -246,8 +251,8 @@ struct AISummaryView: View {
 
 private struct MemoSelectionView: View {
 
-    let memos: [Memo]
-    @Binding var selectedIDs: Set<NSManagedObjectID>
+    let memos: [MemoItem]
+    @Binding var selectedIDs: Set<Int>
     let limit: Int
     let onConfirm: () -> Void
 
@@ -255,23 +260,22 @@ private struct MemoSelectionView: View {
 
     var body: some View {
         NavigationStack {
-            List(memos, id: \.objectID) { memo in
-                let oid = memo.objectID
-                let isSelected = selectedIDs.contains(oid)
+            List(memos) { memo in
+                let isSelected = selectedIDs.contains(memo.id)
                 let isDisabled = !isSelected && selectedIDs.count >= limit
 
                 Button {
                     if isSelected {
-                        selectedIDs.remove(oid)
+                        selectedIDs.remove(memo.id)
                     } else if !isDisabled {
-                        selectedIDs.insert(oid)
+                        selectedIDs.insert(memo.id)
                     }
                 } label: {
                     HStack(alignment: .top, spacing: 12) {
                         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                             .foregroundColor(isSelected ? .indigo : (isDisabled ? Color.secondary.opacity(0.4) : .secondary))
                             .font(.title3)
-                        Text(memo.content ?? "")
+                        Text(memo.content)
                             .font(.body)
                             .foregroundColor(isDisabled && !isSelected ? .secondary : .primary)
                             .multilineTextAlignment(.leading)
