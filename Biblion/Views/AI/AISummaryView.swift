@@ -2,7 +2,7 @@ import SwiftUI
 
 /// メモ選択シート用の値型
 private struct MemoItem: Identifiable {
-    let id: Int   // fetchMemos の順番インデックス
+    let id: Int
     let content: String
 }
 
@@ -15,8 +15,7 @@ struct AISummaryView: View {
     @State private var showRetryAlert = false
     @State private var showMyPageForConsent = false
     @State private var showMemoSelection = false
-    @State private var memosForSelection: [MemoItem] = []
-    @State private var selectedMemoIDs: Set<Int> = []
+    @State private var pendingMemos: [String] = []
 
     private let memoLimit = 30
 
@@ -36,7 +35,7 @@ struct AISummaryView: View {
                 // 実行ボタン
                 VStack {
                     Button {
-                        Task { await handleExecute() }
+                        handleExecute()
                     } label: {
                         Text("ai.execute.summary")
                             .font(.headline)
@@ -53,15 +52,6 @@ struct AISummaryView: View {
             }
             .navigationTitle(Text("ai.menu.summary.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: selectedBook) { book in
-                guard let book else { memosForSelection = []; return }
-                let items = CoreDataManager.shared.fetchMemos(for: book)
-                    .map { $0.content ?? "" }
-                    .filter { !$0.isEmpty }
-                    .enumerated()
-                    .map { MemoItem(id: $0.offset, content: $0.element) }
-                memosForSelection = items
-            }
             .navigationDestination(isPresented: $showResult) {
                 if let result = viewModel.result {
                     AIResultView(
@@ -76,13 +66,11 @@ struct AISummaryView: View {
                 }
             }
             .sheet(isPresented: $showMemoSelection) {
-                MemoSelectionView(
-                    memos: memosForSelection,
-                    selectedIDs: $selectedMemoIDs,
-                    limit: memoLimit
-                ) {
-                    showMemoSelection = false
-                    Task { await executeAI(memos: selectedMemos) }
+                if let book = selectedBook {
+                    MemoSelectionView(book: book, limit: memoLimit) { chosen in
+                        showMemoSelection = false
+                        Task { await executeAI(memos: chosen) }
+                    }
                 }
             }
             .alert("ai.notConsented", isPresented: $viewModel.showConsentView) {
@@ -102,7 +90,11 @@ struct AISummaryView: View {
             .alert("ai.result.retryAlert", isPresented: $showRetryAlert) {
                 Button("common.cancel", role: .cancel) {}
                 Button("ai.result.retry") {
-                    Task { await handleExecute() }
+                    if pendingMemos.isEmpty {
+                        handleExecute()
+                    } else {
+                        Task { await executeAI(memos: pendingMemos) }
+                    }
                 }
             }
             .alert("common.error", isPresented: .init(
@@ -121,7 +113,7 @@ struct AISummaryView: View {
         }
     }
 
-    // MARK: - 書籍リスト（全書籍表示）
+    // MARK: - 書籍リスト
 
     private var bookList: some View {
         List(allBooks, id: \.id, selection: $selectedBook) { book in
@@ -167,7 +159,7 @@ struct AISummaryView: View {
         .listStyle(.insetGrouped)
     }
 
-    // MARK: - 空状態（書籍が1冊もない場合）
+    // MARK: - 空状態
 
     private var emptyState: some View {
         VStack(spacing: 16) {
@@ -204,25 +196,24 @@ struct AISummaryView: View {
         selectedBook != nil && !viewModel.isLoading
     }
 
-    private var selectedMemos: [String] {
-        memosForSelection
-            .filter { selectedMemoIDs.contains($0.id) }
-            .map { $0.content }
-    }
-
     // MARK: - 実行ハンドラ
 
-    private func handleExecute() async {
-        if memosForSelection.count > memoLimit {
-            selectedMemoIDs = []
+    private func handleExecute() {
+        guard let book = selectedBook else { return }
+        let memos = CoreDataManager.shared.fetchMemos(for: book)
+            .map { $0.content ?? "" }
+            .filter { !$0.isEmpty }
+        if memos.count > memoLimit {
             showMemoSelection = true
         } else {
-            await executeAI(memos: memosForSelection.map { $0.content })
+            pendingMemos = memos
+            Task { await executeAI(memos: memos) }
         }
     }
 
     private func executeAI(memos: [String]) async {
         guard let book = selectedBook else { return }
+        pendingMemos = memos
 
         let prompt = AIPrompts.summary(
             bookTitle: book.title ?? "",
@@ -252,20 +243,28 @@ struct AISummaryView: View {
 
 private struct MemoSelectionView: View {
 
-    let memos: [MemoItem]
-    @Binding var selectedIDs: Set<Int>
+    let book: Book
     let limit: Int
-    let onConfirm: () -> Void
+    let onConfirm: ([String]) -> Void
 
+    @State private var memos: [MemoItem] = []
+    @State private var selectedIDs: Set<Int> = []
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(memos) { memo in
-                        memoRow(memo)
-                        Divider().padding(.leading, 16)
+            Group {
+                if memos.isEmpty {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach(memos) { memo in
+                                memoRow(memo)
+                                Divider().padding(.leading, 16)
+                            }
+                        }
                     }
                 }
             }
@@ -279,11 +278,21 @@ private struct MemoSelectionView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("ai.execute.summary.confirm") {
-                        onConfirm()
+                        let chosen = memos
+                            .filter { selectedIDs.contains($0.id) }
+                            .map { $0.content }
+                        onConfirm(chosen)
                     }
                     .disabled(selectedIDs.isEmpty)
                     .fontWeight(.semibold)
                 }
+            }
+            .onAppear {
+                memos = CoreDataManager.shared.fetchMemos(for: book)
+                    .map { $0.content ?? "" }
+                    .filter { !$0.isEmpty }
+                    .enumerated()
+                    .map { MemoItem(id: $0.offset, content: $0.element) }
             }
         }
     }
