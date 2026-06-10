@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreData
 
 /// 書籍要約画面
 struct AISummaryView: View {
@@ -10,7 +11,7 @@ struct AISummaryView: View {
     @State private var showMyPageForConsent = false
     @State private var showMemoSelection = false
     @State private var memosForSelection: [Memo] = []
-    @State private var selectedMemoIDs: Set<UUID> = []
+    @State private var selectedMemoIDs: Set<NSManagedObjectID> = []
 
     private let memoLimit = 30
 
@@ -191,7 +192,7 @@ struct AISummaryView: View {
 
     private var selectedMemos: [String] {
         memosForSelection
-            .filter { selectedMemoIDs.contains($0.id ?? UUID()) }
+            .filter { selectedMemoIDs.contains($0.objectID) }
             .map { $0.content ?? "" }
             .filter { !$0.isEmpty }
     }
@@ -246,7 +247,7 @@ struct AISummaryView: View {
 private struct MemoSelectionView: View {
 
     let memos: [Memo]
-    @Binding var selectedIDs: Set<UUID>
+    @Binding var selectedIDs: Set<NSManagedObjectID>
     let limit: Int
     let onConfirm: () -> Void
 
@@ -254,21 +255,21 @@ private struct MemoSelectionView: View {
 
     var body: some View {
         NavigationStack {
-            List(memos, id: \.id) { memo in
-                let id = memo.id ?? UUID()
-                let isSelected = selectedIDs.contains(id)
+            List(memos, id: \.objectID) { memo in
+                let oid = memo.objectID
+                let isSelected = selectedIDs.contains(oid)
                 let isDisabled = !isSelected && selectedIDs.count >= limit
 
                 Button {
                     if isSelected {
-                        selectedIDs.remove(id)
+                        selectedIDs.remove(oid)
                     } else if !isDisabled {
-                        selectedIDs.insert(id)
+                        selectedIDs.insert(oid)
                     }
                 } label: {
                     HStack(alignment: .top, spacing: 12) {
                         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                            .foregroundColor(isSelected ? .indigo : (isDisabled ? .secondary.opacity(0.4) : .secondary))
+                            .foregroundColor(isSelected ? .indigo : (isDisabled ? Color.secondary.opacity(0.4) : .secondary))
                             .font(.title3)
                         Text(memo.content ?? "")
                             .font(.body)
@@ -282,11 +283,7 @@ private struct MemoSelectionView: View {
             }
             .listStyle(.plain)
             .navigationTitle(
-                Text(String(
-                    format: NSLocalizedString("ai.summary.memoSelection.title", comment: ""),
-                    selectedIDs.count,
-                    limit
-                ))
+                String(format: NSLocalizedString("ai.summary.memoSelection.title", comment: ""), selectedIDs.count, limit)
             )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
