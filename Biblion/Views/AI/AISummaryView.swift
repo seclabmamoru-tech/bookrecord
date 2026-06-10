@@ -53,6 +53,15 @@ struct AISummaryView: View {
             }
             .navigationTitle(Text("ai.menu.summary.title"))
             .navigationBarTitleDisplayMode(.inline)
+            .onChange(of: selectedBook) { book in
+                guard let book else { memosForSelection = []; return }
+                let items = CoreDataManager.shared.fetchMemos(for: book)
+                    .map { $0.content ?? "" }
+                    .filter { !$0.isEmpty }
+                    .enumerated()
+                    .map { MemoItem(id: $0.offset, content: $0.element) }
+                memosForSelection = items
+            }
             .navigationDestination(isPresented: $showResult) {
                 if let result = viewModel.result {
                     AIResultView(
@@ -204,19 +213,11 @@ struct AISummaryView: View {
     // MARK: - 実行ハンドラ
 
     private func handleExecute() async {
-        guard let book = selectedBook else { return }
-        let memos = CoreDataManager.shared.fetchMemos(for: book)
-        let nonEmpty = memos
-            .map { $0.content ?? "" }
-            .filter { !$0.isEmpty }
-
-        if nonEmpty.count > memoLimit {
-            // CoreData オブジェクトをシンプルな値型に変換してシートへ渡す
-            memosForSelection = nonEmpty.enumerated().map { MemoItem(id: $0.offset, content: $0.element) }
+        if memosForSelection.count > memoLimit {
             selectedMemoIDs = []
             showMemoSelection = true
         } else {
-            await executeAI(memos: nonEmpty)
+            await executeAI(memos: memosForSelection.map { $0.content })
         }
     }
 
