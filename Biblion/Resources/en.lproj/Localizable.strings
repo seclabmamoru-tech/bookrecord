@@ -32,6 +32,7 @@
 
 // MARK: - Library
 "library.addBook" = "Add Book";
+"library.search.prompt" = "Search by title or author";
 "library.empty" = "No books yet";
 "library.filter.all" = "All";
 "library.filter.want" = "Want";

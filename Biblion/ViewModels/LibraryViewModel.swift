@@ -9,6 +9,7 @@ final class LibraryViewModel: ObservableObject {
     @Published var books: [Book] = []
     @Published var selectedStatus: String = "all"
     @Published var selectedGenre: String = "all"
+    @Published var searchText: String = ""
     @Published var showAddBook = false
     @Published var errorMessage: String?
     @Published var showError = false
@@ -37,7 +38,10 @@ final class LibraryViewModel: ObservableObject {
         books.filter { book in
             let statusMatch = selectedStatus == "all" || book.status == selectedStatus
             let genreMatch = selectedGenre == "all" || book.genre == selectedGenre
-            return statusMatch && genreMatch
+            let searchMatch = searchText.isEmpty
+                || (book.title ?? "").localizedCaseInsensitiveContains(searchText)
+                || (book.author ?? "").localizedCaseInsensitiveContains(searchText)
+            return statusMatch && genreMatch && searchMatch
         }
     }
 

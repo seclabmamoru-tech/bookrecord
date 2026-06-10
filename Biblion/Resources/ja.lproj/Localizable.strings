@@ -32,6 +32,7 @@
 
 // MARK: - ライブラリ
 "library.addBook" = "書籍を追加";
+"library.search.prompt" = "タイトル・著者で検索";
 "library.empty" = "書籍がありません";
 "library.filter.all" = "すべて";
 "library.filter.want" = "読みたい";

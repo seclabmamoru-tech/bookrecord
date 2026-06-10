@@ -44,6 +44,7 @@ struct LibraryView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle(Text("tab.library"))
+            .searchable(text: $viewModel.searchText, prompt: Text("library.search.prompt"))
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
