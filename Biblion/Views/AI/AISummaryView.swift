@@ -8,6 +8,11 @@ struct AISummaryView: View {
     @State private var showResult = false
     @State private var showRetryAlert = false
     @State private var showMyPageForConsent = false
+    @State private var showMemoSelection = false
+    @State private var memosForSelection: [Memo] = []
+    @State private var selectedMemoIDs: Set<UUID> = []
+
+    private let memoLimit = 30
 
     private var allBooks: [Book] {
         CoreDataManager.shared.fetchBooks()
@@ -25,7 +30,7 @@ struct AISummaryView: View {
                 // 実行ボタン
                 VStack {
                     Button {
-                        Task { await executeAI() }
+                        Task { await handleExecute() }
                     } label: {
                         Text("ai.execute.summary")
                             .font(.headline)
@@ -55,6 +60,16 @@ struct AISummaryView: View {
                     )
                 }
             }
+            .sheet(isPresented: $showMemoSelection) {
+                MemoSelectionView(
+                    memos: memosForSelection,
+                    selectedIDs: $selectedMemoIDs,
+                    limit: memoLimit
+                ) {
+                    showMemoSelection = false
+                    Task { await executeAI(memos: selectedMemos) }
+                }
+            }
             .alert("ai.notConsented", isPresented: $viewModel.showConsentView) {
                 Button("ai.consent.goMyPage") { showMyPageForConsent = true }
                 Button("common.cancel", role: .cancel) {}
@@ -72,7 +87,7 @@ struct AISummaryView: View {
             .alert("ai.result.retryAlert", isPresented: $showRetryAlert) {
                 Button("common.cancel", role: .cancel) {}
                 Button("ai.result.retry") {
-                    Task { await executeAI() }
+                    Task { await handleExecute() }
                 }
             }
             .alert("common.error", isPresented: .init(
@@ -104,14 +119,20 @@ struct AISummaryView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                     if memoCount == 0 {
-                        // メモなし：一般情報でサマリーすることを示すバッジ
                         Text("ai.summary.noMemoNote")
                             .font(.caption2)
                             .foregroundColor(.orange)
                     } else {
-                        Text(String(format: NSLocalizedString("book.memoCount", comment: ""), memoCount))
-                            .font(.caption2)
-                            .foregroundColor(.indigo)
+                        HStack(spacing: 4) {
+                            Text(String(format: NSLocalizedString("book.memoCount", comment: ""), memoCount))
+                                .font(.caption2)
+                                .foregroundColor(.indigo)
+                            if memoCount > memoLimit {
+                                Text("ai.summary.memoSelectRequired")
+                                    .font(.caption2)
+                                    .foregroundColor(.orange)
+                            }
+                        }
                     }
                 }
 
@@ -168,24 +189,44 @@ struct AISummaryView: View {
         selectedBook != nil && !viewModel.isLoading
     }
 
-    private func executeAI() async {
-        guard let book = selectedBook else { return }
-        let memos = CoreDataManager.shared.fetchMemos(for: book)
+    private var selectedMemos: [String] {
+        memosForSelection
+            .filter { selectedMemoIDs.contains($0.id ?? UUID()) }
             .map { $0.content ?? "" }
             .filter { !$0.isEmpty }
+    }
+
+    // MARK: - 実行ハンドラ
+
+    private func handleExecute() async {
+        guard let book = selectedBook else { return }
+        let memos = CoreDataManager.shared.fetchMemos(for: book)
+        let nonEmpty = memos.filter { !($0.content ?? "").isEmpty }
+
+        if nonEmpty.count > memoLimit {
+            // メモ選択シートを表示
+            memosForSelection = nonEmpty
+            selectedMemoIDs = []
+            showMemoSelection = true
+        } else {
+            let memoStrings = nonEmpty.map { $0.content ?? "" }
+            await executeAI(memos: memoStrings)
+        }
+    }
+
+    private func executeAI(memos: [String]) async {
+        guard let book = selectedBook else { return }
 
         let prompt = AIPrompts.summary(
             bookTitle: book.title ?? "",
             author: book.author ?? "",
             memos: memos
         )
-        // 選択した書籍のみを送信（他の書籍が参照書籍に混入しないよう）
         let bookData = [AIBookData(title: book.title ?? "", author: book.author ?? "", memos: memos)]
         let plan = CoreDataManager.shared.fetchOrCreateUserPlan()
         let planType = PlanType(rawValue: plan.planType ?? "free") ?? .free
         let willShowAd = PlanLimits.showAIInterstitial(for: planType)
         if willShowAd {
-            // 広告とAI生成を並行実行
             async let adTask: Void = withCheckedContinuation { cont in
                 InterstitialAdManager.shared.showAIAd { cont.resume() }
             }
@@ -196,6 +237,70 @@ struct AISummaryView: View {
         }
         if viewModel.result != nil {
             showResult = true
+        }
+    }
+}
+
+// MARK: - メモ選択シート
+
+private struct MemoSelectionView: View {
+
+    let memos: [Memo]
+    @Binding var selectedIDs: Set<UUID>
+    let limit: Int
+    let onConfirm: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List(memos, id: \.id) { memo in
+                let id = memo.id ?? UUID()
+                let isSelected = selectedIDs.contains(id)
+                let isDisabled = !isSelected && selectedIDs.count >= limit
+
+                Button {
+                    if isSelected {
+                        selectedIDs.remove(id)
+                    } else if !isDisabled {
+                        selectedIDs.insert(id)
+                    }
+                } label: {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                            .foregroundColor(isSelected ? .indigo : (isDisabled ? .secondary.opacity(0.4) : .secondary))
+                            .font(.title3)
+                        Text(memo.content ?? "")
+                            .font(.body)
+                            .foregroundColor(isDisabled && !isSelected ? .secondary : .primary)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .padding(.vertical, 4)
+                }
+                .buttonStyle(.plain)
+                .disabled(isDisabled)
+            }
+            .listStyle(.plain)
+            .navigationTitle(
+                Text(String(
+                    format: NSLocalizedString("ai.summary.memoSelection.title", comment: ""),
+                    selectedIDs.count,
+                    limit
+                ))
+            )
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("common.cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("ai.execute.summary.confirm") {
+                        onConfirm()
+                    }
+                    .disabled(selectedIDs.isEmpty)
+                    .fontWeight(.semibold)
+                }
+            }
         }
     }
 }

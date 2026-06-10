@@ -164,6 +164,9 @@
 "ai.error.noMemo" = "まずメモを追加してください";
 "ai.error.network" = "通信エラーが発生しました。チケットは消費されていません。";
 "ai.summary.noMemoNote" = "メモなし（一般情報でサマリー）";
+"ai.summary.memoSelectRequired" = "※メモが多いため選択が必要です";
+"ai.summary.memoSelection.title" = "%d / %d 件選択中";
+"ai.execute.summary.confirm" = "要約する";
 "ai.sns.platform" = "投稿先";
 "ai.sns.selectMemos" = "活用するメモを選択（複数可）";
 "ai.sns.genre" = "拡散ジャンルを選択（複数可）";

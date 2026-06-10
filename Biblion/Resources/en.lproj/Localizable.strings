@@ -164,6 +164,9 @@
 "ai.error.noMemo" = "Please add memos first";
 "ai.error.network" = "Network error. No ticket was used.";
 "ai.summary.noMemoNote" = "No memos (will summarize from general knowledge)";
+"ai.summary.memoSelectRequired" = "* Too many memos — please select";
+"ai.summary.memoSelection.title" = "%d / %d selected";
+"ai.execute.summary.confirm" = "Summarize";
 "ai.sns.platform" = "Platform";
 "ai.sns.selectMemos" = "Select memos to use";
 "ai.sns.genre" = "Select emotion genre (multiple allowed)";
