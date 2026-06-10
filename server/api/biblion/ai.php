@@ -87,7 +87,7 @@ curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $anthropicPayload,
-    CURLOPT_TIMEOUT        => 60,
+    CURLOPT_TIMEOUT        => 120,
     CURLOPT_HTTPHEADER     => [
         'Content-Type: application/json',
         'x-api-key: ' . $ANTHROPIC_API_KEY,
