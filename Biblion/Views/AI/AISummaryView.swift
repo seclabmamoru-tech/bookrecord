@@ -261,32 +261,14 @@ private struct MemoSelectionView: View {
 
     var body: some View {
         NavigationStack {
-            List(memos) { memo in
-                let isSelected = selectedIDs.contains(memo.id)
-                let isDisabled = !isSelected && selectedIDs.count >= limit
-
-                Button {
-                    if isSelected {
-                        selectedIDs.remove(memo.id)
-                    } else if !isDisabled {
-                        selectedIDs.insert(memo.id)
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(memos) { memo in
+                        memoRow(memo)
+                        Divider().padding(.leading, 16)
                     }
-                } label: {
-                    HStack(alignment: .top, spacing: 12) {
-                        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                            .foregroundColor(isSelected ? .indigo : (isDisabled ? Color.secondary.opacity(0.4) : .secondary))
-                            .font(.title3)
-                        Text(memo.content)
-                            .font(.body)
-                            .foregroundColor(isDisabled && !isSelected ? .secondary : .primary)
-                            .multilineTextAlignment(.leading)
-                    }
-                    .padding(.vertical, 4)
                 }
-                .buttonStyle(.plain)
-                .disabled(isDisabled)
             }
-            .listStyle(.plain)
             .navigationTitle(
                 String(format: NSLocalizedString("ai.summary.memoSelection.title", comment: ""), selectedIDs.count, limit)
             )
@@ -304,6 +286,35 @@ private struct MemoSelectionView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func memoRow(_ memo: MemoItem) -> some View {
+        let isSelected = selectedIDs.contains(memo.id)
+        let isDisabled = !isSelected && selectedIDs.count >= limit
+
+        Button {
+            if isSelected {
+                selectedIDs.remove(memo.id)
+            } else if !isDisabled {
+                selectedIDs.insert(memo.id)
+            }
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(isSelected ? .indigo : (isDisabled ? Color.secondary.opacity(0.4) : .secondary))
+                    .font(.title3)
+                Text(memo.content)
+                    .font(.body)
+                    .foregroundColor(isDisabled && !isSelected ? .secondary : .primary)
+                    .multilineTextAlignment(.leading)
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+        }
+        .buttonStyle(.plain)
+        .disabled(isDisabled)
     }
 }
 
