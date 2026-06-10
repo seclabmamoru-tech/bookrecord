@@ -54,7 +54,7 @@ enum AIServiceError: LocalizedError {
 struct AIService {
 
     private static let endpointURL = URL(string: "https://it-master.jp/api/biblion/ai.php")!
-    private static let timeoutSeconds: TimeInterval = 30
+    private static let timeoutSeconds: TimeInterval = 90
 
     /// サーバー側 biblion_config.php の $ALLOWED_SECRET と同じ値を設定する
     private static let appSecret = "2f8a7d0f6e9f823d4dfd9c7399450a1b9879898dae529ab402620127572ceb44"
